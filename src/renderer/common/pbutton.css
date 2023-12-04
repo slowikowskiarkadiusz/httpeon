@@ -1,0 +1,62 @@
+@import "../index.scss";
+
+.pbutton {
+    border-radius: 0.3em;
+    background: none;
+    padding: 0.5em 1em;
+    border: none;
+    cursor: pointer;
+    outline: inherit;
+    display: flex;
+    flex-direction: row;
+    gap: 1.5em;
+
+    transition: color 0.1s, background-color 0.1s;
+}
+
+.pbutton > svg {
+    margin-top: auto;
+    margin-bottom: auto;
+    font-size: 0.75em;
+}
+
+.pbutton > span {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.pbutton-primary {
+    color: var(--primary-color);
+    background-color: var(--secondary-color);
+    border: 2px solid var(--secondary-color);
+}
+
+.pbutton-primary:hover {
+    color: var(--primary-color-d1);
+    background-color: var(--secondary-color-d1);
+    border: 2px solid var(--secondary-color-d1);
+}
+
+.pbutton-primary:active {
+    color: var(--primary-color-d2);
+    background-color: var(--secondary-color-d2);
+    border: 2px solid var(--secondary-color-d2);
+}
+
+.pbutton-secondary {
+    color: var(--secondary-color);
+    /*background-color: var(--secondary-color);*/
+    border: 2px solid var(--secondary-color);
+}
+
+.pbutton-secondary:hover {
+    color: var(--secondary-color-d1);
+    /*background-color: var(--secondary-color-d1);*/
+    border: 2px solid var(--secondary-color-d1);
+}
+
+.pbutton-secondary:active {
+    color: var(--secondary-color-d2);
+    /*background-color: var(--secondary-color-d2);*/
+    border: 2px solid var(--secondary-color-d2);
+}

@@ -1,0 +1,117 @@
+@use "sass:map";
+
+$dark-map: (
+        "--theme-background-color":#1e1e1e
+);
+
+//$dark-map: append(
+//                ("--theme-background-color-l1": lighten(map.get($dark-map, "--theme-background-color"), 15),
+//                        "--theme-background-color-l2": lighten(map.get($dark-map, "--theme-background-color"), 30),
+//                        "--theme-background-color-d1": darken(map.get($dark-map, "--theme-background-color"), 10),
+//                        "--theme-background-color-d2": darken(map.get($dark-map, "--theme-background-color"), 30)),
+//                $dark-map);
+
+//$dark-map: map.merge(
+//                ("--theme-background-color-l1": lighten(map.get($dark-map, "--theme-background-color"), 15)),
+//                $dark-map);
+
+@debug $dark-map;
+
+//$--dark-theme-background-color: #1e1e1e;
+//$--dark-theme-background-color-l1: lighten($--dark-theme-background-color, 15);
+//$--dark-theme-background-color-l2: lighten($--dark-theme-background-color, 30);
+//$--dark-theme-background-color-d1: darken($--dark-theme-background-color, 10);
+//$--dark-theme-background-color-d2: darken($--dark-theme-background-color, 30);
+$--dark-theme-font-color: #e1e1e1;
+$--dark-primary-color: #6a1b71;
+$--dark-primary-color-d1: darken($--dark-primary-color, 15);
+$--dark-primary-color-d2: darken($--dark-primary-color, 30);
+$--dark-secondary-color: #FAC8FA;
+$--dark-secondary-color-d1: darken($--dark-secondary-color, 15);
+$--dark-secondary-color-d2: darken($--dark-secondary-color, 30);
+
+$--light-theme-background-color: #e1e1e1;
+$--light-theme-background-color-l1: lighten($--light-theme-background-color, 15);
+$--light-theme-background-color-l2: lighten($--light-theme-background-color, 30);
+$--light-theme-background-color-d1: darken($--light-theme-background-color, 10);
+$--light-theme-background-color-d2: darken($--light-theme-background-color, 30);
+$--light-theme-font-color: #1e1e1e;
+$--light-primary-color: #FAC8FA;
+$--light-primary-color-d1: darken($--light-primary-color, 15);
+$--light-primary-color-d2: darken($--light-primary-color, 30);
+$--light-secondary-color: #6a1b71;
+$--light-secondary-color-d1: darken($--light-secondary-color, 15);
+$--light-secondary-color-d2: darken($--light-secondary-color, 30);
+
+
+:root {
+    --bar-size-px: 32px;
+    @media (prefers-color-scheme: dark) {
+        @each $key, $value in $dark-map {
+            #{$key}: #{$value};
+        }
+        //--theme-background-color: #{$--dark-theme-background-color};
+        //--theme-background-color-l1: #{$--dark-theme-background-color-l1};
+        //--theme-background-color-l2: #{$--dark-theme-background-color-l2};
+        //--theme-background-color-d1: #{$--dark-theme-background-color-d1};
+        //--theme-background-color-d2: #{$--dark-theme-background-color-d2};
+        --theme-font-color: #{$--dark-theme-font-color};
+
+        --primary-color: #{$--dark-primary-color};
+        --primary-color-d1: #{$--dark-primary-color-d1};
+        --primary-color-d2: #{$--dark-primary-color-d2};
+        --secondary-color: #{$--dark-secondary-color};
+        --secondary-color-d1: #{$--dark-secondary-color-d1};
+        --secondary-color-d2: #{$--dark-secondary-color-d2};
+    }
+
+    @media (prefers-color-scheme: light) {
+        --theme-background-color: #{$--light-theme-background-color};
+        --theme-background-color-l1: #{$--light-theme-background-color-l1};
+        --theme-background-color-l2: #{$--light-theme-background-color-l2};
+        --theme-background-color-d1: #{$--light-theme-background-color-d1};
+        --theme-background-color-d2: #{$--light-theme-background-color-d2};
+        --theme-font-color: #{$--light-theme-font-color};
+
+        --primary-color: #{$--light-primary-color};
+        --primary-color-d1: #{$--light-primary-color-d1};
+        --primary-color-d2: #{$--light-primary-color-d2};
+        --secondary-color: #{$--light-secondary-color};
+        --secondary-color-d1: #{$--light-secondary-color-d1};
+        --secondary-color-d2: #{$--light-secondary-color-d2};
+    }
+}
+
+.app {
+    display: grid;
+    background-color: var(--theme-background-color);
+    color: var(--theme-font-color);
+    grid-template-columns: var(--bar-size-px) auto var(--bar-size-px);
+    grid-template-rows: var(--bar-size-px) calc(100vh - var(--bar-size-px));
+    grid-template-areas:
+        'bartop bartop bartop'
+        'barleft content barright';
+    /*'barbottom barbottom barbottom';*/
+}
+
+.bartop {
+    grid-area: bartop;
+    height: var(--bar-size-px);
+}
+
+.barleft {
+    grid-area: barleft;
+}
+
+.barright {
+    grid-area: barright;
+}
+
+.barbottom {
+    grid-area: barbottom;
+}
+
+.content {
+    grid-area: content;
+    height: 100%;
+}

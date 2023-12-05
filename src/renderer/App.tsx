@@ -1,8 +1,8 @@
 import './index.scss';
-import { Sidebar } from "./nav/Sidebar";
 import { PButton } from "./common/PButton";
 import { faArrowsRotate, faArrowTurnDown, faPlus, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { TabProvider } from './nav/tab.context';
+import { Sidebar } from './sidebar/Sidebar';
 
 export function App() {
     return (

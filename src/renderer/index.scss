@@ -6,12 +6,3 @@
     --topbar-size-px: 20px;
     font-size: 6px;
 }
-
-.app {
-    font-size: 2rem;
-    display: grid;
-    height: 100vh;
-    background-color: var(--theme-background-color);
-    color: var(--theme-font-color);
-    grid-template-columns: var(--sidebar-size-px) auto;
-}

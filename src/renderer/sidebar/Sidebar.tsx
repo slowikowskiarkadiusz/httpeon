@@ -1,17 +1,24 @@
 import { faCog, faLocationDot, faScroll } from "@fortawesome/free-solid-svg-icons";
 import { PageButton } from "./PageButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
-const pageIcons = [
-    { icon: faCog },
-    { icon: faLocationDot },
-    { icon: faScroll },
+type PageCode = 'settings' | 'endpoints' | 'scenarios';
+
+const pageIcons: { icon: IconDefinition, code: PageCode }[] = [
+    { icon: faCog, code: 'settings' },
+    { icon: faLocationDot, code: 'endpoints' },
+    { icon: faScroll, code: 'scenarios' },
 ]
 
-export function Sidebar() {
-    const [selectedPageIndex, setSelectedPageIndex] = useState(1);
+export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
+    const defaultPage = 1;
+    const [selectedPageIndex, setSelectedPageIndex] = useState(defaultPage);
+
+    useEffect(() => props.onPageSelect(pageIcons[defaultPage].code), []);
 
     return <div style={ {
+        fontSize: '2rem',
         width: '100%',
         height: '100%',
         display: 'grid',
@@ -22,6 +29,7 @@ export function Sidebar() {
         gridTemplateRows: 'min-content 1fr'
     } }>
         <ul style={ {
+            fontSize: '3rem',
             gridArea: 'pages',
             listStyleType: 'none',
             padding: '0',
@@ -31,15 +39,22 @@ export function Sidebar() {
                 <li key={ `page-icon-${ i }` }>
                     <PageButton { ...x }
                                 isSelected={ i === selectedPageIndex }
-                                onClick={ () => setSelectedPageIndex(i) }/>
+                                onClick={ () => {
+                                    setSelectedPageIndex(i);
+                                    props.onPageSelect(x.code);
+                                } }/>
                 </li>
             ) }
         </ul>
 
         <div style={ {
             gridArea: 'config',
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '0.5em',
         } }>
-
+            <span>Space: <b>default</b></span>
+            <span>Env: <b>dev</b></span>
         </div>
 
         <div style={ {

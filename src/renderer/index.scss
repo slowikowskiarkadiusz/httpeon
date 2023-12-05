@@ -4,10 +4,11 @@
 :root {
     --sidebar-size-px: 400px;
     --topbar-size-px: 20px;
+    font-size: 6px;
 }
 
 .app {
-    font-size: 18px;
+    font-size: 2rem;
     display: grid;
     height: 100vh;
     background-color: var(--theme-background-color);

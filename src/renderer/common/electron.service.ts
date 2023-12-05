@@ -1,7 +1,6 @@
 import * as childProcess from 'child_process';
 import { ipcRenderer, webFrame } from 'electron';
 import * as fs from 'fs';
-import { ConsoleResponse } from "../git/models";
 
 export interface ConsoleResponse {
     date: string;

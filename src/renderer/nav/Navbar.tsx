@@ -1,7 +1,7 @@
 import './navbar.scss';
 import { PButton } from "../common/PButton";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { useTabs } from "./tab.contexts";
+import { useTabs } from "./tab.context";
 
 export function Navbar() {
     const { tabs, currentTabIndex } = useTabs();

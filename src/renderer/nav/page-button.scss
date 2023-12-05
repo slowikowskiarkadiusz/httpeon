@@ -1,0 +1,31 @@
+.page-button {
+    opacity: 0.5;
+
+    .page-button-strip {
+        width: 0;
+        opacity: 0;
+    }
+}
+
+.page-button:hover {
+    .page-button-strip {
+        opacity: 0.5;
+        width: 10%;
+    }
+}
+
+.page-button:active {
+    .page-button-strip {
+        opacity: 0.5;
+        width: 20%;
+    }
+}
+
+.page-button-selected {
+    opacity: 1;
+
+    .page-button-strip {
+        width: 15%;
+        opacity: 1;
+    }
+}

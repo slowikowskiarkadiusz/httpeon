@@ -1,0 +1,12 @@
+.config-chooser {
+    background-color: transparent;
+    transition: background-color 0.1s ease-out;
+}
+
+.config-chooser:hover {
+    background-color: var(--theme-background-color-2);
+}
+
+.config-chooser:active {
+    background-color: var(--theme-background-color-3);
+}

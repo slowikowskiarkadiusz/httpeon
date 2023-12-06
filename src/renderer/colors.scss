@@ -1,18 +1,5 @@
 @use "sass:map";
 
-/*$dark-map: (
-        "--theme-background-color":#1e1e1e
-);
-
-$dark-map: append(
-                        "--theme-background-color-2": darken(map.get($dark-map, "--theme-background-color"), 10),
-                $dark-map);
-
-$dark-map: map.merge(
-                $dark-map);
-
-@debug $dark-map;*/
-
 $--dark-theme-background-color: #000000;
 $--dark-theme-background-color-2: lighten($--dark-theme-background-color, 8);
 $--dark-theme-background-color-3: lighten($--dark-theme-background-color, 16);
@@ -26,7 +13,7 @@ $--dark-secondary-color-3: darken($--dark-secondary-color, 30);
 
 $--light-theme-background-color: #ffffff;
 $--light-theme-background-color-2: darken($--light-theme-background-color, 4);
-$--light-theme-background-color-3: darken($--dark-theme-background-color, 8);
+$--light-theme-background-color-3: darken($--light-theme-background-color, 8);
 $--light-theme-font-color: #1e1e1e;
 $--light-primary-color: #FAC8FA;
 $--light-primary-color-2: darken($--light-primary-color, 15);
@@ -34,7 +21,6 @@ $--light-primary-color-3: darken($--light-primary-color, 30);
 $--light-secondary-color: #6a1b71;
 $--light-secondary-color-2: darken($--light-secondary-color, 15);
 $--light-secondary-color-3: darken($--light-secondary-color, 30);
-
 
 :root {
     @media (prefers-color-scheme: dark) {

@@ -52,13 +52,14 @@ export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
             gridArea: 'config',
             display: 'flex',
             justifyContent: 'space-between',
-            padding: '0.5em',
         } }>
             <ConfigChooser label={ 'Space' }/>
+            <ConfigChooser label={ 'Env' } configKeyPath={['envs']}/>
         </div>
 
         <div style={ {
             gridArea: 'content',
+            borderRadius: 'var(--border-radius)',
             backgroundColor: 'var(--theme-background-color-2)',
         } }>
 

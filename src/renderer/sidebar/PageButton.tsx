@@ -9,15 +9,21 @@ export function PageButton(props: {
 }) {
     let classes = ['page-button', props.isSelected ? 'page-button-selected' : undefined];
 
-    return <div className={ classes.join(' ') }
-                onClick={ props.onClick }
-                style={ {
-                    position: 'relative',
-                    width: '2.5em',
-                    height: '2.5em',
-                    display: 'flex',
-                    transition: 'opacity 0.05s ease-out'
-                } }>
+    return <button className={ classes.join(' ') }
+                   onClick={ props.onClick }
+                   style={ {
+                       fontSize: '1em',
+                       position: 'relative',
+                       width: '2.5em',
+                       height: '2.5em',
+                       display: 'flex',
+                       transition: 'opacity 0.05s ease-out',
+                       backgroundColor: 'transparent',
+                       color: 'unset',
+                       border: 'none',
+                       cursor: 'pointer',
+                       padding: '0',
+                   } }>
 
         <FontAwesomeIcon style={ { margin: 'auto' } }
                          icon={ props.icon }></FontAwesomeIcon>
@@ -29,5 +35,5 @@ export function PageButton(props: {
                  backgroundColor: 'red',
                  transition: 'width 0.05s ease-out, opacity 0.02s ease-out'
              } }></div>
-    </div>
+    </button>
 }

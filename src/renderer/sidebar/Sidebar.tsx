@@ -3,6 +3,7 @@ import { PageButton } from "./PageButton";
 import { useEffect, useState } from "react";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { ConfigChooser } from "./ConfigChooser";
+import { ConfigChooserModalProvider } from "./config-chooser.modal.context";
 
 type PageCode = 'settings' | 'endpoints' | 'scenarios';
 
@@ -18,17 +19,18 @@ export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
 
     useEffect(() => props.onPageSelect(pageIcons[defaultPage].code), []);
 
-    return <div style={ {
-        fontSize: '2rem',
-        width: '100%',
-        height: '100%',
-        display: 'grid',
-        gridTemplateAreas: `
+    return <div id="configChooserModalParent"
+                style={ {
+                    fontSize: '2rem',
+                    width: '100%',
+                    height: '100%',
+                    display: 'grid',
+                    gridTemplateAreas: `
             'pages config'
             'pages content'`,
-        gridTemplateColumns: 'min-content 1fr',
-        gridTemplateRows: 'min-content 1fr'
-    } }>
+                    gridTemplateColumns: 'min-content 1fr',
+                    gridTemplateRows: 'min-content 1fr'
+                } }>
         <ul style={ {
             fontSize: '3rem',
             gridArea: 'pages',
@@ -53,9 +55,11 @@ export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
             display: 'flex',
             justifyContent: 'space-between',
         } }>
-            <ConfigChooser label={ 'Space' }/>
-            <ConfigChooser label={ 'Env' }
-                           configKeyPath={ ['envs'] }/>
+            <ConfigChooserModalProvider parent={ document.getElementById('configChooserModalParent') }>
+                <ConfigChooser label={ 'Space' }/>
+                <ConfigChooser label={ 'Env' }
+                               configKeyPath={ ['envs'] }/>
+            </ConfigChooserModalProvider>
         </div>
 
         <div style={ {

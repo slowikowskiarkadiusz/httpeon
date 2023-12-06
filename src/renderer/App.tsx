@@ -11,6 +11,7 @@ export function App() {
                 fontSize: '2rem',
                 display: 'grid',
                 height: '100vh',
+                columnGap: '10px',
                 backgroundColor: 'var(--theme-background-color)',
                 color: 'var(--theme-font-color)',
                 gridTemplateColumns: 'var(--sidebar-size-px) auto',

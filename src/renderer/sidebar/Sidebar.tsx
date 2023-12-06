@@ -10,7 +10,7 @@ const pageIcons: { icon: IconDefinition, code: PageCode }[] = [
     { icon: faCog, code: 'settings' },
     { icon: faLocationDot, code: 'endpoints' },
     { icon: faScroll, code: 'scenarios' },
-]
+];
 
 export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
     const defaultPage = 1;
@@ -54,7 +54,8 @@ export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
             justifyContent: 'space-between',
         } }>
             <ConfigChooser label={ 'Space' }/>
-            <ConfigChooser label={ 'Env' } configKeyPath={['envs']}/>
+            <ConfigChooser label={ 'Env' }
+                           configKeyPath={ ['envs'] }/>
         </div>
 
         <div style={ {
@@ -62,7 +63,24 @@ export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
             borderRadius: 'var(--border-radius)',
             backgroundColor: 'var(--theme-background-color-2)',
         } }>
-
+            <div style={ { margin: '0.5em 1em', } }><b>{ pageIcons[selectedPageIndex].code }</b></div>
+            <hr style={ {
+                border: 'none',
+                borderTop: '1px solid var(--theme-background-color)',
+                margin: '0',
+            } }/>
+            { renderList(pageIcons[selectedPageIndex].code) }
         </div>
     </div>
+}
+
+function renderList(pageCode: string) {
+    switch (pageCode) {
+        case 'settings':
+            return <div></div>
+        case 'endpoints':
+            return <div></div>
+        case 'scenarios':
+            return <div></div>
+    }
 }

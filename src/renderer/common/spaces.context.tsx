@@ -6,8 +6,30 @@ export interface Space {
 
 const spacesLocalStorageKey = 'spaces';
 const loadedSpaces: Space[] = JSON.parse(localStorage.getItem('spaces')) ?? [
-    { 'name': 'space1', 'active': false, 'envs': [{ 'name': 'dev', active: false }, { 'name': 'local', active: true }] },
-    { 'name': 'space2', 'active': true, 'envs': [{ 'name': 'test', active: false }, { 'name': 'prod', active: true }] }];
+    {
+        'name': 'space1',
+        'active': false,
+        'envs': [{
+            'name': 'dev',
+            active: false
+        },
+            {
+                'name': 'local',
+                active: true
+            }]
+    },
+    {
+        'name': 'space2',
+        'active': true,
+        'envs': [{
+            'name': 'test',
+            active: false
+        },
+            {
+                'name': 'prod',
+                active: true
+            }]
+    }];
 
 export const SpacesContext = createContext({
     spaces: loadedSpaces,

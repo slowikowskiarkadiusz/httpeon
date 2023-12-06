@@ -15,7 +15,7 @@ export function ConfigChooser(props: { label: string, configKeyPath?: string[] }
                        flexDirection: 'row',
                        userSelect: 'none',
                        borderRadius: 'var(--border-radius)',
-                       padding: '0.4em',
+                       padding: '1em',
                        margin: '0.1em 0',
                        color: 'unset',
                        border: 'none',

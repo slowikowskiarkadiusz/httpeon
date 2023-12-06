@@ -4,7 +4,7 @@ import { useState } from "react";
 import { SpacesProvider } from "./common/spaces.context";
 
 export function App() {
-    const [constr, setconstr] = useState('nothing??');
+    const [contentPageCode, setContentPageCode] = useState('nothing??');
     return (
         <SpacesProvider>
             <div style={ {
@@ -16,9 +16,9 @@ export function App() {
                 color: 'var(--theme-font-color)',
                 gridTemplateColumns: 'var(--sidebar-size-px) auto',
             } }>
-                <div className="barleft"><Sidebar onPageSelect={ (code) => setconstr(code) }/></div>
+                <div className="barleft"><Sidebar onPageSelect={ (code) => setContentPageCode(code) }/></div>
                 <div className="content">
-                    { constr }
+                    { contentPageCode }
                 </div>
             </div>
         </SpacesProvider>

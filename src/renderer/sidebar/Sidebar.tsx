@@ -3,6 +3,7 @@ import { PageButton } from "./PageButton";
 import { useEffect, useState } from "react";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { useSpaces } from "../common/spaces.context";
+import { ConfigChooser } from "./ConfigChooser";
 
 type PageCode = 'settings' | 'endpoints' | 'scenarios';
 
@@ -55,8 +56,7 @@ export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
             justifyContent: 'space-between',
             padding: '0.5em',
         } }>
-            <span>Space: <b>{ Object.keys(spaces)[0] }</b></span>
-            <span>Env: <b>dev</b></span>
+            <ConfigChooser label={ 'Space' }/>
         </div>
 
         <div style={ {

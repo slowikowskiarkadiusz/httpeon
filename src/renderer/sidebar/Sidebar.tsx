@@ -2,7 +2,6 @@ import { faCog, faLocationDot, faScroll } from "@fortawesome/free-solid-svg-icon
 import { PageButton } from "./PageButton";
 import { useEffect, useState } from "react";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { useSpaces } from "../common/spaces.context";
 import { ConfigChooser } from "./ConfigChooser";
 
 type PageCode = 'settings' | 'endpoints' | 'scenarios';
@@ -16,7 +15,6 @@ const pageIcons: { icon: IconDefinition, code: PageCode }[] = [
 export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
     const defaultPage = 1;
     const [selectedPageIndex, setSelectedPageIndex] = useState(defaultPage);
-    const { spaces, setSpaceConfig } = useSpaces();
 
     useEffect(() => props.onPageSelect(pageIcons[defaultPage].code), []);
 
@@ -61,7 +59,7 @@ export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
 
         <div style={ {
             gridArea: 'content',
-            backgroundColor: 'var(--theme-background-color-d1)',
+            backgroundColor: 'var(--theme-background-color-2)',
         } }>
 
         </div>

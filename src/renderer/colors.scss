@@ -5,75 +5,63 @@
 );
 
 $dark-map: append(
-                ("--theme-background-color-l1": lighten(map.get($dark-map, "--theme-background-color"), 15),
-                        "--theme-background-color-l2": lighten(map.get($dark-map, "--theme-background-color"), 30),
-                        "--theme-background-color-d1": darken(map.get($dark-map, "--theme-background-color"), 10),
-                        "--theme-background-color-d2": darken(map.get($dark-map, "--theme-background-color"), 30)),
+                        "--theme-background-color-2": darken(map.get($dark-map, "--theme-background-color"), 10),
                 $dark-map);
 
 $dark-map: map.merge(
-                ("--theme-background-color-l1": lighten(map.get($dark-map, "--theme-background-color"), 15)),
                 $dark-map);
 
 @debug $dark-map;*/
 
-$--dark-theme-background-color: #1e1e1e;
-$--dark-theme-background-color-l1: lighten($--dark-theme-background-color, 15);
-$--dark-theme-background-color-l2: lighten($--dark-theme-background-color, 30);
-$--dark-theme-background-color-d1: darken($--dark-theme-background-color, 10);
-$--dark-theme-background-color-d2: darken($--dark-theme-background-color, 30);
+$--dark-theme-background-color: #000000;
+$--dark-theme-background-color-2: lighten($--dark-theme-background-color, 8);
+$--dark-theme-background-color-3: lighten($--dark-theme-background-color, 16);
 $--dark-theme-font-color: #e1e1e1;
 $--dark-primary-color: #6a1b71;
-$--dark-primary-color-d1: darken($--dark-primary-color, 15);
-$--dark-primary-color-d2: darken($--dark-primary-color, 30);
+$--dark-primary-color-2: darken($--dark-primary-color, 15);
+$--dark-primary-color-3: darken($--dark-primary-color, 30);
 $--dark-secondary-color: #FAC8FA;
-$--dark-secondary-color-d1: darken($--dark-secondary-color, 15);
-$--dark-secondary-color-d2: darken($--dark-secondary-color, 30);
+$--dark-secondary-color-2: darken($--dark-secondary-color, 15);
+$--dark-secondary-color-3: darken($--dark-secondary-color, 30);
 
-$--light-theme-background-color: #e1e1e1;
-$--light-theme-background-color-l1: lighten($--light-theme-background-color, 15);
-$--light-theme-background-color-l2: lighten($--light-theme-background-color, 30);
-$--light-theme-background-color-d1: darken($--light-theme-background-color, 10);
-$--light-theme-background-color-d2: darken($--light-theme-background-color, 30);
+$--light-theme-background-color: #ffffff;
+$--light-theme-background-color-2: darken($--light-theme-background-color, 4);
+$--light-theme-background-color-3: darken($--dark-theme-background-color, 8);
 $--light-theme-font-color: #1e1e1e;
 $--light-primary-color: #FAC8FA;
-$--light-primary-color-d1: darken($--light-primary-color, 15);
-$--light-primary-color-d2: darken($--light-primary-color, 30);
+$--light-primary-color-2: darken($--light-primary-color, 15);
+$--light-primary-color-3: darken($--light-primary-color, 30);
 $--light-secondary-color: #6a1b71;
-$--light-secondary-color-d1: darken($--light-secondary-color, 15);
-$--light-secondary-color-d2: darken($--light-secondary-color, 30);
+$--light-secondary-color-2: darken($--light-secondary-color, 15);
+$--light-secondary-color-3: darken($--light-secondary-color, 30);
 
 
 :root {
     @media (prefers-color-scheme: dark) {
         --theme-background-color: #{$--dark-theme-background-color};
-        --theme-background-color-l1: #{$--dark-theme-background-color-l1};
-        --theme-background-color-l2: #{$--dark-theme-background-color-l2};
-        --theme-background-color-d1: #{$--dark-theme-background-color-d1};
-        --theme-background-color-d2: #{$--dark-theme-background-color-d2};
+        --theme-background-color-2: #{$--dark-theme-background-color-2};
+        --theme-background-color-3: #{$--dark-theme-background-color-3};
         --theme-font-color: #{$--dark-theme-font-color};
 
         --primary-color: #{$--dark-primary-color};
-        --primary-color-d1: #{$--dark-primary-color-d1};
-        --primary-color-d2: #{$--dark-primary-color-d2};
+        --primary-color-2: #{$--dark-primary-color-2};
+        --primary-color-3: #{$--dark-primary-color-3};
         --secondary-color: #{$--dark-secondary-color};
-        --secondary-color-d1: #{$--dark-secondary-color-d1};
-        --secondary-color-d2: #{$--dark-secondary-color-d2};
+        --secondary-color-2: #{$--dark-secondary-color-2};
+        --secondary-color-3: #{$--dark-secondary-color-3};
     }
 
     @media (prefers-color-scheme: light) {
         --theme-background-color: #{$--light-theme-background-color};
-        --theme-background-color-l1: #{$--light-theme-background-color-l1};
-        --theme-background-color-l2: #{$--light-theme-background-color-l2};
-        --theme-background-color-d1: #{$--light-theme-background-color-d1};
-        --theme-background-color-d2: #{$--light-theme-background-color-d2};
+        --theme-background-color-2: #{$--light-theme-background-color-2};
+        --theme-background-color-3: #{$--light-theme-background-color-3};
         --theme-font-color: #{$--light-theme-font-color};
 
         --primary-color: #{$--light-primary-color};
-        --primary-color-d1: #{$--light-primary-color-d1};
-        --primary-color-d2: #{$--light-primary-color-d2};
+        --primary-color-2: #{$--light-primary-color-2};
+        --primary-color-3: #{$--light-primary-color-3};
         --secondary-color: #{$--light-secondary-color};
-        --secondary-color-d1: #{$--light-secondary-color-d1};
-        --secondary-color-d2: #{$--light-secondary-color-d2};
+        --secondary-color-2: #{$--light-secondary-color-2};
+        --secondary-color-3: #{$--light-secondary-color-3};
     }
 }

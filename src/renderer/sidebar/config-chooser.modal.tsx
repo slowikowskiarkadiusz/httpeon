@@ -14,6 +14,10 @@ export function ConfigChooserModal(props: {
     width: string,
     height: string,
 }) {
+    const onClose = () => {
+        console.log('onClose');
+    };
+
     return <div style={ {
         position: 'absolute',
         left: props.left,

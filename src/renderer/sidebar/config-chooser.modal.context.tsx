@@ -1,5 +1,6 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, ReactDOM, useContext } from 'react';
 import { ConfigChooserModal } from "./config-chooser.modal";
+import { root } from "../index";
 
 export const ConfigChooserModalContext = createContext({
     invoke: (config: string) => {},
@@ -24,6 +25,9 @@ export const ConfigChooserModalProvider = ({ children }: any, props: { at: { x: 
             width={ `${ width }px` }
             height={ `${ height }px` }
         />
+
+        root.render(modal, props.parent);
+        props.parent.append(modal);
     };
 
     return (

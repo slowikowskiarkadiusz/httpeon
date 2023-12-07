@@ -1,0 +1,110 @@
+@import "../index";
+
+.context-menu-parent {
+    cursor: default;
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    max-width: 100%;
+    top: 0;
+    left: 0;
+}
+
+$cell-border-radius: 0.5rem;
+
+.context-menu {
+    min-width: max-content;
+    width: 16em;
+    font-weight: bold;
+    position: absolute;
+    backdrop-filter: blur(7px);
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: $cell-border-radius;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+
+    display: grid;
+    grid-template-columns: 4em auto 3em;
+
+    .context-menu-row {
+        display: contents;
+
+        .context-menu-cell {
+            height: 2em;
+            display: flex;
+            transition: color $transition;
+
+            .icon-content {
+                height: min-content;
+                margin: auto;
+            }
+
+            .label-content {
+                height: min-content;
+                width: 100%;
+                margin: auto;
+            }
+        }
+
+        .left-cell {
+            margin-left: 0.5em;
+        }
+
+        .right-cell {
+            margin-right: 0.5em;
+
+            .icon-content {
+                margin-right: 0.5em;
+                margin-left: auto;
+            }
+        }
+    }
+
+    .context-menu-row:active {
+        .context-menu-cell {
+            color: darken($color, 15%);
+        }
+    }
+
+    .context-menu-row {
+        &.has-active-child {
+            $cell-background-color: rgba(139, 149, 180, 0.54);
+
+            .left-cell {
+                background-color: $cell-background-color;
+                border-top-left-radius: $cell-border-radius;
+                border-bottom-left-radius: $cell-border-radius;
+            }
+
+            .middle-cell {
+                background-color: $cell-background-color;
+            }
+
+            .right-cell {
+                background-color: $cell-background-color;
+                border-top-right-radius: $cell-border-radius;
+                border-bottom-right-radius: $cell-border-radius;
+            }
+        }
+    }
+
+    .context-menu-row:hover {
+        $cell-background-color: rgba(0, 44, 187, 0.54);
+
+        .left-cell {
+            background-color: $cell-background-color;
+            border-top-left-radius: $cell-border-radius;
+            border-bottom-left-radius: $cell-border-radius;
+        }
+
+        .middle-cell {
+            background-color: $cell-background-color;
+        }
+
+        .right-cell {
+            background-color: $cell-background-color;
+            border-top-right-radius: $cell-border-radius;
+            border-bottom-right-radius: $cell-border-radius;
+        }
+    }
+}

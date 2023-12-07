@@ -29,7 +29,8 @@ export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
             'pages config'
             'pages content'`,
                     gridTemplateColumns: 'min-content 1fr',
-                    gridTemplateRows: 'min-content 1fr'
+                    gridTemplateRows: 'min-content 1fr',
+                    position: 'relative',
                 } }>
         <ul style={ {
             fontSize: '3rem',
@@ -55,7 +56,7 @@ export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
             display: 'flex',
             justifyContent: 'space-between',
         } }>
-            <ConfigChooserModalProvider parent={ document.getElementById('configChooserModalParent') }>
+            <ConfigChooserModalProvider parent={ () => document.getElementById('configChooserModalParent') }>
                 <ConfigChooser label={ 'Space' }/>
                 <ConfigChooser label={ 'Env' }
                                configKeyPath={ ['envs'] }/>

@@ -1,17 +1,17 @@
-import React, { createContext, ReactDOM, useContext } from 'react';
+import React, { createContext, useContext } from 'react';
 import { ConfigChooserModal } from "./config-chooser.modal";
-import { root } from "../index";
+import ReactDOM from 'react-dom';
 
 export const ConfigChooserModalContext = createContext({
-    invoke: (config: string) => {},
+    invoke: (config: string, triggeringElement: () => HTMLElement, onClose: (v: any) => void) => {},
 });
 
-const width = 400;
-const height = 400;
-const offset = 20;
+const width = 250;
+const offset = 5;
 
-export const ConfigChooserModalProvider = ({ children }: any, props: { at: { x: number, y: number }, onClose: (v: any) => void, parent: HTMLElement }) => {
-    const invoke = (config: string) => {
+export const ConfigChooserModalProvider = ({ children, parent }: { children: any, parent: () => HTMLElement }) => {
+    const invoke = (config: string, triggeringElement: () => HTMLElement, onClose: (v: any) => void,) => {
+        const element = triggeringElement();
         const modal = <ConfigChooserModal
             configName={ config }
             items={ ['ab', 'cd'] }
@@ -20,14 +20,22 @@ export const ConfigChooserModalProvider = ({ children }: any, props: { at: { x: 
             onNew={ () => console.log('onNew') }
             onExport={ () => console.log('onExport') }
             onImport={ () => console.log('onImport') }
-            left={ `${ props.at.x + width / 2 }px` }
-            top={ `${ props.at.y + height + offset }px` }
+            left={ `${ element.offsetLeft + element.offsetWidth / 2 }px` }
+            top={ `${ element.getBoundingClientRect().bottom + offset }px` }
             width={ `${ width }px` }
-            height={ `${ height }px` }
         />
 
-        root.render(modal, props.parent);
-        props.parent.append(modal);
+        const div = document.createElement('div');
+        parent().append(div)
+        // TODO switch to createroot
+        ReactDOM.render(modal, div);
+
+        setTimeout(() => {
+            document.addEventListener('click', (event: MouseEvent) => {
+                if (!div.contains(event.target as any))
+                    div.remove();
+            });
+        }, 0);
     };
 
     return (

@@ -1,5 +1,6 @@
 @use "sass:map";
 
+$colors: ('primary', 'secondary', 'green', 'yellow', 'purple');
 $--dark-theme-background-color: #000000;
 $--dark-theme-background-color-2: lighten($--dark-theme-background-color, 8);
 $--dark-theme-background-color-3: lighten($--dark-theme-background-color, 16);
@@ -10,6 +11,15 @@ $--dark-primary-color-3: darken($--dark-primary-color, 30);
 $--dark-secondary-color: #FAC8FA;
 $--dark-secondary-color-2: darken($--dark-secondary-color, 15);
 $--dark-secondary-color-3: darken($--dark-secondary-color, 30);
+$--dark-green-color: #58CA13;
+$--dark-green-color-2: darken(#58CA13, 5);
+$--dark-green-color-3: darken(#58CA13, 10);
+$--dark-yellow-color: #CAC713;
+$--dark-yellow-color-2: darken(#CAC713, 5);
+$--dark-yellow-color-3: darken(#CAC713, 10);
+$--dark-purple-color: #9A13CA;
+$--dark-purple-color-2: darken(#9A13CA, 5);
+$--dark-purple-color-3: darken(#9A13CA, 10);
 
 $--light-theme-background-color: #ffffff;
 $--light-theme-background-color-2: darken($--light-theme-background-color, 4);
@@ -21,6 +31,15 @@ $--light-primary-color-3: darken($--light-primary-color, 30);
 $--light-secondary-color: #6a1b71;
 $--light-secondary-color-2: darken($--light-secondary-color, 15);
 $--light-secondary-color-3: darken($--light-secondary-color, 30);
+$--light-green-color: #58CA13;
+$--light-green-color-2: darken(#58CA13, 5);
+$--light-green-color-3: darken(#58CA13, 10);
+$--light-yellow-color: #CAC713;
+$--light-yellow-color-2: darken(#CAC713, 5);
+$--light-yellow-color-3: darken(#CAC713, 10);
+$--light-purple-color: #9A13CA;
+$--light-purple-color-2: darken(#9A13CA, 5);
+$--light-purple-color-3: darken(#9A13CA, 10);
 
 :root {
     @media (prefers-color-scheme: dark) {
@@ -35,6 +54,15 @@ $--light-secondary-color-3: darken($--light-secondary-color, 30);
         --secondary-color: #{$--dark-secondary-color};
         --secondary-color-2: #{$--dark-secondary-color-2};
         --secondary-color-3: #{$--dark-secondary-color-3};
+        --green-color: #{$--dark-green-color};
+        --green-color-2: #{$--dark-green-color-2};
+        --green-color-3: #{$--dark-green-color-3};
+        --yellow-color: #{$--dark-yellow-color};
+        --yellow-color-2: #{$--dark-yellow-color-2};
+        --yellow-color-3: #{$--dark-yellow-color-3};
+        --purple-color: #{$--dark-purple-color};
+        --purple-color-2: #{$--dark-purple-color-2};
+        --purple-color-3: #{$--dark-purple-color-3};
     }
 
     @media (prefers-color-scheme: light) {
@@ -49,5 +77,14 @@ $--light-secondary-color-3: darken($--light-secondary-color, 30);
         --secondary-color: #{$--light-secondary-color};
         --secondary-color-2: #{$--light-secondary-color-2};
         --secondary-color-3: #{$--light-secondary-color-3};
+        --green-color: #{$--light-green-color};
+        --green-color-2: #{$--light-green-color-2};
+        --green-color-3: #{$--light-green-color-3};
+        --yellow-color: #{$--light-yellow-color};
+        --yellow-color-2: #{$--light-yellow-color-2};
+        --yellow-color-3: #{$--light-yellow-color-3};
+        --purple-color: #{$--light-purple-color};
+        --purple-color-2: #{$--light-purple-color-2};
+        --purple-color-3: #{$--light-purple-color-3};
     }
 }

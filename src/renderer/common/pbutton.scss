@@ -1,0 +1,45 @@
+@import "../index.scss";
+
+.pbutton {
+    border-radius: 0.3em;
+    background: none;
+    padding: 0.5em 1em;
+    border: none;
+    cursor: pointer;
+    outline: inherit;
+    display: flex;
+    flex-direction: row;
+    gap: 1.5em;
+    color: var(--theme-background-color);
+    font-weight: bold;
+
+    transition: color 0.1s, background-color 0.1s, border 0.1s;
+}
+
+.pbutton > svg {
+    margin-top: auto;
+    margin-bottom: auto;
+    font-size: 0.75em;
+}
+
+.pbutton > span {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+@each $name in $colors {
+    .pbutton-#{$name} {
+        background-color: var(--#{$name}-color);
+        border: 2px solid var(--#{$name}-color);
+    }
+
+    .pbutton-#{$name}:hover {
+        background-color: var(--#{$name}-color-2);
+        border: 2px solid var(--#{$name}-color-2);
+    }
+
+    .pbutton-#{$name}:active {
+        background-color: var(--#{$name}-color-3);
+        border: 2px solid var(--#{$name}-color-3);
+    }
+}

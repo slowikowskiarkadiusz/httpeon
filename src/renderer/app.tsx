@@ -1,5 +1,5 @@
 import './index.scss';
-import { Sidebar } from './sidebar/Sidebar';
+import { Sidebar } from './sidebar/sidebar';
 import { useState } from "react";
 import { SpacesProvider } from "./common/spaces.context";
 

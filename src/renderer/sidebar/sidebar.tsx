@@ -1,8 +1,8 @@
 import { faCog, faLocationDot, faScroll } from "@fortawesome/free-solid-svg-icons";
-import { PageButton } from "./PageButton";
+import { PageButton } from "./page-button";
 import { useEffect, useState } from "react";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { ConfigChooser } from "./ConfigChooser";
+import { ConfigChooser } from "./config-chooser";
 import { ConfigChooserModalProvider } from "./config-chooser.modal.context";
 
 type PageCode = 'settings' | 'endpoints' | 'scenarios';

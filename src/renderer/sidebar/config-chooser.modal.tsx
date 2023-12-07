@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExport, faFileImport, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { PButton } from "../common/PButton";
+import { PButton } from "../common/pbutton";
 
 export function ConfigChooserModal(props: {
     configName: string,

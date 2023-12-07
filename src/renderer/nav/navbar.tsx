@@ -1,5 +1,5 @@
 import './navbar.scss';
-import { PButton } from "../common/PButton";
+import { PButton } from "../common/pbutton";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useTabs } from "./tab.context";
 

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { ConfigChooser } from "./config-chooser";
 import { ConfigChooserModalProvider } from "./config-chooser.modal.context";
+import { Endpoints } from "./lists/endpoints";
 
 type PageCode = 'settings' | 'endpoints' | 'scenarios';
 
@@ -84,7 +85,7 @@ function renderList(pageCode: string) {
         case 'settings':
             return <div></div>
         case 'endpoints':
-            return <div></div>
+            return <Endpoints/>
         case 'scenarios':
             return <div></div>
     }

@@ -18,9 +18,11 @@ export function App() {
                     columnGap: '10px',
                     backgroundColor: 'var(--theme-background-color)',
                     color: 'var(--theme-font-color)',
-                    gridTemplateColumns: 'var(--sidebar-size-px) auto',
+                    gridTemplateColumns: 'min-content auto',
                 } }>
-                    <div className="barleft"><Sidebar onPageSelect={ (code) => setContentPageCode(code) }/></div>
+                    <div className="barleft">
+                        <Sidebar onPageSelect={ (code) => setContentPageCode(code) }/>
+                    </div>
                     <div className="content">
                         { contentPageCode }
                     </div>

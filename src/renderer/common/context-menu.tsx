@@ -11,32 +11,28 @@ export interface ContextMenuItem {
     nested?: ContextMenuItem[];
 }
 
-export function ContextMenu() {
+export function ContextMenu(props: { event: MouseEvent, items: ContextMenuItem[] }) {
     const [isVisible, setIsVisible] = useState(false);
     const [top, setTop] = useState(0);
     const [left, setLeft] = useState(0);
-    const [items, setItems] = useState([]);
 
-    const run = (event: MouseEvent, items: ContextMenuItem[]) => {
-        this.isVisible = (!this.isVisible && items?.length > 0);
-        this.items = items;
+    setIsVisible(!isVisible && props.items?.length > 0);
 
-        if (this.isVisible) {
-            let widthDiff = event.pageX - document.getElementsByTagName('body')[0]?.scrollWidth;
-            if (widthDiff > 0)
-                this.left = event.pageX - widthDiff;
-            else
-                this.left = event.pageX;
+    if (isVisible) {
+        let widthDiff = props.event.pageX - document.getElementsByTagName('body')[0]?.scrollWidth;
+        if (widthDiff > 0)
+            setLeft(props.event.pageX - widthDiff);
+        else
+            setLeft(props.event.pageX);
 
-            let heightDiff = event.pageY - document.getElementsByTagName('body')[0]?.scrollHeight;
-            if (heightDiff > 0)
-                this.top = event.pageY - heightDiff;
-            else
-                this.top = event.pageY;
+        let heightDiff = props.event.pageY - document.getElementsByTagName('body')[0]?.scrollHeight;
+        if (heightDiff > 0)
+            setTop(props.event.pageY - heightDiff);
+        else
+            setTop(props.event.pageY);
 
-            this.left++;
-            this.top++;
-        }
+        setLeft(left + 1);
+        setTop(top + 1);
     }
 
     return <div style={ {
@@ -51,7 +47,7 @@ export function ContextMenu() {
         left: '0',
     } }>
         <ContextMenuList spawnAt={ { top: top, left: left } }
-                         items={ items }/>
+                         items={ props.items }/>
     </div>
 }
 

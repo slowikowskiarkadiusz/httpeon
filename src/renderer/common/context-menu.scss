@@ -32,7 +32,7 @@ $cell-border-radius: 0.5rem;
         .context-menu-cell {
             height: 2em;
             display: flex;
-            transition: color $transition;
+            transition: color 0.2s;
 
             .icon-content {
                 height: min-content;
@@ -62,7 +62,7 @@ $cell-border-radius: 0.5rem;
 
     .context-menu-row:active {
         .context-menu-cell {
-            color: darken($color, 15%);
+            color: var(--theme-font-color-2);
         }
     }
 

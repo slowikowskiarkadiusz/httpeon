@@ -2,25 +2,30 @@ import './index.scss';
 import { Sidebar } from './sidebar/sidebar';
 import { useState } from "react";
 import { SpacesProvider } from "./common/spaces.context";
+import { ContextMenuProvider } from "./common/context-menu.context";
 
 export function App() {
     const [contentPageCode, setContentPageCode] = useState('nothing??');
     return (
-        <SpacesProvider>
-            <div style={ {
-                fontSize: '2rem',
-                display: 'grid',
-                height: '100vh',
-                columnGap: '10px',
-                backgroundColor: 'var(--theme-background-color)',
-                color: 'var(--theme-font-color)',
-                gridTemplateColumns: 'var(--sidebar-size-px) auto',
-            } }>
-                <div className="barleft"><Sidebar onPageSelect={ (code) => setContentPageCode(code) }/></div>
-                <div className="content">
-                    { contentPageCode }
+        <ContextMenuProvider>
+            <SpacesProvider>
+                <div style={ {
+                    fontSize: '2rem',
+                    display: 'grid',
+                    height: '100vh',
+                    columnGap: '10px',
+                    backgroundColor: 'var(--theme-background-color)',
+                    color: 'var(--theme-font-color)',
+                    gridTemplateColumns: 'var(--sidebar-size-px) auto',
+                } }>
+                    <div className="barleft"><Sidebar onPageSelect={ (code) => setContentPageCode(code) }/></div>
+                    <div className="content">
+                        { contentPageCode }
+                    </div>
                 </div>
-            </div>
-        </SpacesProvider>
+                <div id="context-menu-parent"
+                     style={ { position: 'relative', width: '0', height: '0' } }></div>
+            </SpacesProvider>
+        </ContextMenuProvider>
     );
 }

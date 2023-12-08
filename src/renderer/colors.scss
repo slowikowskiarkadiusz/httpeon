@@ -1,10 +1,12 @@
 @use "sass:map";
 
 $colors: ('primary', 'secondary', 'green', 'yellow', 'purple');
+
 $--dark-theme-background-color: #000000;
 $--dark-theme-background-color-2: lighten($--dark-theme-background-color, 8);
 $--dark-theme-background-color-3: lighten($--dark-theme-background-color, 16);
 $--dark-theme-font-color: #e1e1e1;
+$--dark-theme-font-color-2: lighten(#e1e1e1, 15);
 $--dark-primary-color: #6a1b71;
 $--dark-primary-color-2: darken($--dark-primary-color, 15);
 $--dark-primary-color-3: darken($--dark-primary-color, 30);
@@ -25,6 +27,7 @@ $--light-theme-background-color: #ffffff;
 $--light-theme-background-color-2: darken($--light-theme-background-color, 4);
 $--light-theme-background-color-3: darken($--light-theme-background-color, 8);
 $--light-theme-font-color: #1e1e1e;
+$--light-theme-font-color-2: darken(#1e1e1e, 15);
 $--light-primary-color: #FAC8FA;
 $--light-primary-color-2: darken($--light-primary-color, 15);
 $--light-primary-color-3: darken($--light-primary-color, 30);
@@ -47,6 +50,7 @@ $--light-purple-color-3: darken(#9A13CA, 10);
         --theme-background-color-2: #{$--dark-theme-background-color-2};
         --theme-background-color-3: #{$--dark-theme-background-color-3};
         --theme-font-color: #{$--dark-theme-font-color};
+        --theme-font-color-2: #{$--dark-theme-font-color-2};
 
         --primary-color: #{$--dark-primary-color};
         --primary-color-2: #{$--dark-primary-color-2};
@@ -70,6 +74,7 @@ $--light-purple-color-3: darken(#9A13CA, 10);
         --theme-background-color-2: #{$--light-theme-background-color-2};
         --theme-background-color-3: #{$--light-theme-background-color-3};
         --theme-font-color: #{$--light-theme-font-color};
+        --theme-font-color-2: #{$--light-theme-font-color-2};
 
         --primary-color: #{$--light-primary-color};
         --primary-color-2: #{$--light-primary-color-2};

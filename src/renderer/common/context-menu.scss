@@ -13,18 +13,25 @@
 $cell-border-radius: 0.5rem;
 
 .context-menu {
+    font-size: 2rem;
     min-width: max-content;
     width: 16em;
     font-weight: bold;
     position: absolute;
-    backdrop-filter: blur(7px);
-    background-color: rgba(0, 0, 0, 0.5);
+    //backdrop-filter: blur(7px);
+    color: var(--theme-font-color);
+    background-color: var(--theme-background-color-3);
+    box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 36px;
     border-radius: $cell-border-radius;
     padding-top: 0.5em;
     padding-bottom: 0.5em;
 
     display: grid;
     grid-template-columns: 4em auto 3em;
+    
+    svg{
+        font-size: 2rem;
+    }
 
     .context-menu-row {
         display: contents;
@@ -35,7 +42,7 @@ $cell-border-radius: 0.5rem;
             transition: color 0.2s;
 
             .icon-content {
-                height: min-content;
+                //height: min-content;
                 margin: auto;
             }
 

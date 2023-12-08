@@ -3,17 +3,18 @@ import ReactDOM from 'react-dom';
 import { ContextMenu, ContextMenuItem } from "./context-menu";
 
 export const ContextMenuContext = createContext({
-    invoke: (event: MouseEvent, items: ContextMenuItem[]) => {},
+    invokeContextMenu: (event: MouseEvent, items: ContextMenuItem[]) => {},
 });
 
 export const ContextMenuProvider = ({ children }: { children: any }) => {
-    const invoke = (event: MouseEvent, items: ContextMenuItem[]) => {
+    const invokeContextMenu = (event: MouseEvent, items: ContextMenuItem[]) => {
+        console.log('invokeContextMenu', items);
         const modal = <ContextMenu
             { ...{ event, items } }
         />
 
         const div = document.createElement('div');
-        document.createElement('context-menu-parent').append(div)
+        document.getElementById('context-menu-parent').append(div)
         // TODO switch to createroot
         ReactDOM.render(modal, div);
 
@@ -27,11 +28,11 @@ export const ContextMenuProvider = ({ children }: { children: any }) => {
 
     return (
         <ContextMenuContext.Provider value={ {
-            invoke: invoke,
+            invokeContextMenu: invokeContextMenu,
         } }>
             { children }
         </ContextMenuContext.Provider>
     );
 };
 
-export const invokeContextMenu = (event: MouseEvent, items: ContextMenuItem[]) => useContext(ContextMenuContext).invoke(event, items);
+export const useContextMenu = () => useContext(ContextMenuContext);

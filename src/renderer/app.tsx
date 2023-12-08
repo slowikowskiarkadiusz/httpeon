@@ -9,6 +9,8 @@ export function App() {
     return (
         <ContextMenuProvider>
             <SpacesProvider>
+                <div id="context-menu-parent"
+                     style={ { zIndex: 1, position: 'relative', width: '0', height: '0' } }></div>
                 <div style={ {
                     fontSize: '2rem',
                     display: 'grid',
@@ -23,8 +25,6 @@ export function App() {
                         { contentPageCode }
                     </div>
                 </div>
-                <div id="context-menu-parent"
-                     style={ { position: 'relative', width: '0', height: '0' } }></div>
             </SpacesProvider>
         </ContextMenuProvider>
     );

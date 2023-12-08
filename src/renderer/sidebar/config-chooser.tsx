@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { useConfigChooserModal } from "./config-chooser.modal.context";
 import { ContextMenuItem } from "../common/context-menu";
-import { invokeContextMenu } from "../common/context-menu.context";
+import { useContextMenu } from "../common/context-menu.context";
 
 function copyContextItems() {
     let copyNestedItems: ContextMenuItem[] = [];
@@ -41,6 +41,7 @@ function copyContextItems() {
 
 export function ConfigChooser(props: { label: string, configKeyPath?: string[] }) {
     const { spaces, setSpaceConfig, getActive } = useSpaces();
+    const { invokeContextMenu } = useContextMenu();
     const { invoke } = useConfigChooserModal();
     let configs = spaces;
     props.configKeyPath?.forEach(x => configs = configs.filter(x => x.active)[0][x]);

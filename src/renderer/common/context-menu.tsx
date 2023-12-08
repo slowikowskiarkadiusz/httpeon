@@ -1,7 +1,7 @@
 import './context-menu.scss';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
 export interface ContextMenuItem {
@@ -11,44 +11,57 @@ export interface ContextMenuItem {
     nested?: ContextMenuItem[];
 }
 
-export function ContextMenu(props: { event: MouseEvent, items: ContextMenuItem[] }) {
-    const [isVisible, setIsVisible] = useState(false);
-    const [top, setTop] = useState(0);
-    const [left, setLeft] = useState(0);
+interface IProps {
+    event: MouseEvent;
+    items: ContextMenuItem[];
+}
 
-    setIsVisible(!isVisible && props.items?.length > 0);
+interface IState {
+    isVisible: boolean;
+    top: number;
+    left: number;
+}
 
-    if (isVisible) {
-        let widthDiff = props.event.pageX - document.getElementsByTagName('body')[0]?.scrollWidth;
-        if (widthDiff > 0)
-            setLeft(props.event.pageX - widthDiff);
-        else
-            setLeft(props.event.pageX);
+export class ContextMenu extends React.Component<IProps, IState> {
+    constructor(props: IProps) {
+        super(props);
 
-        let heightDiff = props.event.pageY - document.getElementsByTagName('body')[0]?.scrollHeight;
-        if (heightDiff > 0)
-            setTop(props.event.pageY - heightDiff);
-        else
-            setTop(props.event.pageY);
-
-        setLeft(left + 1);
-        setTop(top + 1);
+        this.state = {
+            isVisible: false,
+            top: 0,
+            left: 0,
+        };
     }
 
-    return <div style={ {
-        visibility: isVisible ? 'visible' : 'hidden',
-        pointerEvents: 'none',
-        cursor: 'default',
-        position: 'absolute',
-        height: '100vh',
-        width: '100vw',
-        maxWidth: '100%',
-        top: '0',
-        left: '0',
-    } }>
-        <ContextMenuList spawnAt={ { top: top, left: left } }
-                         items={ props.items }/>
-    </div>
+    render() {
+        if ((this.props.items?.length ?? 0) === 0)
+            return undefined;
+
+        let widthDiff = this.props.event.pageX - document.getElementsByTagName('body')[0]?.scrollWidth;
+        let left = this.props.event.pageX;
+        if (widthDiff > 0)
+            left -= widthDiff;
+
+        let heightDiff = this.props.event.pageY - document.getElementsByTagName('body')[0]?.scrollHeight;
+        let top = this.props.event.pageY;
+        if (heightDiff > 0)
+            top -= heightDiff;
+
+        return <div style={ {
+            pointerEvents: 'none',
+            cursor: 'default',
+            position: 'absolute',
+            height: '300px',
+            width: '300px',
+            maxWidth: '100%',
+            top: top,
+            left: left,
+        } }>
+            liist
+            <ContextMenuList spawnAt={ { top: this.state.top, left: this.state.left } }
+                             items={ this.props.items }/>
+        </div>
+    }
 }
 
 export function ContextMenuList(props: {
@@ -74,7 +87,8 @@ export function ContextMenuList(props: {
             $event.stopImmediatePropagation();
     }
 
-    const onMouseEnter = (div: HTMLDivElement, item: ContextMenuItem): void => {
+    const onMouseEnter = (div: HTMLDivElement, item: ContextMenuItem, refs: any, i: any): void => {
+        console.log(div, refs, i);
         if (props.onmouseover)
             props.onmouseover();
         setItemMouseIsOver({ div, item });
@@ -115,7 +129,7 @@ export function ContextMenuList(props: {
                      ref={ refs[i] }
                      className={ 'context-menu-row ' + (itemMouseIsOver?.item == item ? 'has-active-child' : '') }
                      onClick={ $event => onItemClick($event.nativeEvent, item) }
-                     onMouseEnter={ () => onMouseEnter(refs[i], item) }
+                     onMouseEnter={ () => onMouseEnter(refs[i], item, refs, i) }
                      onMouseLeave={ () => {if (props.onmouseleave) props.onmouseleave()} }>
                     <div className="left-cell context-menu-cell">
                         <FontAwesomeIcon className="icon-content"

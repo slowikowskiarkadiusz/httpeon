@@ -10,7 +10,7 @@
     left: 0;
 }
 
-$cell-border-radius: 0.5rem;
+$cell-border-radius: 1rem;
 
 .context-menu {
     font-size: 2rem;
@@ -18,9 +18,9 @@ $cell-border-radius: 0.5rem;
     width: 16em;
     font-weight: bold;
     position: absolute;
-    //backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
     color: var(--theme-font-color);
-    background-color: var(--theme-background-color-3);
+    background-color: var(--theme-background-color-3t);
     box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 36px;
     border-radius: $cell-border-radius;
     padding-top: 0.5em;

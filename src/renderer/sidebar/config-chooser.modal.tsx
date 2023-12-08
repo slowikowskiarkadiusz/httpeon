@@ -25,7 +25,8 @@ export function ConfigChooserModal(props: {
         left: props.left,
         top: props.top,
         width: props.width,
-        backgroundColor: `var(--theme-background-color-3)`,
+        backdropFilter: 'blur(7px)',
+        backgroundColor: `var(--theme-background-color-3t)`,
         borderRadius: 'var(--border-radius)',
         boxShadow: 'rgba(0, 0, 0, 0.5) 0px 0px 36px',
     } }>

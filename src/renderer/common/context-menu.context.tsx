@@ -8,7 +8,6 @@ export const ContextMenuContext = createContext({
 
 export const ContextMenuProvider = ({ children }: { children: any }) => {
     const invokeContextMenu = (event: MouseEvent, items: ContextMenuItem[]) => {
-        console.log('invokeContextMenu', items);
         const modal = <ContextMenu
             { ...{ event, items } }
         />

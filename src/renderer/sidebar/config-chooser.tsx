@@ -3,8 +3,8 @@ import { useSpaces } from "../common/spaces.context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { useConfigChooserModal } from "./config-chooser.modal.context";
-import { ContextMenuItem } from "../common/context-menu";
-import { useContextMenu } from "../common/context-menu.context";
+import { ContextMenuItem } from "../common/context-menu/context-menu";
+import { useContextMenu } from "../common/context-menu/context-menu.context";
 
 function copyContextItems() {
     let copyNestedItems: ContextMenuItem[] = [];

@@ -1,5 +1,8 @@
 @use "sass:map";
 
+$cell-hover-background-color: rgba(139, 149, 180, 0.20);
+$cell-selected-background-color: rgba(0, 44, 187, 0.2);
+
 $colors: ('primary', 'secondary', 'green', 'yellow', 'purple');
 
 $--dark-theme-background-color: #000000;

@@ -2,7 +2,7 @@ import './index.scss';
 import { Sidebar } from './sidebar/sidebar';
 import { useState } from "react";
 import { SpacesProvider } from "./common/spaces.context";
-import { ContextMenuProvider } from "./common/context-menu.context";
+import { ContextMenuProvider } from "./common/context-menu/context-menu.context";
 
 export function App() {
     const [contentPageCode, setContentPageCode] = useState('nothing??');

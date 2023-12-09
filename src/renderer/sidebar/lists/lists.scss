@@ -1,0 +1,22 @@
+@import '../../index.scss';
+
+.sidebar-content{
+li {
+    padding: 0.75rem 0;
+    cursor: pointer;
+    user-select: none;
+    display: grid;
+    grid-template-columns: 1.5em 1fr;
+}
+
+li:hover {
+    border-radius: $cell-border-radius;
+    background-color: $cell-hover-background-color;
+}
+
+li.selected {
+    border-radius: $cell-border-radius;
+    background-color: $cell-selected-background-color;
+}
+
+}

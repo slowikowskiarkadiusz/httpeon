@@ -81,11 +81,12 @@ export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
                 margin: '0',
             } }/>
             <div style={ { overflowX: 'scroll' } }>
-                <ul style={ {
-                    listStyleType: 'none',
-                    padding: '0',
-                    margin: '0.5em 1em',
-                } }>
+                <ul className="sidebar-content"
+                    style={ {
+                        listStyleType: 'none',
+                        padding: '0',
+                        margin: '0.5em 1em',
+                    } }>
                     { renderList(pageIcons[selectedPageIndex].code) }
                 </ul>
             </div>

@@ -46,9 +46,9 @@ export function ConfigChooser(props: { label: string, configKeyPath?: string[] }
     let configs = spaces;
     props.configKeyPath?.forEach(x => configs = configs.filter(x => x.active)[0][x]);
     const activeConfigs = configs.filter((x: any) => x.active);
-    const buttonId = Math.floor(Math.random() * 10000000)
+    const buttonId = Math.floor(Math.random() * 10000000).toString();
 
-    return <button id="buttonId"
+    return <button id={ buttonId }
                    className="config-chooser"
                    style={ {
                        display: 'flex',
@@ -63,7 +63,7 @@ export function ConfigChooser(props: { label: string, configKeyPath?: string[] }
                    } }
                    onContextMenu={ $event => invokeContextMenu($event.nativeEvent, [copyContextItems()]) }
                    onClick={ () => invoke(props.label,
-                       () => document.getElementById('buttonId'),
+                       () => document.getElementById(buttonId),
                        () => {console.log('uhh close')}) }>
         <span>{ props.label }:&nbsp;</span>
         <span><b>{ activeConfigs.length > 0 ? activeConfigs[0]['name'] : '---' }</b></span>

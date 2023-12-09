@@ -12,8 +12,9 @@ interface ListItem {
 }
 
 export function Endpoints() {
-    let [list, setList] = useState(process());
-    let [lastClickedOnIndex, setLastClickedOnIndex] = useState(-1);
+    const apiSpecs: { [p: string]: any } = dimOpenApi['paths'];
+    const [list, setList] = useState(process(apiSpecs));
+    const [lastClickedOnIndex, setLastClickedOnIndex] = useState(-1);
 
     return <>
         { list
@@ -34,20 +35,39 @@ export function Endpoints() {
                             } }
                                                icon={ item.isFolded ? faChevronRight : faChevronDown }/>
                             : <div/> }
-                        <span>{ item.label }</span>
+                        <span>
+                            { item.label } &nbsp;&nbsp;
+                            { endpointsForPath(i, c, apiSpecs)?.map(renderButtonForHttpMethod) }
+                        </span>
                     </li>
                     : undefined
             }) }
     </>
 }
 
-function isRenderable(i: number, array: { depth: number, isFolded: boolean, isFoldable: boolean }[]): boolean {
-    if (i === 0) return true;
+function endpointsForPath(i: number, array: ListItem[], apiSpecs: { [p: string]: any }) {
+    let fullPath = getFullPath(i, array);
+    let inSpecs = apiSpecs[fullPath];
+    return inSpecs ? Object.keys(inSpecs) : undefined;
+}
 
+function getFullPath(i: number, array: ListItem[]): string {
+    let parentId = getParentId(i, array);
+    return `${ parentId >= 0 ? getFullPath(parentId, array) : '' }/${ array[i].label }`;
+}
+
+function getParentId(i: number, array: ListItem[]): number {
     let parentIndex = i - 1;
     for (; parentIndex > 0 && array[parentIndex].depth >= array[i].depth; parentIndex--) {
     }
 
+    return parentIndex;
+}
+
+function isRenderable(i: number, array: ListItem[]): boolean {
+    if (i === 0) return true;
+
+    let parentIndex = getParentId(i, array);
     array[parentIndex].isFoldable = true;
 
     return !array[parentIndex].isFolded;
@@ -66,11 +86,10 @@ function fold(newValue: boolean,
     setState([...array]);
 }
 
-function process(): ListItem[] {
-    const dimPaths: { [p: string]: any } = dimOpenApi['paths'];
+function process(apiSpecs: { [p: string]: any }): ListItem[] {
     let result: { [p: string]: any } = {};
 
-    Object.keys(dimPaths).forEach(path => {
+    Object.keys(apiSpecs).forEach(path => {
         if (path.startsWith('/'))
             path = path.substring(1);
         const split = path.split('/')
@@ -113,4 +132,18 @@ function flatten(obj: { [p: string]: any }, result: { label: string, depth: numb
             result.push({ label, depth });
             flatten(obj[label], result, depth + 1);
         });
+}
+
+function renderButtonForHttpMethod(method: string) {
+    return <button style={ {
+        border: 'none',
+        borderRadius: '9em',
+        fontSize: '0.9em',
+        backgroundColor: `var(--http-${ method }-bc)`,
+        color: 'var(--theme-background-color)',
+        padding: '0em 0.75em',
+        height: '100%',
+    } }>
+        { method }
+    </button>
 }

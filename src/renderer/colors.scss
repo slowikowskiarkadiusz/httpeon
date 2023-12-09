@@ -73,6 +73,14 @@ $--light-purple-color-3: darken(#9A13CA, 10);
         --purple-color: #{$--dark-purple-color};
         --purple-color-2: #{$--dark-purple-color-2};
         --purple-color-3: #{$--dark-purple-color-3};
+
+        --http-get-bc: #61affe;
+        --http-post-bc: #49cc90;
+        --http-put-bc: #fca130;
+        --http-delete-bc: #f93e3e;
+        --http-patch-bc: #50e3c2;
+        --http-options-bc: #0d5aa7;
+        --http-head-bc: #9012fe;
     }
 
     @media (prefers-color-scheme: light) {
@@ -98,5 +106,13 @@ $--light-purple-color-3: darken(#9A13CA, 10);
         --purple-color: #{$--light-purple-color};
         --purple-color-2: #{$--light-purple-color-2};
         --purple-color-3: #{$--light-purple-color-3};
+
+        --http-get-bc: #61affe;
+        --http-post-bc: #49cc90;
+        --http-put-bc: #fca130;
+        --http-delete-bc: #f93e3e;
+        --http-patch-bc: #50e3c2;
+        --http-options-bc: #0d5aa7;
+        --http-head-bc: #9012fe;
     }
 }

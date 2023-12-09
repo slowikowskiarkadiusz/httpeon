@@ -69,7 +69,7 @@ export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
         <div style={ {
             gridArea: 'content',
             borderRadius: 'var(--border-radius)',
-            backgroundColor: 'var(--theme-background-color-2)',
+            backgroundColor: 'var(--theme-bc-2)',
             height: '100%',
             display: 'grid',
             gridTemplateRows: '30px auto calc(100% - 30px)',
@@ -77,7 +77,7 @@ export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
             <div style={ { margin: 'auto 1em', } }><b>{ pageIcons[selectedPageIndex].code }</b></div>
             <hr style={ {
                 border: 'none',
-                borderTop: '1px solid var(--theme-background-color)',
+                borderTop: '1px solid var(--theme-bc)',
                 margin: '0',
             } }/>
             <div style={ { overflowX: 'scroll' } }>

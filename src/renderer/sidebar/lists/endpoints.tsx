@@ -140,7 +140,7 @@ function renderButtonForHttpMethod(method: string) {
         borderRadius: '9em',
         fontSize: '0.9em',
         backgroundColor: `var(--http-${ method }-bc)`,
-        color: 'var(--theme-background-color)',
+        color: 'var(--theme-bc)',
         padding: '0em 0.75em',
         height: '100%',
     } }>

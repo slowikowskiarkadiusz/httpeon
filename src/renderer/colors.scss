@@ -5,10 +5,10 @@ $cell-selected-background-color: rgba(0, 44, 187, 0.2);
 
 $colors: ('primary', 'secondary', 'green', 'yellow', 'purple');
 
-$--dark-theme-background-color: #000000;
-$--dark-theme-background-color-2: lighten($--dark-theme-background-color, 8);
-$--dark-theme-background-color-3: lighten($--dark-theme-background-color, 16);
-$--dark-theme-background-color-3t: transparentize(lighten($--dark-theme-background-color, 16), 0.7);
+$--dark-theme-bc: #000000;
+$--dark-theme-bc-2: lighten($--dark-theme-bc, 8);
+$--dark-theme-bc-3: lighten($--dark-theme-bc, 16);
+$--dark-theme-bc-3t: transparentize(lighten($--dark-theme-bc, 16), 0.7);
 $--dark-theme-font-color: #e1e1e1;
 $--dark-theme-font-color-2: lighten(#e1e1e1, 15);
 $--dark-primary-color: #6a1b71;
@@ -27,10 +27,10 @@ $--dark-purple-color: #9A13CA;
 $--dark-purple-color-2: darken(#9A13CA, 5);
 $--dark-purple-color-3: darken(#9A13CA, 10);
 
-$--light-theme-background-color: #ffffff;
-$--light-theme-background-color-2: darken($--light-theme-background-color, 4);
-$--light-theme-background-color-3: darken($--light-theme-background-color, 8);
-$--light-theme-background-color-3t: transparentize(darken($--light-theme-background-color, 8), 0.7);
+$--light-theme-bc: #ffffff;
+$--light-theme-bc-2: darken($--light-theme-bc, 4);
+$--light-theme-bc-3: darken($--light-theme-bc, 8);
+$--light-theme-bc-3t: transparentize(darken($--light-theme-bc, 8), 0.7);
 $--light-theme-font-color: #1e1e1e;
 $--light-theme-font-color-2: darken(#1e1e1e, 15);
 $--light-primary-color: #FAC8FA;
@@ -51,10 +51,10 @@ $--light-purple-color-3: darken(#9A13CA, 10);
 
 :root {
     @media (prefers-color-scheme: dark) {
-        --theme-background-color: #{$--dark-theme-background-color};
-        --theme-background-color-2: #{$--dark-theme-background-color-2};
-        --theme-background-color-3: #{$--dark-theme-background-color-3};
-        --theme-background-color-3t: #{$--dark-theme-background-color-3t};
+        --theme-bc: #{$--dark-theme-bc};
+        --theme-bc-2: #{$--dark-theme-bc-2};
+        --theme-bc-3: #{$--dark-theme-bc-3};
+        --theme-bc-3t: #{$--dark-theme-bc-3t};
         --theme-font-color: #{$--dark-theme-font-color};
         --theme-font-color-2: #{$--dark-theme-font-color-2};
 
@@ -84,10 +84,10 @@ $--light-purple-color-3: darken(#9A13CA, 10);
     }
 
     @media (prefers-color-scheme: light) {
-        --theme-background-color: #{$--light-theme-background-color};
-        --theme-background-color-2: #{$--light-theme-background-color-2};
-        --theme-background-color-3: #{$--light-theme-background-color-3};
-        --theme-background-color-3t: #{$--light-theme-background-color-3t};
+        --theme-bc: #{$--light-theme-bc};
+        --theme-bc-2: #{$--light-theme-bc-2};
+        --theme-bc-3: #{$--light-theme-bc-3};
+        --theme-bc-3t: #{$--light-theme-bc-3t};
         --theme-font-color: #{$--light-theme-font-color};
         --theme-font-color-2: #{$--light-theme-font-color-2};
 

@@ -16,7 +16,7 @@ export function ConfigChooserModal(props: {
 }) {
     const hrStyle = {
         border: 'none',
-        borderTop: '1px solid var(--theme-background-color)',
+        borderTop: '1px solid var(--theme-bc)',
         margin: '0',
     };
 
@@ -26,7 +26,7 @@ export function ConfigChooserModal(props: {
         top: props.top,
         width: props.width,
         backdropFilter: 'blur(7px)',
-        backgroundColor: `var(--theme-background-color-3t)`,
+        backgroundColor: `var(--theme-bc-3t)`,
         borderRadius: 'var(--border-radius)',
         boxShadow: 'rgba(0, 0, 0, 0.5) 0px 0px 36px',
     } }>

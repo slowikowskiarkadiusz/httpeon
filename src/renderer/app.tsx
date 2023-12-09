@@ -16,7 +16,7 @@ export function App() {
                     display: 'grid',
                     height: '100vh',
                     columnGap: '10px',
-                    backgroundColor: 'var(--theme-background-color)',
+                    backgroundColor: 'var(--theme-bc)',
                     color: 'var(--theme-font-color)',
                     gridTemplateColumns: 'min-content auto',
                 } }>

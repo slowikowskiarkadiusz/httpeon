@@ -14,6 +14,8 @@ const pageIcons: { icon: IconDefinition, code: PageCode }[] = [
     { icon: faScroll, code: 'scenarios' },
 ];
 
+const configChoosersSize = 50;
+
 export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
     const defaultPage = 1;
     const [selectedPageIndex, setSelectedPageIndex] = useState(defaultPage);
@@ -29,8 +31,8 @@ export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
                     gridTemplateAreas: `
             'pages config'
             'pages content'`,
-                    gridTemplateColumns: 'min-content 1fr',
-                    gridTemplateRows: 'min-content 1fr',
+                    gridTemplateColumns: 'min-content var(--sidebar-content-size)',
+                    gridTemplateRows: `${ configChoosersSize }px calc(100vh - ${ configChoosersSize }px)`,
                     position: 'relative',
                 } }>
         <ul style={ {
@@ -67,9 +69,12 @@ export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
         <div style={ {
             gridArea: 'content',
             borderRadius: 'var(--border-radius)',
-            backgroundColor: 'var(--theme-background-color-2)'
+            backgroundColor: 'var(--theme-background-color-2)',
+            height: '100%',
+            display: 'grid',
+            gridTemplateRows: '30px auto calc(100% - 30px)',
         } }>
-            <div style={ { margin: '0.5em 1em', } }><b>{ pageIcons[selectedPageIndex].code }</b></div>
+            <div style={ { margin: 'auto 1em', } }><b>{ pageIcons[selectedPageIndex].code }</b></div>
             <hr style={ {
                 border: 'none',
                 borderTop: '1px solid var(--theme-background-color)',

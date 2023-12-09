@@ -1,23 +1,55 @@
 import { dimOpenApi } from "../../common/dim.openapi";
+import { useState } from "react";
+
+interface ListItem {
+    label: string,
+    depth: number,
+    isFolded: boolean,
+}
 
 export function Endpoints() {
-    const dimPaths = dimOpenApi['paths'];
-    let processed = process();
-    processed = processed.map(x => {return { ...x, folded: false }});
+    let [list, setList] = useState(process());
+
     return <>
-        { processed
-            .map((item, i, c) =>
-                <li key={ `endpoint-list-item-${ i }` }
-                    style={ { margin: `1rem 0 1rem ${ item.depth }em` } }
-                    onClick={ () => fold(i, c) }>{ item.label }</li>) }
+        { list
+            .map((item, i, c) => {
+                return isRenderable(i, c)
+                    ? <li key={ `endpoint-list-item-${ i }` }
+                          style={ {
+                              padding: `0.75rem 0 0.75rem ${ item.depth }em`,
+                              cursor: 'pointer',
+                              userSelect: 'none',
+                          } }
+                          onClick={ () => fold(!item.isFolded, i, c, (list: ListItem[]) => setList(list)) }>{ item.label }</li>
+                    : undefined
+            }) }
     </>
 }
 
-function fold(i: number, array: { depth: number, folded: boolean }[]) {
+function isRenderable(i: number, array: { depth: number, isFolded: boolean }[]): boolean {
+    if (i === 0) return true;
 
+    let parentIndex = i - 1;
+    for (; parentIndex > 0 && array[parentIndex].depth >= array[i].depth; parentIndex--) {
+    }
+
+    return !array[parentIndex].isFolded;
 }
 
-function process() {
+function fold(newValue: boolean,
+              i: number,
+              array: ListItem[],
+              setState: (list: ListItem[]) => void) {
+    if (!newValue)
+        array[i].isFolded = false;
+    else
+        for (let j = i; j === i || array[j].depth > array[i].depth; j++)
+            array[j].isFolded = true;
+
+    setState([...array]);
+}
+
+function process(): ListItem[] {
     const dimPaths: { [p: string]: any } = dimOpenApi['paths'];
     let result: { [p: string]: any } = {};
 
@@ -36,7 +68,7 @@ function process() {
     let flattened: { label: string, depth: number }[] = [];
     flatten(result, flattened);
 
-    return flattened;
+    return flattened.map(x => {return { ...x, isFolded: false }});
 }
 
 function aggregate(obj: { [p: string]: any },

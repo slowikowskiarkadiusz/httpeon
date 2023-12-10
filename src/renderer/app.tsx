@@ -1,11 +1,15 @@
 import './index.scss';
 import { Sidebar } from './sidebar/sidebar';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SpacesProvider } from "./common/spaces.context";
 import { ContextMenuProvider } from "./common/context-menu/context-menu.context";
 
 export function App() {
     const [contentPageCode, setContentPageCode] = useState('nothing??');
+    const [selectedEndpoint, setSelectedEndpoint] = useState('');
+
+    useEffect(() => window.addEventListener('endpoint_selected', (e: CustomEvent) => setSelectedEndpoint(JSON.stringify(e.detail))), []);
+
     return (
         <ContextMenuProvider>
             <SpacesProvider>
@@ -25,6 +29,7 @@ export function App() {
                     </div>
                     <div className="content">
                         { contentPageCode }
+                        { selectedEndpoint }
                     </div>
                 </div>
             </SpacesProvider>

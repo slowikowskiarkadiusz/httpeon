@@ -1,10 +1,10 @@
 import { faCog, faLocationDot, faScroll } from "@fortawesome/free-solid-svg-icons";
 import { PageButton } from "./page-button";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { ConfigChooser } from "./config-chooser";
 import { ConfigChooserModalProvider } from "./config-chooser.modal.context";
-import { Endpoints } from "./lists/endpoints";
+import { EndpointsList } from "../pages/endpoints/endpoints.list";
 
 type PageCode = 'settings' | 'endpoints' | 'scenarios';
 
@@ -99,7 +99,7 @@ function renderList(pageCode: string) {
         case 'settings':
             return <div></div>
         case 'endpoints':
-            return <Endpoints/>
+            return <EndpointsList/>
         case 'scenarios':
             return <div></div>
     }

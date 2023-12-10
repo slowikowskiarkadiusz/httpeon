@@ -1,4 +1,4 @@
-import './lists.scss';
+import '../../sidebar/lists.scss';
 import { dimOpenApi } from "../../common/dim.openapi";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,7 +11,7 @@ interface ListItem {
     isFoldable: boolean,
 }
 
-export function Endpoints() {
+export function EndpointsList() {
     const apiSpecs: { [p: string]: any } = dimOpenApi['paths'];
     const [list, setList] = useState(process(apiSpecs));
     const [lastClickedOnIndex, setLastClickedOnIndex] = useState(-1);
@@ -24,8 +24,10 @@ export function Endpoints() {
                           className={ lastClickedOnIndex === i ? 'selected' : null }
                           style={ { paddingLeft: `${ item.depth * 1.5 }em` } }
                           onClick={ () => {
-                              fold(!item.isFolded, i, c, (list: ListItem[]) => setList(list));
+                              if (item.isFoldable)
+                                  fold(!item.isFolded, i, c, (list: ListItem[]) => setList(list));
                               setLastClickedOnIndex(i);
+                              window.dispatchEvent(new CustomEvent('endpoint_selected', { detail: getFullPath(i, c) }));
                           } }>
                         { item.isFoldable
                             ? <FontAwesomeIcon style={ {
@@ -37,7 +39,7 @@ export function Endpoints() {
                             : <div/> }
                         <span>
                             { item.label } &nbsp;&nbsp;
-                            { endpointsForPath(i, c, apiSpecs)?.map(renderButtonForHttpMethod) }
+                            { endpointsForPath(i, c, apiSpecs)?.map((xx, ii) => renderButtonForHttpMethod(xx, i, ii)) }
                         </span>
                     </li>
                     : undefined
@@ -134,16 +136,17 @@ function flatten(obj: { [p: string]: any }, result: { label: string, depth: numb
         });
 }
 
-function renderButtonForHttpMethod(method: string) {
-    return <button style={ {
-        border: 'none',
-        borderRadius: '9em',
-        fontSize: '0.9em',
-        backgroundColor: `var(--http-${ method }-bc)`,
-        color: 'var(--theme-bc)',
-        padding: '0em 0.75em',
-        height: '100%',
-    } }>
+function renderButtonForHttpMethod(method: string, ci: number, i: number) {
+    return <button key={ `buttonForHttpMethod-${ ci }-${ i }` }
+                   style={ {
+                       border: 'none',
+                       borderRadius: '9em',
+                       fontSize: '0.9em',
+                       backgroundColor: `var(--http-${ method }-bc)`,
+                       color: 'var(--theme-bc)',
+                       padding: '0em 0.75em',
+                       height: '100%',
+                   } }>
         { method }
     </button>
 }

@@ -1,32 +1,25 @@
 import React, { createContext, useContext, useState } from 'react';
-
-export interface Tab {
-    name: string;
-    path: string;
-}
+import { TabSetup } from "../pages/tab-setup";
 
 export const TabContext = createContext({
     tabs: [],
-    currentTabIndex: -1,
-    addTab: (newTab: Tab) => {},
-    removeTab: (index: number) => {}
+    currentTabIndex: 0,
+    addTab: (newTab: TabSetup<any>) => {},
+    removeTab: (index: number) => {},
+    setCurrentTab: (index: number) => {},
 });
 
 export const TabProvider = ({ children }: any) => {
-    const [tabs, setTabs] = useState([
-        { name: 'aaa', path: 'aaa' },
-        { name: 'bbb', path: 'bbb' },
-        { name: 'ccc', path: 'ccc' },
-    ]);
-
+    const [tabs, setTabs] = useState([]);
     const [currentTabIndex, setCurrentTabIndex] = useState(-1);
 
-    const addTab = (newTab: Tab) => {
+    const addTab = (newTab: TabSetup<any>) => {
         const newTabs = [...tabs];
 
-        if (!newTabs.some((x) => x.path == newTab.path)) {
+        console.log(newTabs, newTab);
+        
+        if (!newTabs.some((x) => x.id == newTab.id))
             newTabs.push(newTab);
-        }
 
         setTabs(newTabs);
     };
@@ -40,8 +33,10 @@ export const TabProvider = ({ children }: any) => {
         }
     };
 
+    const setCurrentTab = (index: number) => setCurrentTabIndex(index);
+
     return (
-        <TabContext.Provider value={ { tabs, currentTabIndex, addTab, removeTab } }>
+        <TabContext.Provider value={ { tabs, currentTabIndex, addTab, removeTab, setCurrentTab } }>
             { children }
         </TabContext.Provider>
     );

@@ -1,15 +1,11 @@
 import './index.scss';
 import { Sidebar } from './sidebar/sidebar';
-import { useEffect, useState } from "react";
 import { SpacesProvider } from "./common/spaces.context";
 import { ContextMenuProvider } from "./common/context-menu/context-menu.context";
+import { Page } from "./pages/page";
+import { TabProvider } from "./nav/tab.context";
 
 export function App() {
-    const [contentPageCode, setContentPageCode] = useState('nothing??');
-    const [selectedEndpoint, setSelectedEndpoint] = useState('');
-
-    useEffect(() => window.addEventListener('endpoint_selected', (e: CustomEvent) => setSelectedEndpoint(JSON.stringify(e.detail))), []);
-
     return (
         <ContextMenuProvider>
             <SpacesProvider>
@@ -25,11 +21,12 @@ export function App() {
                     gridTemplateColumns: 'min-content auto',
                 } }>
                     <div className="barleft">
-                        <Sidebar onPageSelect={ (code) => setContentPageCode(code) }/>
+                        <Sidebar/>
                     </div>
                     <div className="content">
-                        { contentPageCode }
-                        { selectedEndpoint }
+                        <TabProvider>
+                            <Page/>
+                        </TabProvider>
                     </div>
                 </div>
             </SpacesProvider>

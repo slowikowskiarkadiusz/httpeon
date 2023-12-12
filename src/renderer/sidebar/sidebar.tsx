@@ -1,12 +1,11 @@
 import { faCog, faLocationDot, faScroll } from "@fortawesome/free-solid-svg-icons";
 import { PageButton } from "./page-button";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { ConfigChooser } from "./config-chooser";
 import { ConfigChooserModalProvider } from "./config-chooser.modal.context";
 import { EndpointsList } from "../pages/endpoints/endpoints.list";
-
-type PageCode = 'settings' | 'endpoints' | 'scenarios';
+import { PageCode } from "../pages/tab-setup";
 
 const pageIcons: { icon: IconDefinition, code: PageCode }[] = [
     { icon: faCog, code: 'settings' },
@@ -16,11 +15,9 @@ const pageIcons: { icon: IconDefinition, code: PageCode }[] = [
 
 const configChoosersSize = 50;
 
-export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
+export function Sidebar() {
     const defaultPage = 1;
     const [selectedPageIndex, setSelectedPageIndex] = useState(defaultPage);
-
-    useEffect(() => props.onPageSelect(pageIcons[defaultPage].code), []);
 
     return <div id="configChooserModalParent"
                 style={ {
@@ -48,7 +45,6 @@ export function Sidebar(props: { onPageSelect: (pageCode: PageCode) => void }) {
                                 isSelected={ i === selectedPageIndex }
                                 onClick={ () => {
                                     setSelectedPageIndex(i);
-                                    props.onPageSelect(x.code);
                                 } }/>
                 </li>
             ) }

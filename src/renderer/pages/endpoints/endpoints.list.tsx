@@ -3,6 +3,8 @@ import { dimOpenApi } from "../../common/dim.openapi";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { EndpointTabContent } from "./endpoint.tab-content";
+import { makeTabSetup } from "../tab-setup";
 
 interface ListItem {
     label: string,
@@ -27,7 +29,9 @@ export function EndpointsList() {
                               if (item.isFoldable)
                                   fold(!item.isFolded, i, c, (list: ListItem[]) => setList(list));
                               setLastClickedOnIndex(i);
-                              window.dispatchEvent(new CustomEvent('endpoint_selected', { detail: getFullPath(i, c) }));
+                              const fullPath = getFullPath(i, c);
+                              const tabSetup = makeTabSetup<EndpointTabContent>('endpoints', fullPath, fullPath, { endpoint: fullPath });
+                              window.dispatchEvent(new CustomEvent('sidebar_list_item_selected', { detail: tabSetup }));
                           } }>
                         { item.isFoldable
                             ? <FontAwesomeIcon style={ {

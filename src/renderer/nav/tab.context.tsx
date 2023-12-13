@@ -14,14 +14,10 @@ export const TabProvider = ({ children }: any) => {
     const [currentTabIndex, setCurrentTabIndex] = useState(-1);
 
     const addTab = (newTab: TabSetup<any>) => {
-        const newTabs = [...tabs];
+        if (!tabs.some((x) => x.id == newTab.id))
+            tabs.push(newTab);
 
-        console.log(newTabs, newTab);
-        
-        if (!newTabs.some((x) => x.id == newTab.id))
-            newTabs.push(newTab);
-
-        setTabs(newTabs);
+        setTabs([...tabs]);
     };
 
     const removeTab = (index: number) => {

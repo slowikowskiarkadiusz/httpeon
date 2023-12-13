@@ -15,10 +15,11 @@ export function App() {
                     fontSize: '2rem',
                     display: 'grid',
                     height: '100vh',
+                    width: '100%',
                     columnGap: '10px',
                     backgroundColor: 'var(--theme-bc)',
                     color: 'var(--theme-font-color)',
-                    gridTemplateColumns: 'min-content auto',
+                    gridTemplateColumns: 'var(--sidebar-content-size) auto',
                 } }>
                     <div className="barleft">
                         <Sidebar/>

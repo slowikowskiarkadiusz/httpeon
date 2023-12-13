@@ -28,7 +28,7 @@ export function Sidebar() {
                     gridTemplateAreas: `
             'pages config'
             'pages content'`,
-                    gridTemplateColumns: 'min-content var(--sidebar-content-size)',
+                    gridTemplateColumns: 'min-content auto',
                     gridTemplateRows: `${ configChoosersSize }px calc(100vh - ${ configChoosersSize }px)`,
                     position: 'relative',
                 } }>

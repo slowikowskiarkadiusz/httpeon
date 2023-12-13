@@ -7,23 +7,20 @@ import { TabSetup } from "./tab-setup";
 export function Page() {
     const { tabs, currentTabIndex, addTab, removeTab, setCurrentTab } = useTabs();
 
-    useEffect(() => window.addEventListener('sidebar_list_item_selected', (e: CustomEvent) => {
-        console.log('aaa');
-        addTab(e.detail as TabSetup<any>);
-    }), []);
+    useEffect(() => window.addEventListener('sidebar_list_item_selected', (e: CustomEvent) => addTab(e.detail as TabSetup<any>)), []);
 
     return <div style={ {
         display: 'grid',
         gridTemplateRows: '2em calc(100% - 2em)',
     } }>
-        <div style={ { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' } }>
+        <div style={ { display: 'grid', width: '100%', gridTemplateColumns: tabs.map((x, i, c) => `${ 100 / c.length }%`).join(' ') } }>
             { tabs.map((x, i, c) => <div
                 key={ `page-tab-${ i }` }
                 style={ {
                     display: 'grid',
                     gridTemplateColumns: '2em 1fr',
                     height: '100%',
-                    width: `${ 100 / c.length }%`,
+                    textOverflow: 'ellipsis',
                     backgroundColor: currentTabIndex === i ? 'var(--theme-bc)' : 'var(--theme-bc-2)',
                     transition: 'width 0.2s ease-out, background-color 0.2s',
                     cursor: 'pointer',
@@ -32,9 +29,9 @@ export function Page() {
                 <FontAwesomeIcon style={ { margin: 'auto', } }
                                  onClick={ () => removeTab(i) }
                                  icon={ faTimes }/>
-                <span style={ { margin: 'auto', } }>{ x.title }</span>
+                <span style={ { margin: 'auto', display: 'inline' } }>{ x.title }</span>
             </div>) }
         </div>
-        <div></div>
+        <div>abc</div>
     </div>
 }

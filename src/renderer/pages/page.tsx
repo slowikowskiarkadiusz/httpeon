@@ -10,15 +10,16 @@ export function Page() {
     useEffect(() => window.addEventListener('sidebar_list_item_selected', (e: CustomEvent) => addTab(e.detail as TabSetup<any>)), []);
 
     return <div style={ {
-        display: 'grid',
-        gridTemplateRows: '2em calc(100% - 2em)',
+        display: 'flex',
+        'flexDirection': 'column',
     } }>
-        <div style={ { display: 'grid', width: '100%', gridTemplateColumns: tabs.map((x, i, c) => `${ 100 / c.length }%`).join(' ') } }>
+        <div style={ { display: 'flex', width: '100%' } }>
             { tabs.map((x, i, c) => <div
                 key={ `page-tab-${ i }` }
+                className="kurwadzialaj"
                 style={ {
-                    display: 'grid',
-                    gridTemplateColumns: '2em 1fr',
+                    // display: 'flex',
+                    // gridTemplateColumns: '2em 1fr',
                     height: '100%',
                     textOverflow: 'ellipsis',
                     backgroundColor: currentTabIndex === i ? 'var(--theme-bc)' : 'var(--theme-bc-2)',
@@ -26,10 +27,15 @@ export function Page() {
                     cursor: 'pointer',
                 } }
                 onClick={ () => setCurrentTab(i) }>
-                <FontAwesomeIcon style={ { margin: 'auto', } }
+                <FontAwesomeIcon className="ikonka"
+                                 style={ { margin: 'auto', } }
                                  onClick={ () => removeTab(i) }
                                  icon={ faTimes }/>
-                <span style={ { margin: 'auto', display: 'inline' } }>{ x.title }</span>
+                <span className="tekscik"
+                      style={ { margin: 'auto', display: 'inline' } }>
+                    { x.title }
+                    {/*a*/}
+                </span>
             </div>) }
         </div>
         <div>abc</div>

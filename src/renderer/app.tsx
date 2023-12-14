@@ -24,7 +24,10 @@ export function App() {
                     <div className="barleft">
                         <Sidebar/>
                     </div>
-                    <div className="content">
+                    <div style={ {
+                        flex: '0 1 auto',
+                        width: 'calc(100% - var(--sidebar-content-size))'
+                    } }>
                         <TabProvider>
                             <Page/>
                         </TabProvider>

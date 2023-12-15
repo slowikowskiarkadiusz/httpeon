@@ -18,24 +18,39 @@ export function Page() {
                 key={ `page-tab-${ i }` }
                 className="kurwadzialaj"
                 style={ {
-                    // display: 'flex',
-                    // gridTemplateColumns: '2em 1fr',
+                    width: `${ 100 / c.length }%`,
                     height: '100%',
-                    textOverflow: 'ellipsis',
                     backgroundColor: currentTabIndex === i ? 'var(--theme-bc)' : 'var(--theme-bc-2)',
                     transition: 'width 0.2s ease-out, background-color 0.2s',
                     cursor: 'pointer',
+                    flex: 1, textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    padding: '0.5em 1em',
                 } }
                 onClick={ () => setCurrentTab(i) }>
                 <FontAwesomeIcon className="ikonka"
-                                 style={ { margin: 'auto', } }
+                                 style={ { margin: 'auto', marginRight: '0.5em' } }
                                  onClick={ () => removeTab(i) }
                                  icon={ faTimes }/>
-                <span className="tekscik"
-                      style={ { margin: 'auto', display: 'inline' } }>
-                    { x.title }
-                    {/*a*/}
-                </span>
+                <div className="tekscik"
+                     style={ { display: 'flex', width: '100%', } }>
+                    <span style={ {
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                    } }>
+                        { x.title.substring(0, x.title.length / 2) }
+                    </span>
+                    <span style={ {
+                        whiteSpace: 'nowrap',
+                        direction: 'rtl',
+                    } }>
+                        { x.title.substring(x.title.length / 2, x.title.length) }
+                    </span>
+                </div>
             </div>) }
         </div>
         <div>abc</div>

@@ -13,20 +13,21 @@ export function App() {
                      style={ { zIndex: 1, position: 'relative', width: '0', height: '0' } }></div>
                 <div style={ {
                     fontSize: '2rem',
-                    display: 'grid',
+                    display: 'flex',
+                    flexDirection: 'row',
                     height: '100vh',
                     width: '100%',
-                    columnGap: '10px',
+                    columnGap: 'var(--app-gap)',
                     backgroundColor: 'var(--theme-bc)',
                     color: 'var(--theme-font-color)',
-                    gridTemplateColumns: 'var(--sidebar-content-size) auto',
                 } }>
-                    <div className="barleft">
+                    <div className="barleft"
+                         style={ { width: 'var(--sidebar-content-size)' } }>
                         <Sidebar/>
                     </div>
                     <div style={ {
                         flex: '0 1 auto',
-                        width: 'calc(100% - var(--sidebar-content-size))'
+                        width: 'calc(100vw - calc(var(--app-gap) + var(--sidebar-content-size)))'
                     } }>
                         <TabProvider>
                             <Page/>

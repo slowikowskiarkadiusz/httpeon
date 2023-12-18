@@ -1,8 +1,5 @@
 @use "sass:map";
 
-$cell-hover-background-color: rgba(139, 149, 180, 0.20);
-$cell-selected-background-color: rgba(0, 44, 187, 0.2);
-
 $colors: ('primary', 'secondary', 'green', 'yellow', 'purple');
 
 $--dark-theme-bc: #000000;
@@ -10,7 +7,8 @@ $--dark-theme-bc-2: lighten($--dark-theme-bc, 8);
 $--dark-theme-bc-3: lighten($--dark-theme-bc, 16);
 $--dark-theme-bc-3t: transparentize(lighten($--dark-theme-bc, 16), 0.7);
 $--dark-theme-font-color: #e1e1e1;
-$--dark-theme-font-color-2: lighten(#e1e1e1, 15);
+$--dark-theme-font-color-2: darken($--dark-theme-font-color, 15);
+$--dark-theme-font-color-3: darken($--dark-theme-font-color, 30);
 $--dark-primary-color: #6a1b71;
 $--dark-primary-color-2: darken($--dark-primary-color, 15);
 $--dark-primary-color-3: darken($--dark-primary-color, 30);
@@ -32,7 +30,8 @@ $--light-theme-bc-2: darken($--light-theme-bc, 4);
 $--light-theme-bc-3: darken($--light-theme-bc, 8);
 $--light-theme-bc-3t: transparentize(darken($--light-theme-bc, 8), 0.7);
 $--light-theme-font-color: #1e1e1e;
-$--light-theme-font-color-2: darken(#1e1e1e, 15);
+$--light-theme-font-color-2: lighten($--light-theme-font-color, 15);
+$--light-theme-font-color-3: lighten($--light-theme-font-color, 30);
 $--light-primary-color: #FAC8FA;
 $--light-primary-color-2: darken($--light-primary-color, 15);
 $--light-primary-color-3: darken($--light-primary-color, 30);
@@ -50,6 +49,8 @@ $--light-purple-color-2: darken(#9A13CA, 5);
 $--light-purple-color-3: darken(#9A13CA, 10);
 
 :root {
+    --cell-hover-background-color: rgba(139, 149, 180, 0.20);
+
     @media (prefers-color-scheme: dark) {
         --theme-bc: #{$--dark-theme-bc};
         --theme-bc-2: #{$--dark-theme-bc-2};
@@ -57,6 +58,7 @@ $--light-purple-color-3: darken(#9A13CA, 10);
         --theme-bc-3t: #{$--dark-theme-bc-3t};
         --theme-font-color: #{$--dark-theme-font-color};
         --theme-font-color-2: #{$--dark-theme-font-color-2};
+        --theme-font-color-3: #{$--dark-theme-font-color-3};
 
         --primary-color: #{$--dark-primary-color};
         --primary-color-2: #{$--dark-primary-color-2};
@@ -74,6 +76,8 @@ $--light-purple-color-3: darken(#9A13CA, 10);
         --purple-color-2: #{$--dark-purple-color-2};
         --purple-color-3: #{$--dark-purple-color-3};
 
+        --cell-selected-background-color: rgba(75, 117, 255, 0.4);
+
         --http-get-bc: #61affe;
         --http-post-bc: #49cc90;
         --http-put-bc: #fca130;
@@ -90,6 +94,7 @@ $--light-purple-color-3: darken(#9A13CA, 10);
         --theme-bc-3t: #{$--light-theme-bc-3t};
         --theme-font-color: #{$--light-theme-font-color};
         --theme-font-color-2: #{$--light-theme-font-color-2};
+        --theme-font-color-3: #{$--light-theme-font-color-3};
 
         --primary-color: #{$--light-primary-color};
         --primary-color-2: #{$--light-primary-color-2};
@@ -106,6 +111,8 @@ $--light-purple-color-3: darken(#9A13CA, 10);
         --purple-color: #{$--light-purple-color};
         --purple-color-2: #{$--light-purple-color-2};
         --purple-color-3: #{$--light-purple-color-3};
+
+        --cell-selected-background-color: rgba(0, 44, 187, 0.2);
 
         --http-get-bc: #61affe;
         --http-post-bc: #49cc90;

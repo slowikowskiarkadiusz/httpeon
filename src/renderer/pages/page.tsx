@@ -1,3 +1,4 @@
+import "./page.scss";
 import { useTabs } from "../nav/tab.context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -13,14 +14,15 @@ export function Page() {
         display: 'flex',
         'flexDirection': 'column',
     } }>
-        <div style={ { display: 'flex', width: '100%' } }>
+        <div style={ { display: 'flex', width: '100%', overflow: 'scroll', minHeight: '3em', } }>
             { tabs.map((x, i, c) => <div
                 key={ `page-tab-${ i }` }
                 className="kurwadzialaj"
                 style={ {
                     width: `${ 100 / c.length }%`,
                     height: '100%',
-                    backgroundColor: currentTabIndex === i ? 'var(--theme-bc)' : 'var(--theme-bc-2)',
+                    minWidth: '15em',
+                    backgroundColor: currentTabIndex === i ? 'var(--theme-bc-3)' : 'var(--theme-bc-2)',
                     transition: 'width 0.2s ease-out, background-color 0.2s',
                     cursor: 'pointer',
                     flex: 1, textOverflow: 'ellipsis',
@@ -28,27 +30,23 @@ export function Page() {
                     overflow: 'hidden',
                     display: 'flex',
                     flexDirection: 'row',
-                    padding: '0.5em 1em',
+                    padding: '1em',
                 } }
                 onClick={ () => setCurrentTab(i) }>
-                <FontAwesomeIcon className="ikonka"
+                <FontAwesomeIcon className="tab-close"
                                  style={ { margin: 'auto', marginRight: '0.5em' } }
                                  onClick={ () => removeTab(i) }
                                  icon={ faTimes }/>
                 <div className="tekscik"
-                     style={ { display: 'flex', width: '100%', } }>
+                     style={ { display: 'flex', width: '100%', overflow: 'hidden', } }>
                     <span style={ {
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                    } }>
-                        { x.title.substring(0, x.title.length / 2) }
-                    </span>
-                    <span style={ {
-                        whiteSpace: 'nowrap',
+                        textAlign: 'center',
                         direction: 'rtl',
+                        width: '100%',
                     } }>
-                        { x.title.substring(x.title.length / 2, x.title.length) }
+                        { x.title }
                     </span>
                 </div>
             </div>) }

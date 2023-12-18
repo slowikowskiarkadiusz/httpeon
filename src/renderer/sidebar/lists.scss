@@ -12,11 +12,11 @@
 
     li:hover {
         border-radius: $cell-border-radius;
-        background-color: $cell-hover-background-color;
+        background-color: var(--cell-hover-background-color);
     }
 
     li.selected {
         border-radius: $cell-border-radius;
-        background-color: $cell-selected-background-color;
+        background-color: var(--cell-selected-background-color);
     }
 }

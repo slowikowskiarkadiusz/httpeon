@@ -1,0 +1,9 @@
+@import '../index.scss';
+
+.tab-close {
+    color: var(--theme-font-color-3);
+}
+
+.tab-close:hover {
+    color: var(--theme-font-color);
+}

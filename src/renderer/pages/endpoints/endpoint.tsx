@@ -40,15 +40,23 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent> }) {
                     <option value="options">OPTIONS</option>
                     <option value="head">HEAD</option>
                 </select>
-                <input type="text"
-                       style={ {
-                           flex: '1 1 auto',
-                           border: 'none',
-                           backgroundColor: 'transparent',
-                           fontFamily: 'Menlo',
-                           borderTopRightRadius: 'var(--cell-border-radius)',
-                           borderBottomRightRadius: 'var(--cell-border-radius)',
-                       } }/>
+                <div contentEditable={ true }
+                     style={ {
+                         flex: '1 1 auto',
+                         paddingLeft: '1em',
+                         border: 'none',
+                         backgroundColor: 'transparent',
+                         fontFamily: 'Menlo',
+                         borderTopRightRadius: 'var(--cell-border-radius)',
+                         borderBottomRightRadius: 'var(--cell-border-radius)',
+                         lineHeight: '2.73em',
+                         overflow: 'scroll',
+                     } }>
+                    <div contentEditable={ true }
+                         style={ { width: '100%', height: '100%', display: 'flex' } }>
+                        { props.setup.content.endpoint }
+                    </div>
+                </div>
             </div>
 
             <PButton action={ () => {} }

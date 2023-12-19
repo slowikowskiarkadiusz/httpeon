@@ -30,7 +30,7 @@ export function EndpointsList() {
                                   fold(!item.isFolded, i, c, (list: ListItem[]) => setList(list));
                               setLastClickedOnIndex(i);
                               const fullPath = getFullPath(i, c);
-                              const tabSetup = makeTabSetup<EndpointTabContent>('endpoints', fullPath, fullPath, { endpoint: fullPath });
+                              const tabSetup = makeTabSetup<EndpointTabContent>('endpoints', fullPath, fullPath, { endpoint: fullPath, method: endpointsForPath(i, c, apiSpecs)[0] });
                               window.dispatchEvent(new CustomEvent('sidebar_list_item_selected', { detail: tabSetup }));
                           } }>
                         { item.isFoldable

@@ -10,8 +10,6 @@
     left: 0;
 }
 
-$cell-border-radius: 1rem;
-
 .context-menu {
     font-size: 2rem;
     min-width: max-content;
@@ -22,7 +20,7 @@ $cell-border-radius: 1rem;
     color: var(--theme-font-color);
     background-color: var(--theme-bc-3t);
     box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 36px;
-    border-radius: $cell-border-radius;
+    border-radius: var(--cell-border-radius);
     padding-top: 0.5em;
     padding-bottom: 0.5em;
 
@@ -79,8 +77,8 @@ $cell-border-radius: 1rem;
 
             .left-cell {
                 background-color: $cell-background-color;
-                border-top-left-radius: $cell-border-radius;
-                border-bottom-left-radius: $cell-border-radius;
+                border-top-left-radius: var(--cell-border-radius);
+                border-bottom-left-radius: var(--cell-border-radius);
             }
 
             .middle-cell {
@@ -89,8 +87,8 @@ $cell-border-radius: 1rem;
 
             .right-cell {
                 background-color: $cell-background-color;
-                border-top-right-radius: $cell-border-radius;
-                border-bottom-right-radius: $cell-border-radius;
+                border-top-right-radius: var(--cell-border-radius);
+                border-bottom-right-radius: var(--cell-border-radius);
             }
         }
     }
@@ -100,8 +98,8 @@ $cell-border-radius: 1rem;
 
         .left-cell {
             background-color: $cell-background-color;
-            border-top-left-radius: $cell-border-radius;
-            border-bottom-left-radius: $cell-border-radius;
+            border-top-left-radius: var(--cell-border-radius);
+            border-bottom-left-radius: var(--cell-border-radius);
         }
 
         .middle-cell {
@@ -110,8 +108,8 @@ $cell-border-radius: 1rem;
 
         .right-cell {
             background-color: $cell-background-color;
-            border-top-right-radius: $cell-border-radius;
-            border-bottom-right-radius: $cell-border-radius;
+            border-top-right-radius: var(--cell-border-radius);
+            border-bottom-right-radius: var(--cell-border-radius);
         }
     }
 }

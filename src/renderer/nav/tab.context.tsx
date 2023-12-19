@@ -4,7 +4,7 @@ import { TabSetup } from "../pages/tab-setup";
 export const TabContext = createContext({
     tabs: [],
     currentTabIndex: 0,
-    addTab: (newTab: TabSetup<any>) => {},
+    addTab: (newTab: TabSetup<any>) => {return 0 as number},
     removeTab: (index: number) => {},
     setCurrentTab: (index: number) => {},
 });
@@ -18,6 +18,8 @@ export const TabProvider = ({ children }: any) => {
             tabs.push(newTab);
 
         setTabs([...tabs]);
+
+        return tabs.findIndex(x => x.id === newTab.id);
     };
 
     const removeTab = (index: number) => {

@@ -2,7 +2,7 @@ import './pbutton.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
-type Color = 'primary' | 'secondary' | 'green' | 'purple' | 'yellow';
+type Color = 'primary' | 'secondary' | 'green' | 'purple' | 'yellow' | 'gray';
 
 export function PButton(props: {
     content?: string,
@@ -18,7 +18,7 @@ export function PButton(props: {
     return <button className={ classes.join(' ') }
                    onClick={ props.action }>
         <span style={ { margin: "auto" } }>
-            { props.content ? <span>{ props.content }</span> : null }&nbsp;&nbsp;
+            { props.content ? <span>{ props.content }&nbsp;&nbsp;</span> : null }
             { props.icon
                 ? <FontAwesomeIcon icon={ props.icon }
                                    style={ {

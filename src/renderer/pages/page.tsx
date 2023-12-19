@@ -4,20 +4,26 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useEffect } from "react";
 import { TabSetup } from "./tab-setup";
+import { Endpoint } from "./endpoints/endpoint";
 
 export function Page() {
     const { tabs, currentTabIndex, addTab, removeTab, setCurrentTab } = useTabs();
 
-    useEffect(() => window.addEventListener('sidebar_list_item_selected', (e: CustomEvent) => addTab(e.detail as TabSetup<any>)), []);
+    useEffect(() => window.addEventListener('sidebar_list_item_selected', (e: CustomEvent) => setCurrentTab(addTab(e.detail as TabSetup<any>))), []);
 
     return <div style={ {
         display: 'flex',
-        'flexDirection': 'column',
+        flexDirection: 'column',
+        gap: '1em',
     } }>
-        <div style={ { display: 'flex', width: '100%', overflow: 'scroll', minHeight: '3em', } }>
+        <div style={ {
+            display: 'flex',
+            width: '100%',
+            overflow: 'scroll',
+            minHeight: '3em',
+        } }>
             { tabs.map((x, i, c) => <div
                 key={ `page-tab-${ i }` }
-                className="kurwadzialaj"
                 style={ {
                     width: `${ 100 / c.length }%`,
                     height: '100%',
@@ -37,8 +43,7 @@ export function Page() {
                                  style={ { margin: 'auto', marginRight: '0.5em' } }
                                  onClick={ () => removeTab(i) }
                                  icon={ faTimes }/>
-                <div className="tekscik"
-                     style={ { display: 'flex', width: '100%', overflow: 'hidden', } }>
+                <div style={ { display: 'flex', width: '100%', overflow: 'hidden', } }>
                     <span style={ {
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
@@ -51,6 +56,17 @@ export function Page() {
                 </div>
             </div>) }
         </div>
-        <div>abc</div>
+        <div style={ { paddingRight: '10px' } }>{ renderContent(currentTabIndex > -1 ? tabs[currentTabIndex] : undefined) }</div>
     </div>
+}
+
+function renderContent(tabSetup?: TabSetup<any>) {
+    switch (tabSetup?.pageCode) {
+        case "settings":
+            break;
+        case "endpoints":
+            return <Endpoint setup={ tabSetup }/>
+        case "scenarios":
+            break;
+    }
 }

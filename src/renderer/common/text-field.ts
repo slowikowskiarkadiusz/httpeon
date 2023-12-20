@@ -1,40 +1,89 @@
+import { v2d } from "../v2d";
+
 export function createTextField(parent: HTMLElement, value: string) {
     let isFocused = false;
-    let cursorPosition = { x: 0, y: 0 };
-    let letterWidth = { x: 0, y: 0 };
+    let cursorClientPosition = v2d.zero;
+    let cursorCords = v2d.zero;
+    // let cursorCords.x = 0;
+    // let cursorCords.y = -1;
+    let lineDivs: HTMLDivElement[] = [];
 
-    const onMouseDown = (e: MouseEvent) => {
-        // const fontSize = parseInt(window.getComputedStyle(e.target as HTMLDivElement).fontSize.replace('px', ''));
-        const fontSize = letterWidth;
-        const x = e.clientX - (e.clientX % fontSize.x);
-        const y = e.clientY - (e.clientY % fontSize.y);
-        cursorPosition = { x, y };
+    const onMoveCursor = (diff: v2d, lineDiv: HTMLDivElement, lineIndex: number) => {
+        cursorCords.y = lineIndex;
+        const mousePosition = cursorClientPosition.add(new v2d(diff.x, diff.y));
+
+        let range = document.createRange();
+        let prevDistance = window.outerWidth;
+        let resultDistance = window.outerWidth;
+        let resultLetterPosition = v2d.zero;
+        for (let i = 0; i < lineDiv.textContent.length; i++) {
+            range.setStart(lineDiv.firstChild, i);
+            range.setEnd(lineDiv.firstChild, i < 1 ? 0 : (i - 1));
+
+            let letterRect = range.getBoundingClientRect();
+            let letterPosition = new v2d(letterRect.x, letterRect.y);
+            let distance = v2d.distance(letterPosition, mousePosition);
+            if (distance < resultDistance) {
+                resultDistance = distance;
+                resultLetterPosition = letterPosition;
+                prevDistance = resultDistance;
+                cursorCords.x = i - 1;
+                continue;
+            }
+
+            if (i > 0 && prevDistance == resultDistance && distance > resultDistance)
+                break;
+        }
+
+        cursorClientPosition = resultLetterPosition;
         updateCursor();
     };
 
     const onKeyDown = (e: KeyboardEvent) => {
         if (!isFocused) return;
-        // const fontSize = parseInt(window.getComputedStyle(e.target as HTMLDivElement).fontSize.replace('px', ''));
-        const fontSize = letterWidth;
-        let x = cursorPosition.x;
-        let y = cursorPosition.y;
+        if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key))
+            navigateWithArrows(e);
+        
+        updateCursor();
+    }
+
+    const navigateWithArrows = (e: KeyboardEvent) => {
+        let x = 0;
+        let y = 0;
         switch (e.key) {
             case 'ArrowLeft':
-                x -= fontSize.x;
+                x -= 1;
                 break;
             case 'ArrowRight':
-                x += fontSize.x;
-                break;
-            case 'ArrowDown':
-                y += fontSize.y;
+                x += 1;
                 break;
             case 'ArrowUp':
-                y -= fontSize.y;
+                y -= 1;
+                break;
+            case 'ArrowDown':
+                y += 1;
                 break;
         }
 
-        cursorPosition = { x, y }
-        updateCursor();
+        cursorCords.y += y;
+        let lineDiv = lineDivs[cursorCords.y];
+        let lineStringLength = (lineDiv.firstChild as any as string).length;
+
+        let range = document.createRange();
+        cursorCords.x += x;
+        let startIndex = cursorCords.x;
+        if (startIndex > lineStringLength) {
+            cursorCords.x = startIndex = 0;
+            cursorCords.y++;
+            lineDiv = lineDivs[cursorCords.y];
+            lineStringLength = (lineDiv.firstChild as any as string).length;
+        }
+        range.setStart(lineDiv.firstChild, startIndex);
+        range.setEnd(lineDiv.firstChild, (startIndex == lineStringLength ? startIndex : startIndex + 1));
+
+        let letterRect = range.getBoundingClientRect();
+        cursorClientPosition.x = letterRect.left;
+        cursorClientPosition.y = letterRect.y;
     }
 
     const textField = parent.ownerDocument.createElement('div');
@@ -71,8 +120,8 @@ export function createTextField(parent: HTMLElement, value: string) {
             cursor.style.position = 'absolute';
         }
 
-        cursor.style.top = `${ cursorPosition.y }px`;
-        cursor.style.left = `${ cursorPosition.x }px`;
+        cursor.style.top = `${ cursorClientPosition.y }px`;
+        cursor.style.left = `${ cursorClientPosition.x }px`;
     }
 
     textField.contentEditable = 'true';
@@ -86,11 +135,9 @@ export function createTextField(parent: HTMLElement, value: string) {
 
     textField.addEventListener('focus', () => isFocused = true);
     textField.addEventListener('blur', () => isFocused = false);
-    textField.addEventListener('mousedown', onMouseDown);
-    textField.addEventListener('mouseup', (e) => {});
     textField.addEventListener('keydown', e => onKeyDown(e));
 
-    value
+    lineDivs.push(...value
         .split('\n')
         .map((line, i) => {
             const lineElement = textField.ownerDocument.createElement('div')
@@ -102,9 +149,11 @@ export function createTextField(parent: HTMLElement, value: string) {
             lineElement.style.color = 'var(--theme-font-color)';
             lineElement.style.height = '1em';
             lineElement.innerText = line;
-        });
+            cursorCords.y = i;
+            lineElement.addEventListener('mousedown', e => onMoveCursor(new v2d(e.x, e.y).sub(cursorClientPosition), lineElement, i));
+            return lineElement;
+        }));
 }
-
 
 // const placeholderForMeasuringLetter = parent.ownerDocument.createElement('div');
 // placeholderForMeasuringLetter.innerText = 'm';

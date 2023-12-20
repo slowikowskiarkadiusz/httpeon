@@ -71,12 +71,13 @@ export function createTextField(parent: HTMLElement, value: string) {
 
         cursorCords.x += x;
         let startIndex = cursorCords.x;
-        if (startIndex > lineStringLength) {
-            cursorCords.x = startIndex = 0;
-            if (x)
-                cursorCords.y++;
+        let isStartAfterTheEnd = startIndex > lineStringLength;
+        let isStartBeforeTheBeginning = startIndex < 0;
+        if (isStartAfterTheEnd || isStartBeforeTheBeginning) {
+            cursorCords.y += x;
             lineDiv = lineDivs[cursorCords.y];
             lineStringLength = (lineDiv.firstChild as any as string ?? "").length;
+            cursorCords.x = startIndex = isStartAfterTheEnd ? 0 : (isStartBeforeTheBeginning ? lineStringLength : 0);
         }
 
         let rect: DOMRect;

@@ -43,7 +43,7 @@ export function createTextField(parent: HTMLElement, value: string) {
         if (!isFocused) return;
         if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key))
             navigateWithArrows(e);
-        
+
         updateCursor();
     }
 
@@ -67,23 +67,30 @@ export function createTextField(parent: HTMLElement, value: string) {
 
         cursorCords.y += y;
         let lineDiv = lineDivs[cursorCords.y];
-        let lineStringLength = (lineDiv.firstChild as any as string).length;
+        let lineStringLength = (lineDiv.firstChild as any as string ?? "").length;
 
-        let range = document.createRange();
         cursorCords.x += x;
         let startIndex = cursorCords.x;
         if (startIndex > lineStringLength) {
             cursorCords.x = startIndex = 0;
-            cursorCords.y++;
+            if (x)
+                cursorCords.y++;
             lineDiv = lineDivs[cursorCords.y];
-            lineStringLength = (lineDiv.firstChild as any as string).length;
+            lineStringLength = (lineDiv.firstChild as any as string ?? "").length;
         }
-        range.setStart(lineDiv.firstChild, startIndex);
-        range.setEnd(lineDiv.firstChild, (startIndex == lineStringLength ? startIndex : startIndex + 1));
 
-        let letterRect = range.getBoundingClientRect();
-        cursorClientPosition.x = letterRect.left;
-        cursorClientPosition.y = letterRect.y;
+        let rect: DOMRect;
+
+        if (lineDiv.firstChild) {
+            let range = document.createRange();
+            range.setStart(lineDiv.firstChild, startIndex);
+            range.setEnd(lineDiv.firstChild, (startIndex >= lineStringLength ? startIndex : lineStringLength));
+            rect = range.getBoundingClientRect();
+        } else
+            rect = lineDiv.getBoundingClientRect();
+
+        cursorClientPosition.x = rect.left;
+        cursorClientPosition.y = rect.y;
     }
 
     const textField = parent.ownerDocument.createElement('div');

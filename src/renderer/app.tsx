@@ -4,8 +4,34 @@ import { SpacesProvider } from "./common/spaces.context";
 import { ContextMenuProvider } from "./common/context-menu/context-menu.context";
 import { Page } from "./pages/page";
 import { TabProvider } from "./nav/tab.context";
+import React from "react";
+import { createTextField } from "./common/text-field";
+
+const text = `
+// Welcome to the TypeScript Playground, this is a website
+// which gives youasdasd a chance to write, share and learn TypeScript.
+
+// Youasdasd could think of it in three ways:
+//
+//  - A location to learn TypeScript where nothing can break
+//  - A place to experiment with TypeScript syntax, and share the URLs with others
+//  - A sandbox to experiment with different compiler features of TypeScript
+
+const anExampleVariable = "Hello World"
+console.log(anExampleVariable)
+
+// To learn more about the language, click above in "Examples" or "What's New".
+// Otherwise, get started by removing these comments and the world is youasdasdr playground.
+  `;
 
 export function App() {
+    const ref = React.createRef<HTMLDivElement>();
+    setTimeout(() => {
+        createTextField(ref.current, text);
+    }, 1);
+    return <div ref={ ref }
+                style={ { width: '100vw', height: '100vh' } }></div>
+
     return (
         <ContextMenuProvider>
             <SpacesProvider>

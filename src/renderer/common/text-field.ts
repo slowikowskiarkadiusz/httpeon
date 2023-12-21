@@ -6,9 +6,9 @@ export function createTextField(parent: HTMLElement, value: string) {
     let cursorCords = v2d.zero;
     // let cursorCords.x = 0;
     // let cursorCords.y = -1;
-    let lineDivs: HTMLDivElement[] = [];
+    let lineDivs: HTMLElement[] = [];
 
-    const onMoveCursor = (diff: v2d, lineDiv: HTMLDivElement, lineIndex: number) => {
+    const onMouseDown = (diff: v2d, lineDiv: HTMLElement, lineIndex: number) => {
         cursorCords.y = lineIndex;
         const mousePosition = cursorClientPosition.add(new v2d(diff.x, diff.y));
 
@@ -16,23 +16,31 @@ export function createTextField(parent: HTMLElement, value: string) {
         let prevDistance = window.outerWidth;
         let resultDistance = window.outerWidth;
         let resultLetterPosition = v2d.zero;
-        for (let i = 0; i < lineDiv.textContent.length; i++) {
-            range.setStart(lineDiv.firstChild, i);
-            range.setEnd(lineDiv.firstChild, i < 1 ? 0 : (i - 1));
 
-            let letterRect = range.getBoundingClientRect();
-            let letterPosition = new v2d(letterRect.x, letterRect.y);
-            let distance = v2d.distance(letterPosition, mousePosition);
-            if (distance < resultDistance) {
-                resultDistance = distance;
-                resultLetterPosition = letterPosition;
-                prevDistance = resultDistance;
-                cursorCords.x = i - 1;
-                continue;
+        if (lineDiv.firstChild) {
+            for (let i = 0; i <= lineDiv.textContent.length; i++) {
+                const lineStringLength = (lineDiv.firstChild as any as string).length;
+                range.setStart(lineDiv.firstChild, i);
+                range.setEnd(lineDiv.firstChild, i >= lineStringLength ? lineStringLength : i);
+
+                let letterRect = range.getBoundingClientRect();
+                let letterPosition = new v2d(letterRect.x, letterRect.y);
+                let distance = v2d.distance(letterPosition, mousePosition);
+                if (distance < resultDistance) {
+                    resultDistance = distance;
+                    resultLetterPosition = letterPosition;
+                    prevDistance = resultDistance;
+                    cursorCords.x = i;
+                    continue;
+                }
+
+                if (i > 0 && prevDistance == resultDistance && distance > resultDistance) {
+                    break;
+                }
             }
-
-            if (i > 0 && prevDistance == resultDistance && distance > resultDistance)
-                break;
+        } else {
+            let letterRect = lineDiv.getBoundingClientRect();
+            resultLetterPosition = new v2d(letterRect.x, letterRect.y);
         }
 
         cursorClientPosition = resultLetterPosition;
@@ -158,7 +166,7 @@ export function createTextField(parent: HTMLElement, value: string) {
             lineElement.style.height = '1em';
             lineElement.innerText = line;
             cursorCords.y = i;
-            lineElement.addEventListener('mousedown', e => onMoveCursor(new v2d(e.x, e.y).sub(cursorClientPosition), lineElement, i));
+            lineElement.addEventListener('mousedown', e => onMouseDown(new v2d(e.x, e.y).sub(cursorClientPosition), lineElement, i));
             return lineElement;
         }));
 }

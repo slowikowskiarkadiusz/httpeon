@@ -4,8 +4,7 @@ export function createTextField(parent: HTMLElement, value: string) {
     let isFocused = false;
     let cursorClientPosition = v2d.zero;
     let cursorCords = v2d.zero;
-    // let cursorCords.x = 0;
-    // let cursorCords.y = -1;
+    let selection: { from: v2d, to: v2d } | null = null;
     let lineDivs: HTMLElement[] = [];
 
     const onMouseDown = (diff: v2d, lineDiv: HTMLElement, lineIndex: number) => {
@@ -46,6 +45,12 @@ export function createTextField(parent: HTMLElement, value: string) {
         cursorClientPosition = resultLetterPosition;
         updateCursor();
     };
+
+    const onMouseDrag = (diff: v2d, lineDiv: HTMLElement, lineIndex: number) => {
+        if (!selection) {
+            // selection = {from: }
+        }
+    }
 
     const onKeyDown = (e: KeyboardEvent) => {
         if (!isFocused) return;
@@ -105,39 +110,31 @@ export function createTextField(parent: HTMLElement, value: string) {
     const textField = parent.ownerDocument.createElement('div');
     const styleElement = parent.ownerDocument.createElement('style');
     styleElement.type = 'text/css';
-    styleElement.innerHTML = `@keyframes ---text-field-cursor-blinking--- {
-     0% {
-        opacity: 1;
-    }
-    49% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 0;
-    }
-}`;
+    styleElement.innerHTML = styles;
     parent.appendChild(textField);
 
     const updateCursor = () => {
-        let cursor = textField.querySelector('#cursor') as HTMLDivElement;
+        let selection = window.getSelection();
+        let range = lineDivs[cursorCords.y].ownerDocument.createRange();
+        range.setStart(lineDivs[cursorCords.y].firstChild, cursorCords.x);
+        range.setEnd(lineDivs[cursorCords.y].firstChild, cursorCords.x);
+        selection.addRange(range);
+        // let cursor = textField.querySelector('#cursor') as HTMLDivElement;
 
-        if (!cursor) {
-            cursor = textField.ownerDocument.createElement('div');
-            textField.appendChild(cursor);
-
-            cursor.id = "cursor";
-            cursor.style.width = '0.15em';
-            cursor.style.height = '1.1em';
-            cursor.style.backgroundColor = 'var(--theme-cursor-color)';
-            cursor.style.animation = '---text-field-cursor-blinking--- 1s infinite';
-            cursor.style.position = 'absolute';
-        }
-
-        cursor.style.top = `${ cursorClientPosition.y }px`;
-        cursor.style.left = `${ cursorClientPosition.x }px`;
+        // if (!cursor) {
+        //     cursor = textField.ownerDocument.createElement('div');
+        //     textField.appendChild(cursor);
+        //
+        //     cursor.id = "cursor";
+        //     cursor.style.width = '0.15em';
+        //     cursor.style.height = '1.1em';
+        //     cursor.style.backgroundColor = 'var(--theme-cursor-color)';
+        //     cursor.style.animation = '---text-field-cursor-blinking--- 1s infinite';
+        //     cursor.style.position = 'absolute';
+        // }
+        //
+        // cursor.style.top = `${ cursorClientPosition.y }px`;
+        // cursor.style.left = `${ cursorClientPosition.x }px`;
     }
 
     textField.contentEditable = 'true';
@@ -159,17 +156,37 @@ export function createTextField(parent: HTMLElement, value: string) {
             const lineElement = textField.ownerDocument.createElement('div')
             textField.appendChild(lineElement);
 
-            lineElement.contentEditable = 'false';
+            lineElement.contentEditable = 'true';
             lineElement.id = `line-${ i }`;
             lineElement.style.width = '100%';
             lineElement.style.color = 'var(--theme-font-color)';
             lineElement.style.height = '1em';
-            lineElement.innerText = line;
+            if (line)
+                lineElement.innerText = line;
+            else
+                // lineElement.innerHTML = '<span></span>';
+                lineElement.innerHTML = '&nbsp;';
             cursorCords.y = i;
             lineElement.addEventListener('mousedown', e => onMouseDown(new v2d(e.x, e.y).sub(cursorClientPosition), lineElement, i));
+            lineElement.addEventListener('mousemove', e => {if (e.buttons === 1) onMouseDrag(new v2d(e.x, e.y).sub(cursorClientPosition), lineElement, i)});
             return lineElement;
         }));
 }
+
+const styles = `@keyframes ---text-field-cursor-blinking--- {
+     0% {
+        opacity: 1;
+    }
+    49% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
+}`;
 
 // const placeholderForMeasuringLetter = parent.ownerDocument.createElement('div');
 // placeholderForMeasuringLetter.innerText = 'm';

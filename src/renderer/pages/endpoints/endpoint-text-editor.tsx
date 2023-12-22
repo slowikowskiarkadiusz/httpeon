@@ -3,6 +3,11 @@ import React, { Component } from 'react';
 const displayModes = ['default', 'json'];
 type DisplayMode = typeof displayModes[number];
 
+interface ContentEntry {
+    key: string;
+    value: string;
+}
+
 interface EndpointTextEditorProps {
     data: { [p: string]: string };
 }
@@ -119,11 +124,13 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         }
     }
 
+    lastInputRefs = { key: React.createRef<HTMLInputElement>(), value: React.createRef<HTMLInputElement>() };
+
     renderContentAsDefault() {
         const { data } = this.props;
         const { currentTab } = this.state;
 
-        let content = JSON.parse(data[currentTab]);
+        const content: ContentEntry[] = JSON.parse(data[currentTab]);
 
         const inputStyle = {
             width: '100%',
@@ -137,27 +144,48 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
             outline: 'none',
             fontSize: '2rem',
         };
-        console.log(content, Object.keys(content));
 
         return <table className="endpoint-table"
                       style={ { width: '100%' } }>
+            <thead>
             <tr>
-                <th style={ { width: '25%' } }>Name</th>
+                <th style={ { width: '25%' } }>Key</th>
                 <th style={ { width: 'auto' } }>Value</th>
                 <th style={ { width: '3em' } }>On</th>
             </tr>
-            { Object.keys(content)
-                .map(x => {
-                    return <tr key={ x }>
+            </thead>
+            <tbody>{ content
+                .map((x, i, c) => {
+                    return <tr key={ x.key + i }>
                         <td style={ { padding: '0 0.5em' } }>
                             <input type="text"
+                                   ref={ this.lastInputRefs.key }
                                    style={ inputStyle }
-                                   defaultValue={ x }/>
+                                   placeholder="key..."
+                                   onChange={ e => {
+                                       content[i].key = e.target.value;
+                                       if (!content[i].key && !content[i].value) {
+                                           content.splice(i, 1);
+                                           setTimeout(() => this.forceUpdate(), 0);
+                                       }
+                                       data[currentTab] = JSON.stringify(content);
+                                   } }
+                                   defaultValue={ x.key }/>
                         </td>
                         <td style={ { padding: '0 0.5em' } }>
                             <input type="text"
+                                   ref={ this.lastInputRefs.value }
                                    style={ inputStyle }
-                                   defaultValue={ content[x] }/>
+                                   placeholder="value..."
+                                   onChange={ e => {
+                                       content[i].value = e.target.value;
+                                       if (!content[i].key && !content[i].value) {
+                                           content.splice(i, 1);
+                                           setTimeout(() => this.forceUpdate(), 0);
+                                       }
+                                       data[currentTab] = JSON.stringify(content);
+                                   } }
+                                   defaultValue={ x.value }/>
                         </td>
                         <td style={ { padding: '0 0.5em' } }>
                             <input type="checkbox"
@@ -166,6 +194,43 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                         </td>
                     </tr>
                 }) }
+
+            <tr>
+                <td style={ { padding: '0 0.5em' } }>
+                    <input type="text"
+                           style={ inputStyle }
+                           onChange={ e => {
+                               content.push({ key: e.target.value, value: '' });
+                               data[currentTab] = JSON.stringify(content);
+                               this.forceUpdate();
+                               setTimeout(() => {
+                                   this.lastInputRefs.key.current.focus();
+                                   e.target.value = '';
+                               }, 0);
+                           } }
+                           placeholder="key..."/>
+                </td>
+                <td style={ { padding: '0 0.5em' } }>
+                    <input type="text"
+                           style={ inputStyle }
+                           onChange={ e => {
+                               content.push({ key: '', value: e.target.value });
+                               data[currentTab] = JSON.stringify(content);
+                               this.forceUpdate();
+                               setTimeout(() => {
+                                   this.lastInputRefs.value.current.focus();
+                                   e.target.value = '';
+                               }, 0);
+                           } }
+                           placeholder="value..."/>
+                </td>
+                <td style={ { padding: '0 0.5em' } }>
+                    <input type="checkbox"
+                           style={ inputStyle }
+                           disabled={ true }/>
+                </td>
+            </tr>
+            </tbody>
         </table>;
     }
 

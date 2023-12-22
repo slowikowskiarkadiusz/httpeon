@@ -65,8 +65,8 @@ export function ConfigChooser(props: { label: string, configKeyPath?: string[] }
                    onClick={ () => invoke(props.label,
                        () => document.getElementById(buttonId),
                        () => {console.log('uhh close')}) }>
-        <span>{ props.label }:&nbsp;</span>
-        <span><b>{ activeConfigs.length > 0 ? activeConfigs[0]['name'] : '---' }</b></span>
+        <span style={ { margin: 'auto' } }>{ props.label }:&nbsp;</span>
+        <span style={ { margin: 'auto' } }><b>{ activeConfigs.length > 0 ? activeConfigs[0]['name'] : '---' }</b></span>
 
         <span style={ { height: '100%', fontSize: '0.5em', display: 'flex', marginLeft: '1em' } }>
             <FontAwesomeIcon style={ { margin: 'auto' } }

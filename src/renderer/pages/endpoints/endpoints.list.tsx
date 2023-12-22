@@ -29,9 +29,12 @@ export function EndpointsList() {
                               if (item.isFoldable)
                                   fold(!item.isFolded, i, c, (list: ListItem[]) => setList(list));
                               setLastClickedOnIndex(i);
-                              const fullPath = getFullPath(i, c);
-                              const tabSetup = makeTabSetup<EndpointTabContent>('endpoints', fullPath, fullPath, { endpoint: fullPath, method: endpointsForPath(i, c, apiSpecs)[0] });
-                              window.dispatchEvent(new CustomEvent('sidebar_list_item_selected', { detail: tabSetup }));
+                              let endpoints = endpointsForPath(i, c, apiSpecs);
+                              if(endpoints?.length) {
+                                  const fullPath = getFullPath(i, c);
+                                  const tabSetup = makeTabSetup<EndpointTabContent>('endpoints', fullPath, fullPath, { endpoint: fullPath, method: endpoints[0] });
+                                  window.dispatchEvent(new CustomEvent('sidebar_list_item_selected', { detail: tabSetup }));
+                              }
                           } }>
                         { item.isFoldable
                             ? <FontAwesomeIcon style={ {

@@ -7,7 +7,7 @@ import { TabSetup } from "./tab-setup";
 import { Endpoint } from "./endpoints/endpoint";
 
 export function Page() {
-    const { tabs, currentTabIndex, addTab, removeTab, setCurrentTab } = useTabs();
+    const { tabs, currentTabIndex, addTab, removeTab, setCurrentTab, updateTab } = useTabs();
 
     useEffect(() => window.addEventListener('sidebar_list_item_selected', (e: CustomEvent) => setCurrentTab(addTab(e.detail as TabSetup<any>))), []);
 
@@ -15,6 +15,7 @@ export function Page() {
         display: 'flex',
         flexDirection: 'column',
         gap: '1em',
+        height: '100%',
     } }>
         <div style={ {
             display: 'flex',
@@ -26,7 +27,6 @@ export function Page() {
                 key={ `page-tab-${ i }` }
                 style={ {
                     width: `${ 100 / c.length }%`,
-                    height: '100%',
                     minWidth: '15em',
                     backgroundColor: currentTabIndex === i ? 'var(--theme-bc-3)' : 'var(--theme-bc-2)',
                     transition: 'width 0.2s ease-out, background-color 0.2s',
@@ -56,16 +56,21 @@ export function Page() {
                 </div>
             </div>) }
         </div>
-        <div style={ { paddingRight: '10px' } }>{ renderContent(currentTabIndex > -1 ? tabs[currentTabIndex] : undefined) }</div>
+        <div style={ { paddingRight: '10px', flex: '1 0 auto' } }>
+            { renderContent(currentTabIndex > -1 ? tabs[currentTabIndex] : null,
+                (setup) => {
+                    updateTab(currentTabIndex, setup);
+                }) }</div>
     </div>
 }
 
-function renderContent(tabSetup?: TabSetup<any>) {
+function renderContent(tabSetup: TabSetup<any> | null, updateSetup: (setup: TabSetup<any>) => void) {
     switch (tabSetup?.pageCode) {
         case "settings":
             break;
         case "endpoints":
-            return <Endpoint setup={ tabSetup }/>
+            return <Endpoint setup={ tabSetup }
+                             updateSetup={ updateSetup }/>
         case "scenarios":
             break;
     }

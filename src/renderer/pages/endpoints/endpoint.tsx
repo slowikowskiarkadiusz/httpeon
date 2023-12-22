@@ -3,12 +3,20 @@ import { EndpointTabContent } from "./endpoint.tab-content";
 import { PButton } from "../../common/pbutton";
 import { faClockRotateLeft, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import { EndpointTextEditor } from "./endpoint-text-editor";
 
-export function Endpoint(props: { setup: TabSetup<EndpointTabContent> }) {
+export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSetup: (setup: TabSetup<EndpointTabContent>) => void }) {
     props.setup.content.method = 'get';
     const [selectedMethod, setSelectedMethod] = useState(props.setup.content.method)
+    const [inputs, setInputs] = useState({ 'Params': '{}', 'Body': '{}', 'Headers': '{}' })
+    const [outputs, setOutputs] = useState({ 'Request': '{}', 'Response': '{}' })
 
-    return <>
+    return <div style={ {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--app-gap)',
+        height: '100%',
+    } }>
         <div style={ {
             width: '100%',
             display: 'flex',
@@ -40,23 +48,26 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent> }) {
                     <option value="options">OPTIONS</option>
                     <option value="head">HEAD</option>
                 </select>
-                <div contentEditable={ true }
-                     style={ {
-                         flex: '1 1 auto',
-                         paddingLeft: '1em',
-                         border: 'none',
-                         backgroundColor: 'transparent',
-                         fontFamily: 'Menlo',
-                         borderTopRightRadius: 'var(--cell-border-radius)',
-                         borderBottomRightRadius: 'var(--cell-border-radius)',
-                         lineHeight: '2.73em',
-                         overflow: 'scroll',
-                     } }>
-                    <div contentEditable={ true }
-                         style={ { width: '100%', height: '100%', display: 'flex' } }>
-                        { props.setup.content.endpoint }
-                    </div>
-                </div>
+                <input type="text"
+                       style={ {
+                           flex: '1 1 auto',
+                           paddingLeft: '1em',
+                           border: 'none',
+                           backgroundColor: 'var(--theme-bc-2)',
+                           color: 'var(--theme-font-color)',
+                           fontFamily: 'Menlo',
+                           borderTopRightRadius: 'var(--cell-border-radius)',
+                           borderBottomRightRadius: 'var(--cell-border-radius)',
+                           lineHeight: '2.73em',
+                           overflow: 'scroll',
+                       } }
+                       defaultValue={ props.setup.content.endpoint }
+                       key={ props.setup.content.endpoint }
+                       onChange={ e => {
+                           console.log(e);
+                           props.setup.content.endpoint = e.target.value;
+                           props.updateSetup(props.setup);
+                       } }/>
             </div>
 
             <PButton action={ () => {} }
@@ -68,5 +79,14 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent> }) {
                      color="gray"
                      icon={ faClockRotateLeft }/>
         </div>
-    </>
+        <div style={ {
+            display: 'flex',
+            flexDirection: 'row',
+            gap: 'var(--app-gap)',
+            height: '100%',
+        } }>
+            <div style={ { flex: '1 1 auto' } }><EndpointTextEditor data={ inputs }/></div>
+            <div style={ { flex: '1 1 auto' } }><EndpointTextEditor data={ outputs }/></div>
+        </div>
+    </div>
 }

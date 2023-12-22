@@ -7,6 +7,7 @@ export const TabContext = createContext({
     addTab: (newTab: TabSetup<any>) => {return 0 as number},
     removeTab: (index: number) => {},
     setCurrentTab: (index: number) => {},
+    updateTab: (index: number, setup: TabSetup<any>) => {},
 });
 
 export const TabProvider = ({ children }: any) => {
@@ -33,8 +34,15 @@ export const TabProvider = ({ children }: any) => {
 
     const setCurrentTab = (index: number) => setCurrentTabIndex(index);
 
+    const updateTab = (index: number, setup: TabSetup<any>) => {
+        Object.keys(setup.content)
+            .forEach(newSetupKey => {
+                tabs[index][newSetupKey] = setup.content[newSetupKey];
+            });
+    }
+
     return (
-        <TabContext.Provider value={ { tabs, currentTabIndex, addTab, removeTab, setCurrentTab } }>
+        <TabContext.Provider value={ { tabs, currentTabIndex, addTab, removeTab, setCurrentTab, updateTab } }>
             { children }
         </TabContext.Provider>
     );

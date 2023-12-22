@@ -68,7 +68,7 @@ export function Sidebar() {
             backgroundColor: 'var(--theme-bc-2)',
             height: '100%',
             display: 'grid',
-            gridTemplateRows: '30px auto calc(100% - 30px)',
+            gridTemplateRows: '30px auto calc(100% - 31px)',
         } }>
             <div style={ { margin: 'auto 1em', } }><b>{ pageIcons[selectedPageIndex].code }</b></div>
             <hr style={ {

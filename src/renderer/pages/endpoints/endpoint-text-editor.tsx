@@ -27,6 +27,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
 
         return (
             <div style={ {
+                fontSize: '2rem',
                 height: '100%',
                 borderRadius: 'var(--border-radius)',
                 overflow: 'hidden',
@@ -55,19 +56,18 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                                 flexDirection: 'row',
                                 padding: '0.5em',
                             } }
-                            onClick={ () => this.setCurrentTab(key) }
-                        >
+                            onClick={ () => this.setCurrentTab(key) }>
                             <button
                                 style={ {
                                     backgroundColor: 'transparent',
                                     color: 'unset',
                                     border: 'none',
+                                    fontSize: '2rem',
                                     cursor: 'pointer',
                                     textAlign: 'center',
                                     width: '100%',
                                     overflow: 'hidden',
-                                } }
-                            >
+                                } }>
                                 { key }
                             </button>
                         </div>
@@ -85,8 +85,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                             padding: '0.5em',
                             textAlign: 'center',
                         } }
-                        onChange={ (e) => this.setDisplayMode((e.nativeEvent.target as HTMLInputElement).value as DisplayMode) }
-                    >
+                        onChange={ (e) => this.setDisplayMode((e.nativeEvent.target as HTMLInputElement).value as DisplayMode) }>
                         { displayModes.map((x) => (
                             <option value={ x }
                                     key={ x }>
@@ -99,17 +98,16 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         );
     }
 
-    setCurrentTab = (tab: string) => {
+    setCurrentTab(tab: string) {
         this.setState({ currentTab: tab });
-    };
+    }
 
-    setDisplayMode = (mode: DisplayMode) => {
+    setDisplayMode(mode: DisplayMode) {
         this.setState({ displayMode: mode });
-    };
+    }
 
     renderContent() {
-        const { data } = this.props;
-        const { currentTab, displayMode } = this.state;
+        const { displayMode } = this.state;
 
         switch (displayMode) {
             case 'default':
@@ -122,7 +120,53 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
     }
 
     renderContentAsDefault() {
-        return <></>;
+        const { data } = this.props;
+        const { currentTab } = this.state;
+
+        let content = JSON.parse(data[currentTab]);
+
+        const inputStyle = {
+            width: '100%',
+            backgroundColor: 'var(--theme-bc-2)',
+            borderRadius: 'var(--border-radius)',
+            boxShadow: 'none',
+            border: 'none',
+            padding: '0.5em',
+            fontFamily: 'Menlo',
+            color: 'var(--theme-font-color)',
+            outline: 'none',
+            fontSize: '2rem',
+        };
+        console.log(content, Object.keys(content));
+
+        return <table className="endpoint-table"
+                      style={ { width: '100%' } }>
+            <tr>
+                <th style={ { width: '25%' } }>Name</th>
+                <th style={ { width: 'auto' } }>Value</th>
+                <th style={ { width: '3em' } }>On</th>
+            </tr>
+            { Object.keys(content)
+                .map(x => {
+                    return <tr key={ x }>
+                        <td style={ { padding: '0 0.5em' } }>
+                            <input type="text"
+                                   style={ inputStyle }
+                                   defaultValue={ x }/>
+                        </td>
+                        <td style={ { padding: '0 0.5em' } }>
+                            <input type="text"
+                                   style={ inputStyle }
+                                   defaultValue={ content[x] }/>
+                        </td>
+                        <td style={ { padding: '0 0.5em' } }>
+                            <input type="checkbox"
+                                   style={ inputStyle }
+                                   defaultValue={ 'false' }/>
+                        </td>
+                    </tr>
+                }) }
+        </table>;
     }
 
     renderContentAsJson() {
@@ -148,8 +192,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                 } }
                 defaultValue={ content }
                 key={ content }
-                onChange={ (e) => (data[currentTab] = e.target.value) }
-            ></textarea>
+                onChange={ (e) => (data[currentTab] = e.target.value) }></textarea>
         );
     }
 }

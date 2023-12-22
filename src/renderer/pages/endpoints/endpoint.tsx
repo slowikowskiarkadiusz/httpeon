@@ -5,10 +5,18 @@ import { faClockRotateLeft, faPaperPlane } from "@fortawesome/free-solid-svg-ico
 import { useState } from "react";
 import { EndpointTextEditor } from "./endpoint-text-editor";
 
+const randomJson = {
+    "_id": "6585a941caa179a6189de75c",
+    "guid": "2ec70d67-5305-4783-b488-417456755546",
+    "balance": "$2,440.65",
+    "picture": "http://placehold.it/32x32",
+    "eyeColor": "blue"
+};
+
 export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSetup: (setup: TabSetup<EndpointTabContent>) => void }) {
     props.setup.content.method = 'get';
     const [selectedMethod, setSelectedMethod] = useState(props.setup.content.method)
-    const [inputs, setInputs] = useState({ 'Params': '{}', 'Body': '{}', 'Headers': '{}' })
+    const [inputs, setInputs] = useState({ 'Params': JSON.stringify(randomJson), 'Body': '{}', 'Headers': '{}' })
     const [outputs, setOutputs] = useState({ 'Request': '{}', 'Response': '{}' })
 
     return <div style={ {
@@ -80,13 +88,13 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                      icon={ faClockRotateLeft }/>
         </div>
         <div style={ {
-            display: 'flex',
-            flexDirection: 'row',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
             gap: 'var(--app-gap)',
             height: '100%',
         } }>
-            <div style={ { flex: '1 1 auto' } }><EndpointTextEditor data={ inputs }/></div>
-            <div style={ { flex: '1 1 auto' } }><EndpointTextEditor data={ outputs }/></div>
+            <div><EndpointTextEditor data={ inputs }/></div>
+            <div><EndpointTextEditor data={ outputs }/></div>
         </div>
     </div>
 }

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 
-const displayModes = ['default', 'json'];
-type DisplayMode = typeof displayModes[number];
+const displayModes = { 'default': 0, 'text': 0 };
+type DisplayMode = keyof typeof displayModes;
+const textTypes = { 'json': 0, 'plain': 0, 'xml': 0 };
+type TextType = keyof typeof textTypes;
 
 interface ContentEntry {
     key: string;
@@ -15,6 +17,7 @@ interface EndpointTextEditorProps {
 interface EndpointTextEditorState {
     currentTab: string;
     displayMode: DisplayMode;
+    textType: TextType;
 }
 
 export class EndpointTextEditor extends Component<EndpointTextEditorProps, EndpointTextEditorState> {
@@ -23,12 +26,18 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         this.state = {
             currentTab: Object.keys(props.data)[0],
             displayMode: 'default',
+            textType: 'json',
         };
     }
 
     render() {
         const { data } = this.props;
         const { currentTab, displayMode } = this.state;
+
+        if (currentTab === 'Body' && displayMode !== 'text')
+            this.setState({ displayMode: 'text' });
+
+        const footerSelectStyle = { height: '100%', border: 'none', fontSize: '2rem', color: 'var(--theme-font-color)', backgroundColor: 'var(--theme-bc-2)', padding: '0.5em', textAlign: 'center' as any };
 
         return (
             <div style={ {
@@ -80,24 +89,33 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                 </div>
                 <div style={ { height: '100%', overflow: 'hidden' } }>{ this.renderContent() }</div>
                 <div>
-                    <select
-                        style={ {
-                            height: '100%',
-                            border: 'none',
-                            fontSize: '2rem',
-                            color: 'var(--theme-font-color)',
-                            backgroundColor: 'var(--theme-bc-2)',
-                            padding: '0.5em',
-                            textAlign: 'center',
-                        } }
-                        onChange={ (e) => this.setDisplayMode((e.nativeEvent.target as HTMLInputElement).value as DisplayMode) }>
-                        { displayModes.map((x) => (
-                            <option value={ x }
-                                    key={ x }>
-                                { x }
-                            </option>
-                        )) }
-                    </select>
+                    { currentTab !== 'Body'
+                        ? <select
+                            style={ footerSelectStyle }
+                            defaultValue={ displayMode }
+                            onChange={ (e) => this.setDisplayMode((e.nativeEvent.target as HTMLInputElement).value as DisplayMode) }>
+                            { Object.keys(displayModes).map((x) => (
+                                <option value={ x }
+                                        key={ x }>
+                                    { x }
+                                </option>
+                            )) }
+                        </select>
+                        : undefined }
+
+                    {/*{ displayMode === 'text'*/ }
+                    {/*    ?*/ }
+                    {/*    <select*/ }
+                    {/*        style={ footerSelectStyle }*/ }
+                    {/*        onChange={ (e) => this.setState({ textType: ((e.nativeEvent.target as HTMLInputElement).value as TextType) }) }>*/ }
+                    {/*        { Object.keys(textTypes).map((x) => (*/ }
+                    {/*            <option value={ x }*/ }
+                    {/*                    key={ x }>*/ }
+                    {/*                { x }*/ }
+                    {/*            </option>*/ }
+                    {/*        )) }*/ }
+                    {/*    </select>*/ }
+                    {/*    : undefined }*/ }
                 </div>
             </div>
         );
@@ -117,8 +135,8 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         switch (displayMode) {
             case 'default':
                 return this.renderContentAsDefault();
-            case 'json':
-                return this.renderContentAsJson();
+            case 'text':
+                return this.renderContentAsText();
             default:
                 return null;
         }
@@ -234,13 +252,20 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         </table>;
     }
 
-    renderContentAsJson() {
+    renderContentAsText() {
         const { data } = this.props;
-        const { currentTab } = this.state;
+        const { currentTab, textType } = this.state;
 
         let content = '';
         try {
-            content = JSON.stringify(JSON.parse(data[currentTab]), null, 2);
+            switch (textType) {
+                case "json":
+                    content = JSON.stringify(JSON.parse(data[currentTab]), null, 2);
+                    break;
+                case "plain":
+                    content = JSON.parse(data[currentTab]);
+                    break;
+            }
         } catch (err) {
             content = data[currentTab];
         }

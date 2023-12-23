@@ -16,8 +16,8 @@ const randomJson = [
 export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSetup: (setup: TabSetup<EndpointTabContent>) => void }) {
     props.setup.content.method = 'get';
     const [selectedMethod, setSelectedMethod] = useState(props.setup.content.method)
-    const [inputs, setInputs] = useState({ 'Params': JSON.stringify(randomJson), 'Body': '[]', 'Headers': '[]' })
-    const [outputs, setOutputs] = useState({ 'Request': '[]', 'Response': '[]' })
+    const [inputs, setInputs] = useState({ 'Params': JSON.stringify(randomJson), 'Body': '', 'Headers': '[]' })
+    const [outputs, setOutputs] = useState({ 'Request': '[]', 'Response': '' })
     
     return <div style={ {
         display: 'flex',

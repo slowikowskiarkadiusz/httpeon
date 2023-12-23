@@ -1,15 +1,19 @@
 import "./page.scss";
-import { useTabs } from "../nav/tab.context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { TabSetup } from "./tab-setup";
 import { Endpoint } from "./endpoints/endpoint";
+import { useSpaces } from "../common/spaces.context";
 
 export function Page() {
-    const { tabs, currentTabIndex, addTab, removeTab, setCurrentTab, updateTab } = useTabs();
+    const { tabs, currentTabIndex, addTab, removeTab, setCurrentTab, updateTab } = useSpaces();
+    const [a, setA] = useState(0);
 
-    useEffect(() => window.addEventListener('sidebar_list_item_selected', (e: CustomEvent) => setCurrentTab(addTab(e.detail as TabSetup<any>))), []);
+    useEffect(() => window.addEventListener('sidebar_list_item_selected', (e: CustomEvent) => {
+        setCurrentTab(addTab(e.detail as TabSetup<any>));
+        setA(a + 1);
+    }), []);
 
     return <div style={ {
         display: 'flex',
@@ -23,7 +27,7 @@ export function Page() {
             overflow: 'scroll',
             minHeight: '3em',
         } }>
-            { tabs.map((x, i, c) => <div
+            { tabs().map((x, i, c) => <div
                 key={ `page-tab-${ i }` }
                 style={ {
                     width: `${ 100 / c.length }%`,
@@ -57,10 +61,11 @@ export function Page() {
             </div>) }
         </div>
         <div style={ { paddingRight: '10px', flex: '1 0 auto' } }>
-            { renderContent(currentTabIndex > -1 ? tabs[currentTabIndex] : null,
+            { renderContent(currentTabIndex > -1 ? tabs()[currentTabIndex] : null,
                 (setup) => {
                     updateTab(currentTabIndex, setup);
-                }) }</div>
+                }) }
+        </div>
     </div>
 }
 

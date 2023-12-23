@@ -1,10 +1,10 @@
 import './navbar.scss';
 import { PButton } from "../common/pbutton";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { useTabs } from "./tab.context";
+import { useSpaces } from "../common/spaces.context";
 
 export function Navbar() {
-    const { tabs, currentTabIndex } = useTabs();
+    const { tabs, currentTabIndex } = useSpaces();
 
     return <div style={ {
         width: '100%',
@@ -17,7 +17,7 @@ export function Navbar() {
     } }>
 
         <div style={ { display: 'block', flexGrow: 1, flexShrink: 1 } }>
-            { tabs.map((tab, i, c) => {
+            { tabs().map((tab, i, c) => {
                 const classes = ['tab-button'];
                 if (currentTabIndex == i)
                     classes.push('tab-button-active');

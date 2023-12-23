@@ -3,7 +3,6 @@ import { Sidebar } from './sidebar/sidebar';
 import { SpacesProvider } from "./common/spaces.context";
 import { ContextMenuProvider } from "./common/context-menu/context-menu.context";
 import { Page } from "./pages/page";
-import { TabProvider } from "./nav/tab.context";
 
 export function App() {
     return (
@@ -29,9 +28,7 @@ export function App() {
                         flex: '0 1 auto',
                         width: 'calc(100vw - calc(var(--app-gap) + var(--sidebar-content-size)))'
                     } }>
-                        <TabProvider>
-                            <Page/>
-                        </TabProvider>
+                        <Page/>
                     </div>
                 </div>
             </SpacesProvider>

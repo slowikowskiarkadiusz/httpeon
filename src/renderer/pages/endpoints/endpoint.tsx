@@ -3,7 +3,7 @@ import { EndpointTabContent } from "./endpoint.tab-content";
 import { PButton } from "../../common/pbutton";
 import { faClockRotateLeft, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import { EndpointTextEditor } from "./endpoint-text-editor";
+import { EndpointTextEditor, EndpointTextEditorData } from "./endpoint-text-editor";
 
 const randomJson = [
     { key: "_id", value: "6585a941caa179a6189de75c" },
@@ -16,9 +16,29 @@ const randomJson = [
 export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSetup: (setup: TabSetup<EndpointTabContent>) => void }) {
     props.setup.content.method = 'get';
     const [selectedMethod, setSelectedMethod] = useState(props.setup.content.method)
-    const [inputs, setInputs] = useState({ 'Params': JSON.stringify(randomJson), 'Body': '', 'Headers': '[]' })
-    const [outputs, setOutputs] = useState({ 'Request': '[]', 'Response': '' })
-    
+    const [inputs, setInputs] = useState<EndpointTextEditorData>({
+        'Params': {
+            content: JSON.stringify(randomJson)
+        },
+        'Body': {
+            content: '',
+            allowedDisplayModes: ['text']
+        },
+        'Headers': {
+            content: '',
+        },
+    })
+    const [outputs, setOutputs] = useState<EndpointTextEditorData>({
+        'Request': {
+            content: '',
+            allowedDisplayModes: ['text']
+        },
+        'Response': {
+            content: '',
+            allowedDisplayModes: ['text']
+        },
+    })
+
     return <div style={ {
         display: 'flex',
         flexDirection: 'column',

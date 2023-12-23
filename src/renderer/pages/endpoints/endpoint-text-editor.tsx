@@ -10,8 +10,16 @@ interface ContentEntry {
     value: string;
 }
 
+export interface EndpointTextEditorData {
+    [tabName: string]: {
+        content: string,
+        allowedDisplayModes?: DisplayMode[],
+        isReadOnly?: boolean,
+    }
+}
+
 interface EndpointTextEditorProps {
-    data: { [p: string]: string };
+    data: EndpointTextEditorData;
 }
 
 interface EndpointTextEditorState {
@@ -34,10 +42,15 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         const { data } = this.props;
         const { currentTab, displayMode } = this.state;
 
-        if (currentTab === 'Body' && displayMode !== 'text')
-            this.setState({ displayMode: 'text' });
+        if (!!data[currentTab].allowedDisplayModes) {
+            let value = data[currentTab].allowedDisplayModes[0];
+            if (value && displayMode !== value) {
+                this.setState({ displayMode: value });
+                return;
+            }
+        }
 
-        const footerSelectStyle = { height: '100%', border: 'none', fontSize: '2rem', color: 'var(--theme-font-color)', backgroundColor: 'var(--theme-bc-2)', padding: '0.5em', textAlign: 'center' as any };
+        const footerSelectStyle = { height: '100%', border: 'none', fontSize: '2rem', color: 'var(--theme-font-color)', backgroundColor: 'var(--theme-bc-2)', padding: '0.5em', textAlign: 'center' as any, borderRadius: 'var(--border-radius)', };
 
         return (
             <div style={ {
@@ -89,33 +102,33 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                 </div>
                 <div style={ { height: '100%', overflow: 'hidden' } }>{ this.renderContent() }</div>
                 <div>
-                    { currentTab !== 'Body'
-                        ? <select
-                            style={ footerSelectStyle }
-                            defaultValue={ displayMode }
-                            onChange={ (e) => this.setDisplayMode((e.nativeEvent.target as HTMLInputElement).value as DisplayMode) }>
-                            { Object.keys(displayModes).map((x) => (
+                    { <select
+                        style={ footerSelectStyle }
+                        defaultValue={ displayMode }
+                        onChange={ (e) => this.setDisplayMode((e.nativeEvent.target as HTMLInputElement).value as DisplayMode) }>
+                        { Object.keys(displayModes)
+                            .filter((x: DisplayMode) => !data[currentTab].allowedDisplayModes || data[currentTab].allowedDisplayModes.includes(x))
+                            .map((x) => (
                                 <option value={ x }
                                         key={ x }>
                                     { x }
                                 </option>
                             )) }
-                        </select>
-                        : undefined }
+                    </select> }
 
-                    {/*{ displayMode === 'text'*/ }
-                    {/*    ?*/ }
-                    {/*    <select*/ }
-                    {/*        style={ footerSelectStyle }*/ }
-                    {/*        onChange={ (e) => this.setState({ textType: ((e.nativeEvent.target as HTMLInputElement).value as TextType) }) }>*/ }
-                    {/*        { Object.keys(textTypes).map((x) => (*/ }
-                    {/*            <option value={ x }*/ }
-                    {/*                    key={ x }>*/ }
-                    {/*                { x }*/ }
-                    {/*            </option>*/ }
-                    {/*        )) }*/ }
-                    {/*    </select>*/ }
-                    {/*    : undefined }*/ }
+                    {/*{ displayMode === 'text'*/}
+                    {/*    ?*/}
+                    {/*    <select*/}
+                    {/*        style={ footerSelectStyle }*/}
+                    {/*        onChange={ (e) => this.setState({ textType: ((e.nativeEvent.target as HTMLInputElement).value as TextType) }) }>*/}
+                    {/*        { Object.keys(textTypes).map((x) => (*/}
+                    {/*            <option value={ x }*/}
+                    {/*                    key={ x }>*/}
+                    {/*                { x }*/}
+                    {/*            </option>*/}
+                    {/*        )) }*/}
+                    {/*    </select>*/}
+                    {/*    : undefined }*/}
                 </div>
             </div>
         );
@@ -130,7 +143,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
     }
 
     renderContent() {
-        const { displayMode } = this.state;
+        const { currentTab, displayMode } = this.state;
 
         switch (displayMode) {
             case 'default':
@@ -148,7 +161,12 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         const { data } = this.props;
         const { currentTab } = this.state;
 
-        const content: ContentEntry[] = JSON.parse(data[currentTab]);
+        let content: ContentEntry[] = [];
+        try {
+            content = JSON.parse(data[currentTab].content);
+        } catch (err) {
+            data[currentTab].content = JSON.stringify(content);
+        }
 
         const inputStyle = {
             width: '100%',
@@ -186,7 +204,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                                            content.splice(i, 1);
                                            setTimeout(() => this.forceUpdate(), 0);
                                        }
-                                       data[currentTab] = JSON.stringify(content);
+                                       data[currentTab].content = JSON.stringify(content);
                                    } }
                                    defaultValue={ x.key }/>
                         </td>
@@ -201,7 +219,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                                            content.splice(i, 1);
                                            setTimeout(() => this.forceUpdate(), 0);
                                        }
-                                       data[currentTab] = JSON.stringify(content);
+                                       data[currentTab].content = JSON.stringify(content);
                                    } }
                                    defaultValue={ x.value }/>
                         </td>
@@ -219,7 +237,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                            style={ inputStyle }
                            onChange={ e => {
                                content.push({ key: e.target.value, value: '' });
-                               data[currentTab] = JSON.stringify(content);
+                               data[currentTab].content = JSON.stringify(content);
                                this.forceUpdate();
                                setTimeout(() => {
                                    this.lastInputRefs.key.current.focus();
@@ -233,7 +251,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                            style={ inputStyle }
                            onChange={ e => {
                                content.push({ key: '', value: e.target.value });
-                               data[currentTab] = JSON.stringify(content);
+                               data[currentTab].content = JSON.stringify(content);
                                this.forceUpdate();
                                setTimeout(() => {
                                    this.lastInputRefs.value.current.focus();
@@ -260,14 +278,14 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         try {
             switch (textType) {
                 case "json":
-                    content = JSON.stringify(JSON.parse(data[currentTab]), null, 2);
+                    content = JSON.stringify(JSON.parse(data[currentTab].content), null, 2);
                     break;
                 case "plain":
-                    content = JSON.parse(data[currentTab]);
+                    content = JSON.parse(data[currentTab].content);
                     break;
             }
         } catch (err) {
-            content = data[currentTab];
+            content = data[currentTab].content;
         }
 
         return (
@@ -282,7 +300,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                 } }
                 defaultValue={ content }
                 key={ content }
-                onChange={ (e) => (data[currentTab] = e.target.value) }></textarea>
+                onChange={ (e) => (data[currentTab].content = e.target.value) }></textarea>
         );
     }
 }

@@ -1,7 +1,7 @@
 import { TabSetup } from "../tab-setup";
 import { EndpointTabContent } from "./endpoint.tab-content";
 import { PButton } from "../../common/pbutton";
-import { faClockRotateLeft, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { EndpointTextEditor } from "./endpoint-text-editor";
 import { useSpaces } from "../../common/spaces.context";
@@ -24,9 +24,10 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
             width: '100%',
             display: 'flex',
             flexDirection: 'row',
+            gap: 'var(--app-gap)',
             justifyContent: 'space-between',
         } }>
-            <div style={ { backgroundColor: 'var(--theme-bc-2)', width: '85%', display: 'flex', borderRadius: 'var(--cell-border-radius)' } }>
+            <div style={ { backgroundColor: 'var(--theme-bc-2)', flex: '1 0 auto', display: 'flex', borderRadius: 'var(--cell-border-radius)' } }>
                 <select style={ {
                     height: '100%',
                     borderTopLeftRadius: 'var(--cell-border-radius)',
@@ -77,9 +78,9 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                      color="green"
                      icon={ faPaperPlane }/>
 
-            <PButton action={ () => {} }
-                     color="gray"
-                     icon={ faClockRotateLeft }/>
+            {/*<PButton action={ () => {} }*/ }
+            {/*         color="gray"*/ }
+            {/*         icon={ faClockRotateLeft }/>*/ }
         </div>
         <div style={ {
             display: 'grid',

@@ -105,7 +105,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                     )) }
                 </div>
                 <div style={ { height: '100%', overflow: 'hidden' } }>{ this.renderContent() }</div>
-                <div>
+                <div style={ { padding: '0.25em' } }>
                     { <select
                         style={ footerSelectStyle }
                         onChange={ (e) => {

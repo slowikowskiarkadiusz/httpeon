@@ -36,6 +36,6 @@ export function App() {
     );
 }
 
-export function dispatchUpdateCacheEvent(){
+export function dispatchUpdateCacheEvent() {
     window.dispatchEvent(new CustomEvent('update_spaces_cache', {}));
 }

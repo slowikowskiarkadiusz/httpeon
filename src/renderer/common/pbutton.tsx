@@ -18,7 +18,7 @@ export function PButton(props: {
     return <button className={ classes.join(' ') }
                    onClick={ props.onClick }>
         <span style={ { margin: "auto" } }>
-            { props.content ? <span>{ props.content }&nbsp;&nbsp;</span> : null }
+            { props.content ? <span>{ props.content }{ props.icon ? <>&nbsp;&nbsp;</> : null }</span> : null }
             { props.icon
                 ? <FontAwesomeIcon icon={ props.icon }
                                    style={ {

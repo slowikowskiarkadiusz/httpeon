@@ -6,6 +6,19 @@ type DisplayMode = keyof typeof displayModes;
 const textTypes = { 'json': 0, 'plain': 0, 'xml': 0 };
 type TextType = keyof typeof textTypes;
 
+export const inputStyle = {
+    width: '100%',
+    backgroundColor: 'var(--theme-bc-2)',
+    borderRadius: 'var(--border-radius)',
+    boxShadow: 'none',
+    border: 'none',
+    padding: '0.5em',
+    fontFamily: 'Menlo',
+    color: 'var(--theme-font-color)',
+    outline: 'none',
+    fontSize: '2rem',
+};
+
 interface ContentEntry {
     key: string;
     value: string;
@@ -172,19 +185,6 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         } catch (err) {
             data[currentTab].content = JSON.stringify(content);
         }
-
-        const inputStyle = {
-            width: '100%',
-            backgroundColor: 'var(--theme-bc-2)',
-            borderRadius: 'var(--border-radius)',
-            boxShadow: 'none',
-            border: 'none',
-            padding: '0.5em',
-            fontFamily: 'Menlo',
-            color: 'var(--theme-font-color)',
-            outline: 'none',
-            fontSize: '2rem',
-        };
 
         return <table className="endpoint-table"
                       style={ { width: '100%' } }>

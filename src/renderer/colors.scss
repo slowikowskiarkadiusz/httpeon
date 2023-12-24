@@ -3,8 +3,8 @@
 $colors: ('primary', 'secondary', 'green', 'yellow', 'purple', 'gray');
 
 $--dark-theme-bc: #000000;
-$--dark-theme-bc-2: lighten($--dark-theme-bc, 8);
-$--dark-theme-bc-3: lighten($--dark-theme-bc, 16);
+$--dark-theme-bc-2: lighten($--dark-theme-bc, 6);
+$--dark-theme-bc-3: lighten($--dark-theme-bc, 10);
 $--dark-theme-bc-3t: transparentize(lighten($--dark-theme-bc, 16), 0.7);
 $--dark-theme-font-color: #e1e1e1;
 $--dark-theme-font-color-2: darken($--dark-theme-font-color, 15);
@@ -13,8 +13,8 @@ $--dark-primary-color: #6a1b71;
 $--dark-primary-color-2: darken($--dark-primary-color, 15);
 $--dark-primary-color-3: darken($--dark-primary-color, 30);
 $--dark-secondary-color: #FAC8FA;
-$--dark-secondary-color-2: darken($--dark-secondary-color, 15);
-$--dark-secondary-color-3: darken($--dark-secondary-color, 30);
+$--dark-secondary-color-2: darken($--dark-secondary-color, 10);
+$--dark-secondary-color-3: darken($--dark-secondary-color, 20);
 $--dark-green-color: #58CA13;
 $--dark-green-color-2: darken(#58CA13, 5);
 $--dark-green-color-3: darken(#58CA13, 10);

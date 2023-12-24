@@ -7,20 +7,37 @@ import { EndpointTextEditor } from "./endpoint-text-editor";
 import { useSpaces } from "../../common/spaces.context";
 import { dispatchUpdateCacheEvent } from "../../app";
 import { callHttp } from "../../common/http";
+import { BaseUrlModalProvider } from "./base-url.modal.context";
+import { BaseUrlModalButton } from "./base-url.modal.button";
 
 export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSetup: (setup: TabSetup<EndpointTabContent>) => void }) {
     props.setup.content.method = 'get';
     const [selectedMethod, setSelectedMethod] = useState(props.setup.content.method)
     const { tabs, currentTabIndex } = useSpaces();
+    const 
 
     dispatchUpdateCacheEvent();
 
-    return <div style={ {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--app-gap)',
-        height: '100%',
-    } }>
+    return <div id="baseUrlModalParent"
+                style={ {
+                    position: 'relative',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 'var(--app-gap)',
+                    height: '100%',
+                } }>
+
+        <div style={ { width: '100%' } }>
+            <BaseUrlModalProvider parent={ () => document.getElementById('baseUrlModalParent') }>
+                <BaseUrlModalButton>
+                </BaseUrlModalButton>
+            </BaseUrlModalProvider>
+            
+            <span>
+                
+            </span>
+        </div>
+
         <div style={ {
             width: '100%',
             display: 'flex',
@@ -58,7 +75,7 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                            flex: '1 1 auto',
                            paddingLeft: '1em',
                            border: 'none',
-                           backgroundColor: 'var(--theme-bc-2)',
+                           backgroundColor: 'var(--theme-bc-3)',
                            color: 'var(--theme-font-color)',
                            fontFamily: 'Menlo',
                            borderTopRightRadius: 'var(--cell-border-radius)',
@@ -73,7 +90,6 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                            props.updateSetup(props.setup);
                        } }/>
             </div>
-
             <PButton onClick={ () => {
                 callHttp({ url: 'https://google.com', method: 'get', headers: [] }).then(x => console.log('response', x));
             } }

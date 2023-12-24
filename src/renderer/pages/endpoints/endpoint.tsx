@@ -6,6 +6,7 @@ import { useState } from "react";
 import { EndpointTextEditor } from "./endpoint-text-editor";
 import { useSpaces } from "../../common/spaces.context";
 import { dispatchUpdateCacheEvent } from "../../app";
+import { callHttp } from "../../common/http";
 
 export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSetup: (setup: TabSetup<EndpointTabContent>) => void }) {
     props.setup.content.method = 'get';
@@ -74,7 +75,7 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
             </div>
 
             <PButton onClick={ () => {
-                // callHttp({ url: 'https://google.com', method: 'get', headers: [] }).then(x => console.log('response', x));
+                callHttp({ url: 'https://google.com', method: 'get', headers: [] }).then(x => console.log('response', x));
             } }
                      content="GO"
                      color="green"

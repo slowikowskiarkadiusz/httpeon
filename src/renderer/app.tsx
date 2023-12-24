@@ -35,3 +35,7 @@ export function App() {
         </ContextMenuProvider>
     );
 }
+
+export function dispatchUpdateCacheEvent(){
+    window.dispatchEvent(new CustomEvent('update_spaces_cache', {}));
+}

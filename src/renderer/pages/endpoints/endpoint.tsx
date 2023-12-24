@@ -3,41 +3,16 @@ import { EndpointTabContent } from "./endpoint.tab-content";
 import { PButton } from "../../common/pbutton";
 import { faClockRotateLeft, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import { EndpointTextEditor, EndpointTextEditorData } from "./endpoint-text-editor";
-
-const randomJson = [
-    { key: "_id", value: "6585a941caa179a6189de75c" },
-    { key: "guid", value: "2ec70d67-5305-4783-b488-417456755546" },
-    { key: "balance", value: "$2,440.65" },
-    { key: "picture", value: "http://placehold.it/32x32" },
-    { key: "eyeColor", value: "blue" },
-];
+import { EndpointTextEditor } from "./endpoint-text-editor";
+import { useSpaces } from "../../common/spaces.context";
+import { dispatchUpdateCacheEvent } from "../../app";
 
 export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSetup: (setup: TabSetup<EndpointTabContent>) => void }) {
     props.setup.content.method = 'get';
     const [selectedMethod, setSelectedMethod] = useState(props.setup.content.method)
-    const [inputs, setInputs] = useState<EndpointTextEditorData>({
-        'Params': {
-            content: JSON.stringify(randomJson)
-        },
-        'Body': {
-            content: '',
-            allowedDisplayModes: ['text']
-        },
-        'Headers': {
-            content: '',
-        },
-    })
-    const [outputs, setOutputs] = useState<EndpointTextEditorData>({
-        'Request': {
-            content: '',
-            allowedDisplayModes: ['text']
-        },
-        'Response': {
-            content: '',
-            allowedDisplayModes: ['text']
-        },
-    })
+    const { tabs, currentTabIndex } = useSpaces();
+
+    dispatchUpdateCacheEvent();
 
     return <div style={ {
         display: 'flex',
@@ -113,8 +88,8 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
             gap: 'var(--app-gap)',
             height: '100%',
         } }>
-            <div><EndpointTextEditor data={ inputs }/></div>
-            <div><EndpointTextEditor data={ outputs }/></div>
+            <div><EndpointTextEditor data={ (tabs()[currentTabIndex].content as EndpointTabContent).inputs }/></div>
+            <div><EndpointTextEditor data={ (tabs()[currentTabIndex].content as EndpointTabContent).outputs }/></div>
         </div>
     </div>
 }

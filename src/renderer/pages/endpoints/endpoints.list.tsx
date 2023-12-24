@@ -30,9 +30,34 @@ export function EndpointsList() {
                                   fold(!item.isFolded, i, c, (list: ListItem[]) => setList(list));
                               setLastClickedOnIndex(i);
                               let endpoints = endpointsForPath(i, c, apiSpecs);
-                              if(endpoints?.length) {
+                              if (endpoints?.length) {
                                   const fullPath = getFullPath(i, c);
-                                  const tabSetup = makeTabSetup<EndpointTabContent>('endpoints', fullPath, fullPath, { endpoint: fullPath, method: endpoints[0] });
+                                  const tabSetup = makeTabSetup<EndpointTabContent>('endpoints', fullPath, fullPath, true, {
+                                      endpoint: fullPath,
+                                      method: endpoints[0],
+                                      inputs: {
+                                          'Params': {
+                                              content: ''
+                                          },
+                                          'Body': {
+                                              content: '',
+                                              allowedDisplayModes: ['text']
+                                          },
+                                          'Headers': {
+                                              content: '',
+                                          },
+                                      },
+                                      outputs: {
+                                          'Request': {
+                                              content: '',
+                                              allowedDisplayModes: ['text']
+                                          },
+                                          'Response': {
+                                              content: '',
+                                              allowedDisplayModes: ['text']
+                                          },
+                                      }
+                                  });
                                   window.dispatchEvent(new CustomEvent('sidebar_list_item_selected', { detail: tabSetup }));
                               }
                           } }>

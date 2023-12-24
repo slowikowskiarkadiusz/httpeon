@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { dispatchUpdateCacheEvent } from "../../app";
 
 const displayModes = { 'default': 0, 'text': 0 };
 type DisplayMode = keyof typeof displayModes;
@@ -116,19 +117,19 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                             )) }
                     </select> }
 
-                    {/*{ displayMode === 'text'*/}
-                    {/*    ?*/}
-                    {/*    <select*/}
-                    {/*        style={ footerSelectStyle }*/}
-                    {/*        onChange={ (e) => this.setState({ textType: ((e.nativeEvent.target as HTMLInputElement).value as TextType) }) }>*/}
-                    {/*        { Object.keys(textTypes).map((x) => (*/}
-                    {/*            <option value={ x }*/}
-                    {/*                    key={ x }>*/}
-                    {/*                { x }*/}
-                    {/*            </option>*/}
-                    {/*        )) }*/}
-                    {/*    </select>*/}
-                    {/*    : undefined }*/}
+                    {/*{ displayMode === 'text'*/ }
+                    {/*    ?*/ }
+                    {/*    <select*/ }
+                    {/*        style={ footerSelectStyle }*/ }
+                    {/*        onChange={ (e) => this.setState({ textType: ((e.nativeEvent.target as HTMLInputElement).value as TextType) }) }>*/ }
+                    {/*        { Object.keys(textTypes).map((x) => (*/ }
+                    {/*            <option value={ x }*/ }
+                    {/*                    key={ x }>*/ }
+                    {/*                { x }*/ }
+                    {/*            </option>*/ }
+                    {/*        )) }*/ }
+                    {/*    </select>*/ }
+                    {/*    : undefined }*/ }
                 </div>
             </div>
         );
@@ -205,6 +206,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                                            setTimeout(() => this.forceUpdate(), 0);
                                        }
                                        data[currentTab].content = JSON.stringify(content);
+                                       dispatchUpdateCacheEvent();
                                    } }
                                    defaultValue={ x.key }/>
                         </td>
@@ -220,6 +222,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                                            setTimeout(() => this.forceUpdate(), 0);
                                        }
                                        data[currentTab].content = JSON.stringify(content);
+                                       dispatchUpdateCacheEvent();
                                    } }
                                    defaultValue={ x.value }/>
                         </td>
@@ -300,7 +303,10 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                 } }
                 defaultValue={ content }
                 key={ content }
-                onChange={ (e) => (data[currentTab].content = e.target.value) }></textarea>
+                onChange={ (e) => {
+                    (data[currentTab].content = e.target.value);
+                    dispatchUpdateCacheEvent();
+                } }></textarea>
         );
     }
 }

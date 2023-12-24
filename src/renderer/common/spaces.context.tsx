@@ -43,7 +43,8 @@ const SpacesContext = createContext({
     setSpaceConfig: (spaceKey: string, configKey: string, value: any) => {},
     getActive: () => loadedSpaces[0],
     setActive: (name: string) => {},
-    tabs: () => [],
+    tabs: () => ([] as TabSetup<any>[]),
+    updateCache: () => {},
     currentTabIndex: 0,
     addTab: (newTab: TabSetup<any>) => {return 0 as number},
     removeTab: (index: number) => {},
@@ -54,13 +55,16 @@ const SpacesContext = createContext({
 export const SpacesProvider = ({ children }: any) => {
     const [spaces, _setSpaces] = useState(loadedSpaces);
     const [activeSpace, _setActiveSpace] = useState(spaces.filter(x => x.active)[0] ?? spaces[0]);
-    // const [tabs, setTabs] = useState([]);
     const [currentTabIndex, setCurrentTabIndex] = useState(-1);
+
+    let newCurrentTabIndex = loadedSpaces.filter(x => x.active)[0]?.tabs.findIndex(x => x.active) ?? -1;
+    if (newCurrentTabIndex !== currentTabIndex)
+        setCurrentTabIndex(newCurrentTabIndex);
 
     const setSpaceConfig = (spaceKey: string, configKey: string, value: any) => {
         activeSpace[configKey] = value;
-        localStorage.setItem(spacesLocalStorageKey, JSON.stringify(spaces));
         _setSpaces(spaces);
+        updateCache();
     }
 
     const getActive = () => activeSpace;
@@ -72,6 +76,7 @@ export const SpacesProvider = ({ children }: any) => {
         if (!activeSpace.tabs.some((x) => x.id == newTab.id))
             activeSpace.tabs.push(newTab);
 
+        updateCache();
         return activeSpace.tabs.findIndex(x => x.id === newTab.id);
     };
 
@@ -79,22 +84,35 @@ export const SpacesProvider = ({ children }: any) => {
         const newTabs = activeSpace.tabs.filter((_, i) => i !== index);
         activeSpace.tabs.splice(index, 1);
 
-        if (currentTabIndex >= newTabs.length) {
+        if (currentTabIndex >= newTabs.length)
             setCurrentTabIndex(newTabs.length - 1);
-        }
+
+        updateCache();
     };
 
-    const setCurrentTab = (index: number) => setCurrentTabIndex(index);
+    const setCurrentTab = (index: number) => {
+        if (currentTabIndex > -1)
+            activeSpace.tabs[currentTabIndex].active = false;
+        activeSpace.tabs[index].active = true;
+        setCurrentTabIndex(index);
+        updateCache();
+    };
 
     const updateTab = (index: number, setup: TabSetup<any>) => {
         Object.keys(setup.content)
             .forEach(newSetupKey => {
                 activeSpace.tabs[index][newSetupKey] = setup.content[newSetupKey];
             });
+
+        updateCache();
+    }
+
+    const updateCache = () => {
+        localStorage.setItem(spacesLocalStorageKey, JSON.stringify(spaces));
     }
 
     return (
-        <SpacesContext.Provider value={ { spaces, setSpaceConfig, getActive, setActive, tabs, currentTabIndex, addTab, removeTab, setCurrentTab, updateTab } }>
+        <SpacesContext.Provider value={ { spaces, setSpaceConfig, getActive, setActive, tabs, updateCache, currentTabIndex, addTab, removeTab, setCurrentTab, updateTab } }>
             { children }
         </SpacesContext.Provider>
     );

@@ -6,7 +6,7 @@ type Color = 'primary' | 'secondary' | 'green' | 'purple' | 'yellow' | 'gray';
 
 export function PButton(props: {
     content?: string,
-    action: () => void,
+    onClick: () => void,
     color?: Color,
     icon?: IconProp,
     iconTransform?: string
@@ -16,7 +16,7 @@ export function PButton(props: {
     classes.push(`pbutton-${ color }`);
 
     return <button className={ classes.join(' ') }
-                   onClick={ props.action }>
+                   onClick={ props.onClick }>
         <span style={ { margin: "auto" } }>
             { props.content ? <span>{ props.content }&nbsp;&nbsp;</span> : null }
             { props.icon

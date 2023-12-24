@@ -58,15 +58,15 @@ export function ConfigChooserModal(props: {
             gap: '1rem'
         } }><PButton content="NEW"
                      color="green"
-                     action={ () => {} }
+                     onClick={ () => {} }
                      icon={ faPlus }/>
             <PButton content="EXPORT"
                      color="yellow"
-                     action={ () => {} }
+                     onClick={ () => {} }
                      icon={ faFileExport }/>
             <PButton content="IMPORT"
                      color="purple"
-                     action={ () => {} }
+                     onClick={ () => {} }
                      icon={ faFileImport }/>
         </div>
     </div>;

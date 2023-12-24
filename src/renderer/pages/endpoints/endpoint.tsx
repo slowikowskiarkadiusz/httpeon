@@ -73,7 +73,9 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                        } }/>
             </div>
 
-            <PButton action={ () => {} }
+            <PButton onClick={ () => {
+                // callHttp({ url: 'https://google.com', method: 'get', headers: [] }).then(x => console.log('response', x));
+            } }
                      content="GO"
                      color="green"
                      icon={ faPaperPlane }/>

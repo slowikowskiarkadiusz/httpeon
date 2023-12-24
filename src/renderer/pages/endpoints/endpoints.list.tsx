@@ -37,7 +37,7 @@ export function EndpointsList() {
                                       method: endpoints[0],
                                       inputs: {
                                           'Params': {
-                                              content: ''
+                                              content: '',
                                           },
                                           'Body': {
                                               content: '',

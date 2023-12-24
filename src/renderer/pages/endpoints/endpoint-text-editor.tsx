@@ -15,6 +15,8 @@ export interface EndpointTextEditorData {
     [tabName: string]: {
         content: string,
         allowedDisplayModes?: DisplayMode[],
+        currentDisplayMode?: DisplayMode,
+        currentTextType?: TextType,
         isReadOnly?: boolean,
     }
 }
@@ -25,7 +27,6 @@ interface EndpointTextEditorProps {
 
 interface EndpointTextEditorState {
     currentTab: string;
-    displayMode: DisplayMode;
     textType: TextType;
 }
 
@@ -34,21 +35,23 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         super(props);
         this.state = {
             currentTab: Object.keys(props.data)[0],
-            displayMode: 'default',
             textType: 'json',
         };
     }
 
     render() {
         const { data } = this.props;
-        const { currentTab, displayMode } = this.state;
+        const { currentTab } = this.state;
 
-        if (!!data[currentTab].allowedDisplayModes) {
-            let value = data[currentTab].allowedDisplayModes[0];
-            if (value && displayMode !== value) {
-                this.setState({ displayMode: value });
-                return;
-            }
+        if (!data[currentTab].currentDisplayMode) {
+            let value: DisplayMode = 'default';
+            if (!!data[currentTab].allowedDisplayModes)
+                value = data[currentTab].allowedDisplayModes[0];
+            if (data[currentTab].currentDisplayMode !== value)
+                data[currentTab].currentDisplayMode = value;
+
+            dispatchUpdateCacheEvent();
+            this.forceUpdate();
         }
 
         const footerSelectStyle = { height: '100%', border: 'none', fontSize: '2rem', color: 'var(--theme-font-color)', backgroundColor: 'var(--theme-bc-2)', padding: '0.5em', textAlign: 'center' as any, borderRadius: 'var(--border-radius)', };
@@ -105,13 +108,17 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                 <div>
                     { <select
                         style={ footerSelectStyle }
-                        defaultValue={ displayMode }
-                        onChange={ (e) => this.setDisplayMode((e.nativeEvent.target as HTMLInputElement).value as DisplayMode) }>
+                        onChange={ (e) => {
+                            data[currentTab].currentDisplayMode = (e.nativeEvent.target as HTMLInputElement).value as DisplayMode;
+                            this.forceUpdate();
+                            dispatchUpdateCacheEvent();
+                        } }>
                         { Object.keys(displayModes)
                             .filter((x: DisplayMode) => !data[currentTab].allowedDisplayModes || data[currentTab].allowedDisplayModes.includes(x))
                             .map((x) => (
                                 <option value={ x }
-                                        key={ x }>
+                                        key={ x }
+                                        selected={ x === data[currentTab].currentDisplayMode }>
                                     { x }
                                 </option>
                             )) }
@@ -139,14 +146,11 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         this.setState({ currentTab: tab });
     }
 
-    setDisplayMode(mode: DisplayMode) {
-        this.setState({ displayMode: mode });
-    }
-
     renderContent() {
-        const { currentTab, displayMode } = this.state;
+        const { data } = this.props;
+        const { currentTab } = this.state;
 
-        switch (displayMode) {
+        switch (data[currentTab].currentDisplayMode) {
             case 'default':
                 return this.renderContentAsDefault();
             case 'text':

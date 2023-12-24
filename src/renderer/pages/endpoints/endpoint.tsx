@@ -67,7 +67,6 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                        defaultValue={ props.setup.content.endpoint }
                        key={ props.setup.content.endpoint }
                        onChange={ e => {
-                           console.log(e);
                            props.setup.content.endpoint = e.target.value;
                            props.updateSetup(props.setup);
                        } }/>

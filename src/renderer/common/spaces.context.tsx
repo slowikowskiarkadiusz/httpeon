@@ -91,9 +91,13 @@ export const SpacesProvider = ({ children }: any) => {
     };
 
     const setCurrentTab = (index: number) => {
-        if (currentTabIndex > -1)
+        if (currentTabIndex > -1 && activeSpace.tabs[currentTabIndex])
             activeSpace.tabs[currentTabIndex].active = false;
-        activeSpace.tabs[index].active = true;
+
+        if (activeSpace.tabs[index])
+            activeSpace.tabs[index].active = true;
+        else
+            index = -1;
         setCurrentTabIndex(index);
         updateCache();
     };

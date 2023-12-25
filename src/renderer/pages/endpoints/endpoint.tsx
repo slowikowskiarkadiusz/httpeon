@@ -16,13 +16,12 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
     const { tabs, currentTabIndex } = useSpaces();
 
     dispatchUpdateCacheEvent();
-
+    // <div style={ { marginTop: 'var(--app-gap)', paddingRight: '10px', flex: '1 0 auto' } }>
     return <div style={ {
         position: 'relative',
         display: 'flex',
         flexDirection: 'column',
         gap: 'var(--app-gap)',
-        height: '100%',
     } }>
 
         <div id="baseUrlModalParent"
@@ -104,10 +103,10 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
             gap: 'var(--app-gap)',
-            height: '100%',
+            flex: '1 1 auto',
         } }>
-            <div><EndpointTextEditor data={ (tabs()[currentTabIndex].content as EndpointTabContent).inputs }/></div>
-            <div><EndpointTextEditor data={ (tabs()[currentTabIndex].content as EndpointTabContent).outputs }/></div>
+            <EndpointTextEditor data={ (tabs()[currentTabIndex].content as EndpointTabContent).inputs }/>
+            {/*<EndpointTextEditor data={ (tabs()[currentTabIndex].content as EndpointTabContent).outputs }/>*/ }
         </div>
     </div>
 }

@@ -84,16 +84,13 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                 fontSize: '2rem',
                 height: '100%',
                 borderRadius: 'var(--border-radius)',
-                overflow: 'hidden',
                 display: 'grid',
-                gridTemplateRows: 'min-content auto min-content',
+                gridTemplateRows: '3em calc(100% - 6em) 3em',
                 backgroundColor: 'var(--theme-bc-3)',
             } }>
                 <div style={ {
                     display: 'flex',
                     width: '100%',
-                    overflow: 'scroll',
-                    minHeight: '3em',
                 } }>
                     { Object.keys(data).map((key, i, c) => (
                         <div
@@ -108,7 +105,6 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                                 overflow: 'hidden',
                                 display: 'flex',
                                 flexDirection: 'row',
-                                padding: '0.5em',
                             } }
                             onClick={ () => this.setCurrentTab(key) }>
                             <button
@@ -127,7 +123,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                         </div>
                     )) }
                 </div>
-                <div style={ { height: '100%', overflow: 'hidden' } }>{ this.renderContent() }</div>
+                <div style={ { padding: '1em', overflow: 'scroll', } }>{ this.renderContent() }</div>
                 <div style={ { padding: '0.25em' } }>
                     { <select
                         style={ footerSelectStyle }
@@ -205,8 +201,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
             dispatchUpdateCacheEvent();
         }
 
-        return <table className="endpoint-table"
-                      style={ { width: '100%' } }>
+        return <table style={ { width: '100%', height: '100%' } }>
             <thead>
             <tr>
                 <th style={ { width: '25%' } }>Key</th>
@@ -316,7 +311,6 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                     color: 'var(--theme-font-color)',
                     backgroundColor: 'var(--theme-bc-3)',
                     border: 'none',
-                    padding: '1em',
                 } }
                 defaultValue={ content }
                 key={ content }

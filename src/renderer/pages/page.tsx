@@ -24,16 +24,16 @@ export function Page() {
     }), []);
 
     return <div style={ {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '1em',
-        height: '100%',
+        height: '100vh',
+        display: 'grid',
+        gap: 'var(--app-gap)',
+        gridTemplateRows: '3em calc(100vh - calc(3em + var(--app-gap))'
     } }>
         <div style={ {
             display: 'flex',
             width: '100%',
             overflow: 'scroll',
-            minHeight: '3em',
+            // marginBottom: 'var(--app-gap)'
         } }>
             { tabs().map((x, i, c) => <div
                 key={ `page-tab-${ i }` }
@@ -43,19 +43,20 @@ export function Page() {
                     backgroundColor: currentTabIndex === i ? 'var(--theme-bc-3)' : 'var(--theme-bc-2)',
                     transition: 'width 0.2s ease-out, background-color 0.2s',
                     cursor: 'pointer',
-                    flex: 1, textOverflow: 'ellipsis',
+                    flex: 1,
+                    textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
+                    // height: '3em',
                     display: 'flex',
                     flexDirection: 'row',
-                    padding: '1em',
                 } }
                 onClick={ () => {
                     setCurrentTab(i);
                     setA(a + 1);
                 } }>
                 <FontAwesomeIcon className="tab-close"
-                                 style={ { margin: 'auto', marginRight: '0.5em' } }
+                                 style={ { margin: 'auto 0.5em' } }
                                  onClick={ () => removeTab(i) }
                                  icon={ faTimes }/>
                 <div style={ { display: 'flex', width: '100%', overflow: 'hidden', } }>
@@ -64,6 +65,7 @@ export function Page() {
                         whiteSpace: 'nowrap',
                         textAlign: 'center',
                         direction: 'rtl',
+                        margin: 'auto',
                         width: '100%',
                     } }>
                         { x.title }
@@ -71,12 +73,10 @@ export function Page() {
                 </div>
             </div>) }
         </div>
-        <div style={ { paddingRight: '10px', flex: '1 0 auto' } }>
-            { renderContent(currentTabIndex > -1 ? tabs()[currentTabIndex] : null,
-                (setup) => {
-                    updateTab(currentTabIndex, setup);
-                }) }
-        </div>
+        { renderContent(currentTabIndex > -1 ? tabs()[currentTabIndex] : null,
+            (setup) => {
+                updateTab(currentTabIndex, setup);
+            }) }
     </div>
 }
 

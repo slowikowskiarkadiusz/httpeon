@@ -34,8 +34,8 @@ export function Page() {
             display: 'flex',
             width: '100%',
             overflow: 'scroll',
-            flex: '1 0 auto',
-            // marginBottom: 'var(--app-gap)'
+            height: 'min-content',
+            flexShrink: 0,
         } }>
             { tabs().map((x, i, c) => <div
                 key={ `page-tab-${ i }` }

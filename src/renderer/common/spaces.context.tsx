@@ -5,6 +5,7 @@ export interface Space {
     'name': string;
     'active': boolean;
     'tabs': TabSetup<any>[];
+    'baseUrl': string;
 
     [configKey: string]: any;
 }
@@ -46,6 +47,8 @@ const SpacesContext = createContext({
     tabs: () => ([] as TabSetup<any>[]),
     updateCache: () => {},
     currentTabIndex: 0,
+    getBaseUrl: () => '' as string,
+    setBaseUrl: (newUrl: string) => {},
     addTab: (newTab: TabSetup<any>) => {return 0 as number},
     removeTab: (index: number) => {},
     setCurrentTab: (index: number) => {},
@@ -69,6 +72,11 @@ export const SpacesProvider = ({ children }: any) => {
 
     const getActive = () => activeSpace;
     const setActive = (name: string) => _setActiveSpace(spaces.filter(x => x.name === name)[0] ?? spaces[0]);
+    const getBaseUrl = () => activeSpace.baseUrl;
+    const setBaseUrl = (newBaseUrl: string) => {
+        activeSpace.baseUrl;
+        updateCache();
+    }
 
     const tabs = () => activeSpace.tabs;
 
@@ -116,7 +124,7 @@ export const SpacesProvider = ({ children }: any) => {
     }
 
     return (
-        <SpacesContext.Provider value={ { spaces, setSpaceConfig, getActive, setActive, tabs, updateCache, currentTabIndex, addTab, removeTab, setCurrentTab, updateTab } }>
+        <SpacesContext.Provider value={ { spaces, setSpaceConfig, getActive, setActive, tabs, updateCache, currentTabIndex, getBaseUrl, setBaseUrl, addTab, removeTab, setCurrentTab, updateTab } }>
             { children }
         </SpacesContext.Provider>
     );

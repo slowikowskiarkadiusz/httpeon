@@ -14,25 +14,24 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
     props.setup.content.method = 'get';
     const [selectedMethod, setSelectedMethod] = useState(props.setup.content.method)
     const { tabs, currentTabIndex } = useSpaces();
-    const 
 
     dispatchUpdateCacheEvent();
 
-    return <div id="baseUrlModalParent"
-                style={ {
-                    position: 'relative',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 'var(--app-gap)',
-                    height: '100%',
-                } }>
+    return <div style={ {
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--app-gap)',
+        height: '100%',
+    } }>
 
-        <div style={ { width: '100%' } }>
-            <BaseUrlModalProvider parent={ () => document.getElementById('baseUrlModalParent') }>
+        <div id="baseUrlModalParent"
+             style={ { width: '100%', display: 'flex', flexDirection: 'row', gap: 'var(--app-gap)', } }>
+            <BaseUrlModalProvider>
                 <BaseUrlModalButton>
                 </BaseUrlModalButton>
             </BaseUrlModalProvider>
-            
+
             <span>
                 
             </span>

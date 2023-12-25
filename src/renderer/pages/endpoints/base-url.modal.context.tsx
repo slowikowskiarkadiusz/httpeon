@@ -1,39 +1,31 @@
 import React, { createContext, useContext } from 'react';
 import { BaseUrlModal } from "./base-url.modal";
 import ReactDOM from 'react-dom';
+import { useSpaces } from "../../common/spaces.context";
 
 export const BaseUrlModalContext = createContext({
-    invoke: (config: string, triggeringElement: () => HTMLElement, onClose: (v: any) => void) => {},
+    invoke: (triggeringElement: () => HTMLElement) => {},
 });
 
 const width = 250;
-const offset = 5;
+const offset = 0;
 
-export const BaseUrlModalProvider = ({ children, parent, onBaseUrlProvided }: { children: any, parent: () => HTMLElement, onBaseUrlProvided: (baseUrl: string) => {} }) => {
-    const invoke = (config: string, triggeringElement: () => HTMLElement, onClose: (v: any) => void,) => {
+export const BaseUrlModalProvider = ({ children }: { children: any }) => {
+    const { getBaseUrl } = useSpaces();
+    const invoke = (triggeringElement: () => HTMLElement) => {
         const element = triggeringElement();
+
         const modal = <BaseUrlModal
             left={ `${ element.offsetLeft + element.offsetWidth / 2 }px` }
-            top={ `${ element.getBoundingClientRect().bottom + offset }px` }
+            top={ `${ element.getBoundingClientRect().top + offset }px` }
             width={ `${ width }px` }
-            onUrlChange={ (newUrl) => {
-                
-            } }
+            onFinish={ (newUrl) => { } }
         />
-        
+
         const div = document.createElement('div');
-        parent().append(div)
+        element.append(div)
         // TODO switch to createroot
         ReactDOM.render(modal, div);
-
-        setTimeout(() => {
-            document.addEventListener('click', (event: MouseEvent) => {
-                if (!div.contains(event.target as any)) {
-                    div.remove();
-                    onBaseUrlProvided('p');
-                }
-            });
-        }, 0);
     };
 
     return (

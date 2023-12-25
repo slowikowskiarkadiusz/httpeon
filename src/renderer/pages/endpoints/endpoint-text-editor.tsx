@@ -15,13 +15,14 @@ export const inputStyle = {
     padding: '0.5em',
     fontFamily: 'Menlo',
     color: 'var(--theme-font-color)',
-    outline: 'none',
+    // outline: 'none',
     fontSize: '2rem',
 };
 
 interface ContentEntry {
     key: string;
     value: string;
+    isOn: boolean;
 }
 
 export interface EndpointTextEditorData {
@@ -67,7 +68,16 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
             this.forceUpdate();
         }
 
-        const footerSelectStyle = { height: '100%', border: 'none', fontSize: '2rem', color: 'var(--theme-font-color)', backgroundColor: 'var(--theme-bc-2)', padding: '0.5em', textAlign: 'center' as any, borderRadius: 'var(--border-radius)', };
+        const footerSelectStyle = {
+            height: '100%',
+            border: 'none',
+            fontSize: '2rem',
+            color: 'var(--theme-font-color)',
+            backgroundColor: 'var(--theme-bc-2)',
+            padding: '0.5em',
+            textAlign: 'center' as any,
+            borderRadius: 'var(--border-radius)',
+        };
 
         return (
             <div style={ {
@@ -186,6 +196,15 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
             data[currentTab].content = JSON.stringify(content);
         }
 
+        const updateEntry = (i: number) => {
+            if (!content[i].key && !content[i].value) {
+                content.splice(i, 1);
+                setTimeout(() => this.forceUpdate(), 0);
+            }
+            data[currentTab].content = JSON.stringify(content);
+            dispatchUpdateCacheEvent();
+        }
+
         return <table className="endpoint-table"
                       style={ { width: '100%' } }>
             <thead>
@@ -205,12 +224,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                                    placeholder="key..."
                                    onChange={ e => {
                                        content[i].key = e.target.value;
-                                       if (!content[i].key && !content[i].value) {
-                                           content.splice(i, 1);
-                                           setTimeout(() => this.forceUpdate(), 0);
-                                       }
-                                       data[currentTab].content = JSON.stringify(content);
-                                       dispatchUpdateCacheEvent();
+                                       updateEntry(i);
                                    } }
                                    defaultValue={ x.key }/>
                         </td>
@@ -221,19 +235,18 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                                    placeholder="value..."
                                    onChange={ e => {
                                        content[i].value = e.target.value;
-                                       if (!content[i].key && !content[i].value) {
-                                           content.splice(i, 1);
-                                           setTimeout(() => this.forceUpdate(), 0);
-                                       }
-                                       data[currentTab].content = JSON.stringify(content);
-                                       dispatchUpdateCacheEvent();
+                                       updateEntry(i);
                                    } }
                                    defaultValue={ x.value }/>
                         </td>
                         <td style={ { padding: '0 0.5em' } }>
                             <input type="checkbox"
                                    style={ inputStyle }
-                                   defaultValue={ 'false' }/>
+                                   defaultChecked={ x.isOn }
+                                   onChange={ e => {
+                                       content[i].isOn = e.target.checked;
+                                       updateEntry(i);
+                                   } }/>
                         </td>
                     </tr>
                 }) }
@@ -243,7 +256,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                     <input type="text"
                            style={ inputStyle }
                            onChange={ e => {
-                               content.push({ key: e.target.value, value: '' });
+                               content.push({ key: e.target.value, value: '', isOn: true });
                                data[currentTab].content = JSON.stringify(content);
                                this.forceUpdate();
                                setTimeout(() => {
@@ -257,7 +270,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                     <input type="text"
                            style={ inputStyle }
                            onChange={ e => {
-                               content.push({ key: '', value: e.target.value });
+                               content.push({ key: '', value: e.target.value, isOn: true });
                                data[currentTab].content = JSON.stringify(content);
                                this.forceUpdate();
                                setTimeout(() => {

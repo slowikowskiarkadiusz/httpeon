@@ -25,14 +25,16 @@ export function Page() {
 
     return <div style={ {
         height: '100vh',
-        display: 'grid',
+        display: 'flex',
+        flexDirection: 'column',
         gap: 'var(--app-gap)',
-        gridTemplateRows: '3em calc(100vh - calc(3em + var(--app-gap))'
+        // gridTemplateRows: '3em calc(100vh - calc(3em + var(--app-gap))'
     } }>
         <div style={ {
             display: 'flex',
             width: '100%',
             overflow: 'scroll',
+            flex: '1 0 auto',
             // marginBottom: 'var(--app-gap)'
         } }>
             { tabs().map((x, i, c) => <div
@@ -43,11 +45,11 @@ export function Page() {
                     backgroundColor: currentTabIndex === i ? 'var(--theme-bc-3)' : 'var(--theme-bc-2)',
                     transition: 'width 0.2s ease-out, background-color 0.2s',
                     cursor: 'pointer',
-                    flex: 1,
+                    flex: '1 0 auto',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
-                    // height: '3em',
+                    height: '3em',
                     display: 'flex',
                     flexDirection: 'row',
                 } }

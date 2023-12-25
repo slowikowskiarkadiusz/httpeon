@@ -75,6 +75,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
             color: 'var(--theme-font-color)',
             backgroundColor: 'var(--theme-bc-2)',
             padding: '0.5em',
+            overflow: 'scroll',
             textAlign: 'center' as any,
             borderRadius: 'var(--border-radius)',
         };
@@ -85,6 +86,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                 height: '100%',
                 borderRadius: 'var(--border-radius)',
                 display: 'grid',
+                overflow: 'scroll',
                 gridTemplateRows: '3em calc(100% - 6em) 3em',
                 backgroundColor: 'var(--theme-bc-3)',
             } }>
@@ -306,7 +308,8 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         return (
             <textarea
                 style={ {
-                    height: '100%',
+                    height: 'auto',
+                    minHeight: '100%',
                     width: '100%',
                     color: 'var(--theme-font-color)',
                     backgroundColor: 'var(--theme-bc-3)',

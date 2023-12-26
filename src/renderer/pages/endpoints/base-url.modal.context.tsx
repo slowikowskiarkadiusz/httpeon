@@ -8,7 +8,7 @@ export const BaseUrlModalContext = createContext({
 });
 
 const width = 250;
-const offset = 0;
+const offset = 60;
 
 export const BaseUrlModalProvider = ({ children }: { children: any }) => {
     const { setBaseUrl, baseUrl } = useSpaces();
@@ -16,8 +16,8 @@ export const BaseUrlModalProvider = ({ children }: { children: any }) => {
         const element = triggeringElement();
 
         const modal = <BaseUrlModal
-            left={ `${ clickAt.x + offset }px` }
-            top={ `${ clickAt.y + offset }px` }
+            left={ `${ element.getBoundingClientRect().left - clickAt.x + offset }px` }
+            top={ `${ element.getBoundingClientRect().top - clickAt.y + offset }px` }
             width={ `${ width }px` }
             defaultValue={ baseUrl }
             onFinish={ (newUrl) => { setBaseUrl(newUrl) } }

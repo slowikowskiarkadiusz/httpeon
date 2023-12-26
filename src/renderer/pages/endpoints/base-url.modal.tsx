@@ -25,8 +25,6 @@ export function BaseUrlModal(props: {
         });
     }, 0);
 
-    console.log(props.defaultValue);
-
     return <div
         ref={ ref }
         style={ {

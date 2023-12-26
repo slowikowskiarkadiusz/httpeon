@@ -134,13 +134,13 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                             data[currentTab].currentDisplayMode = (e.nativeEvent.target as HTMLInputElement).value as DisplayMode;
                             this.forceUpdate();
                             dispatchUpdateCacheEvent();
-                        } }>
+                        } }
+                        value={ data[currentTab].currentDisplayMode }>
                         { Object.keys(displayModes)
                             .filter((x: DisplayMode) => !data[currentTab].allowedDisplayModes || data[currentTab].allowedDisplayModes.includes(x))
                             .map((x) => (
                                 <option value={ x }
-                                        key={ x }
-                                        selected={ x === data[currentTab].currentDisplayMode }>
+                                        key={ x }>
                                     { x }
                                 </option>
                             )) }
@@ -322,13 +322,13 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                      backgroundColor: 'var(--theme-bc-3)',
                      border: 'none',
                  } }
+                 dangerouslySetInnerHTML={ { __html: content } }
                  contentEditable={ true }
                  key={ content }
                  onInput={ (e) => {
                      (data[currentTab].content = (e.target as HTMLDivElement).innerText);
                      dispatchUpdateCacheEvent();
                  } }>
-                { content }
             </div>
         );
     }

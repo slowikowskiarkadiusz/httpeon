@@ -92,6 +92,7 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                      content="GO"
                      color="green"
                      icon={ faPaperPlane }/>
+            <div></div>
 
             {/*<PButton action={ () => {} }*/ }
             {/*         color="gray"*/ }

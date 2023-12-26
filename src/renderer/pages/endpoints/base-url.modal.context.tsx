@@ -4,22 +4,23 @@ import ReactDOM from 'react-dom';
 import { useSpaces } from "../../common/spaces.context";
 
 export const BaseUrlModalContext = createContext({
-    invoke: (triggeringElement: () => HTMLElement) => {},
+    invoke: (triggeringElement: () => HTMLElement, clickAt: { x: number, y: number }) => {},
 });
 
 const width = 250;
 const offset = 0;
 
 export const BaseUrlModalProvider = ({ children }: { children: any }) => {
-    const { getBaseUrl } = useSpaces();
-    const invoke = (triggeringElement: () => HTMLElement) => {
+    const { setBaseUrl, baseUrl } = useSpaces();
+    const invoke = (triggeringElement: () => HTMLElement, clickAt: { x: number, y: number }) => {
         const element = triggeringElement();
 
         const modal = <BaseUrlModal
-            left={ `${ element.offsetLeft + element.offsetWidth / 2 }px` }
-            top={ `${ element.getBoundingClientRect().top + offset }px` }
+            left={ `${ clickAt.x + offset }px` }
+            top={ `${ clickAt.y + offset }px` }
             width={ `${ width }px` }
-            onFinish={ (newUrl) => { } }
+            defaultValue={ baseUrl }
+            onFinish={ (newUrl) => { setBaseUrl(newUrl) } }
         />
 
         const div = document.createElement('div');
@@ -29,9 +30,7 @@ export const BaseUrlModalProvider = ({ children }: { children: any }) => {
     };
 
     return (
-        <BaseUrlModalContext.Provider value={ {
-            invoke: invoke,
-        } }>
+        <BaseUrlModalContext.Provider value={ { invoke } }>
             { children }
         </BaseUrlModalContext.Provider>
     );

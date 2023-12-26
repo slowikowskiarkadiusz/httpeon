@@ -1,3 +1,4 @@
+import './endpoint-text-editor.scss'
 import React, { Component } from 'react';
 import { dispatchUpdateCacheEvent } from "../../app";
 
@@ -15,7 +16,7 @@ export const inputStyle = {
     padding: '0.5em',
     fontFamily: 'Menlo',
     color: 'var(--theme-font-color)',
-    // outline: 'none',
+    outline: 'none',
     fontSize: '2rem',
 };
 
@@ -125,7 +126,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                         </div>
                     )) }
                 </div>
-                <div style={ { padding: '1em', overflow: 'scroll', } }>{ this.renderContent() }</div>
+                <div style={ { overflow: 'scroll', } }>{ this.renderContent() }</div>
                 <div style={ { padding: '0.25em' } }>
                     { <select
                         style={ footerSelectStyle }
@@ -191,7 +192,10 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         try {
             content = JSON.parse(data[currentTab].content);
         } catch (err) {
-            data[currentTab].content = JSON.stringify(content);
+            if (data[currentTab].content === '')
+                data[currentTab].content = JSON.stringify(content);
+            else
+                return <div style={ { ...inputStyle, backgroundColor: 'var(--red-color)' } }>Error while parsing JSON</div>
         }
 
         const updateEntry = (i: number) => {
@@ -306,21 +310,26 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         }
 
         return (
-            <textarea
-                style={ {
-                    height: 'auto',
-                    minHeight: '100%',
-                    width: '100%',
-                    color: 'var(--theme-font-color)',
-                    backgroundColor: 'var(--theme-bc-3)',
-                    border: 'none',
-                } }
-                defaultValue={ content }
-                key={ content }
-                onChange={ (e) => {
-                    (data[currentTab].content = e.target.value);
-                    dispatchUpdateCacheEvent();
-                } }></textarea>
+            <div placeholder={ `${ currentTab.toLowerCase() }...` }
+                 style={ {
+                     padding: '1em',
+                     height: 'auto',
+                     fontFamily: 'Menlo',
+                     whiteSpace: 'pre',
+                     minHeight: '100%',
+                     width: '100%',
+                     color: 'var(--theme-font-color)',
+                     backgroundColor: 'var(--theme-bc-3)',
+                     border: 'none',
+                 } }
+                 contentEditable={ true }
+                 key={ content }
+                 onInput={ (e) => {
+                     (data[currentTab].content = (e.target as HTMLDivElement).innerText);
+                     dispatchUpdateCacheEvent();
+                 } }>
+                { content }
+            </div>
         );
     }
 }

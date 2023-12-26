@@ -6,7 +6,7 @@ type Color = 'primary' | 'secondary' | 'green' | 'purple' | 'yellow' | 'gray';
 
 export function PButton(props: {
     content?: string,
-    onClick: () => void,
+    onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void,
     color?: Color,
     icon?: IconProp,
     iconTransform?: string

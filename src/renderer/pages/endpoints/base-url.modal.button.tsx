@@ -6,7 +6,7 @@ export function BaseUrlModalButton({ children }) {
 
     return <div style={ { display: 'flex', position: 'relative', } }
                 id="baseUrlModalButtonParent">
-        <PButton onClick={ () => invoke(() => document.getElementById('baseUrlModalButtonParent')) }
+        <PButton onClick={ (e) => invoke(() => document.getElementById('baseUrlModalButtonParent'), { x: e.pageX, y: e.pageY }) }
                  content="BASE URL"
                  color="secondary"/>
     </div>

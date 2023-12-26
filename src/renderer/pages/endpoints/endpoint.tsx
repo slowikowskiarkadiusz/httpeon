@@ -13,7 +13,7 @@ import { BaseUrlModalButton } from "./base-url.modal.button";
 export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSetup: (setup: TabSetup<EndpointTabContent>) => void }) {
     props.setup.content.method = 'get';
     const [selectedMethod, setSelectedMethod] = useState(props.setup.content.method)
-    const { tabs, currentTabIndex } = useSpaces();
+    const { tabs, currentTabIndex, baseUrl } = useSpaces();
 
     dispatchUpdateCacheEvent();
     // <div style={ { marginTop: 'var(--app-gap)', paddingRight: '10px', flex: '1 0 auto' } }>
@@ -26,8 +26,11 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                 </BaseUrlModalButton>
             </BaseUrlModalProvider>
 
-            <span>
-                
+            <span style={ {
+                margin: 'auto 0',
+                fontFamily: 'Menlo'
+            } }>
+                { baseUrl }
             </span>
         </div>
 
@@ -102,7 +105,7 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
             flex: '1 1 auto',
         } }>
             <EndpointTextEditor data={ (tabs()[currentTabIndex].content as EndpointTabContent).inputs }/>
-            {/*<EndpointTextEditor data={ (tabs()[currentTabIndex].content as EndpointTabContent).outputs }/>*/ }
+            <EndpointTextEditor data={ (tabs()[currentTabIndex].content as EndpointTabContent).outputs }/>
         </div>
     </>
 }

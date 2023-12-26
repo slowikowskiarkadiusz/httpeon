@@ -47,7 +47,7 @@ const SpacesContext = createContext({
     tabs: () => ([] as TabSetup<any>[]),
     updateCache: () => {},
     currentTabIndex: 0,
-    getBaseUrl: () => '' as string,
+    baseUrl: null as string,
     setBaseUrl: (newUrl: string) => {},
     addTab: (newTab: TabSetup<any>) => {return 0 as number},
     removeTab: (index: number) => {},
@@ -58,6 +58,7 @@ const SpacesContext = createContext({
 export const SpacesProvider = ({ children }: any) => {
     const [spaces, _setSpaces] = useState(loadedSpaces);
     const [activeSpace, _setActiveSpace] = useState(spaces.filter(x => x.active)[0] ?? spaces[0]);
+    const [baseUrl, _setBaseUrl] = useState(activeSpace.baseUrl);
     const [currentTabIndex, setCurrentTabIndex] = useState(-1);
 
     let newCurrentTabIndex = loadedSpaces.filter(x => x.active)[0]?.tabs.findIndex(x => x.active) ?? -1;
@@ -72,9 +73,8 @@ export const SpacesProvider = ({ children }: any) => {
 
     const getActive = () => activeSpace;
     const setActive = (name: string) => _setActiveSpace(spaces.filter(x => x.name === name)[0] ?? spaces[0]);
-    const getBaseUrl = () => activeSpace.baseUrl;
     const setBaseUrl = (newBaseUrl: string) => {
-        activeSpace.baseUrl;
+        _setBaseUrl(activeSpace.baseUrl = newBaseUrl);
         updateCache();
     }
 
@@ -124,7 +124,7 @@ export const SpacesProvider = ({ children }: any) => {
     }
 
     return (
-        <SpacesContext.Provider value={ { spaces, setSpaceConfig, getActive, setActive, tabs, updateCache, currentTabIndex, getBaseUrl, setBaseUrl, addTab, removeTab, setCurrentTab, updateTab } }>
+        <SpacesContext.Provider value={ { spaces, setSpaceConfig, getActive, setActive, tabs, updateCache, currentTabIndex, baseUrl, setBaseUrl, addTab, removeTab, setCurrentTab, updateTab } }>
             { children }
         </SpacesContext.Provider>
     );

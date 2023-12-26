@@ -1,14 +1,13 @@
 import React from "react";
 import { inputStyle } from "./endpoint-text-editor";
-import { useSpaces } from "../../common/spaces.context";
 
 export function BaseUrlModal(props: {
     left: string,
     top: string,
     width: string,
+    defaultValue: string,
     onFinish: (newUrl: string) => void
 }) {
-    const { getActive } = useSpaces();
     const ref = React.createRef<HTMLDivElement>();
     const inputRef = React.createRef<HTMLInputElement>();
     const hrStyle = {
@@ -25,6 +24,8 @@ export function BaseUrlModal(props: {
             }
         });
     }, 0);
+
+    console.log(props.defaultValue);
 
     return <div
         ref={ ref }
@@ -53,7 +54,7 @@ export function BaseUrlModal(props: {
                            ref.current.parentElement.remove();
                        }
                    } }
-                   defaultValue={ getActive().baseUrl }
+                   defaultValue={ props.defaultValue }
             />
         </div>
     </div>;

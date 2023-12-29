@@ -2,36 +2,65 @@ import { TabSetup } from "../tab-setup";
 import { EndpointTabContent } from "./endpoint.tab-content";
 import { PButton } from "../../common/pbutton";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import React, { useState } from "react";
 import { EndpointTextEditor } from "./endpoint-text-editor";
 import { useSpaces } from "../../common/spaces.context";
 import { dispatchUpdateCacheEvent } from "../../app";
 import { callHttp } from "../../common/http";
-import { BaseUrlModalProvider } from "./base-url.modal.context";
-import { BaseUrlModalButton } from "./base-url.modal.button";
 
 export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSetup: (setup: TabSetup<EndpointTabContent>) => void }) {
     props.setup.content.method = 'get';
     const [selectedMethod, setSelectedMethod] = useState(props.setup.content.method)
-    const { tabs, currentTabIndex, baseUrl } = useSpaces();
+    const { tabs, currentTabIndex, setBaseUrl, baseUrl } = useSpaces();
+    const baseUrlRef = React.createRef<HTMLInputElement>();
+    const requestRef = React.createRef<EndpointTextEditor>();
+    const responseRef = React.createRef<EndpointTextEditor>();
 
     dispatchUpdateCacheEvent();
-    // <div style={ { marginTop: 'var(--app-gap)', paddingRight: '10px', flex: '1 0 auto' } }>
-    return <>
 
+    return <>
         <div id="baseUrlModalParent"
              style={ { width: '100%', display: 'flex', flexDirection: 'row', gap: 'var(--app-gap)', } }>
-            <BaseUrlModalProvider>
-                <BaseUrlModalButton>
-                </BaseUrlModalButton>
-            </BaseUrlModalProvider>
-
-            <span style={ {
-                margin: 'auto 0',
-                fontFamily: 'Menlo'
-            } }>
-                { baseUrl }
-            </span>
+            <div style={ { backgroundColor: 'var(--theme-bc-2)', fontSize: '2rem', flex: '1 0 auto', display: 'flex', borderRadius: 'var(--cell-border-radius)' } }>
+                <div style={ {
+                    display: 'flex',
+                    height: '100%',
+                    cursor: 'default',
+                    borderTopLeftRadius: 'var(--cell-border-radius)',
+                    borderBottomLeftRadius: 'var(--cell-border-radius)',
+                    border: 'none',
+                    fontWeight: 'bold',
+                    backgroundColor: 'var(--secondary-color)',
+                    color: 'var(--theme-bc-2)',
+                    padding: '0em 0.25em',
+                } }
+                     onClick={ () => baseUrlRef.current?.focus() }>
+                    <span style={ {
+                        margin: 'auto',
+                    } }>BASE URL</span>
+                </div>
+                <input type="text"
+                       ref={ baseUrlRef }
+                       style={ {
+                           fontSize: '2rem',
+                           flex: '1 1 auto',
+                           paddingLeft: '1em',
+                           border: 'none',
+                           backgroundColor: 'var(--theme-bc-3)',
+                           color: 'var(--theme-font-color)',
+                           fontFamily: 'Menlo',
+                           borderTopRightRadius: 'var(--cell-border-radius)',
+                           borderBottomRightRadius: 'var(--cell-border-radius)',
+                           lineHeight: '2em',
+                           overflow: 'scroll',
+                       } }
+                       defaultValue={ baseUrl }
+                       key={ baseUrl }
+                       placeholder="base url..."
+                       onBlur={ e => {
+                           setBaseUrl((e.target as HTMLInputElement).value)
+                       } }/>
+            </div>
         </div>
 
         <div style={ {
@@ -51,6 +80,7 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                     backgroundColor: `var(--http-${ selectedMethod }-bc)`,
                     color: 'var(--theme-bc)',
                     padding: '0em 0.5em',
+                    cursor: 'pointer',
                     textAlign: 'center',
                 } }
                         onChange={ (e) => {
@@ -87,7 +117,21 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                        } }/>
             </div>
             <PButton onClick={ () => {
-                callHttp({ url: 'https://google.com', method: 'get', headers: [] }).then(x => console.log('response', x));
+                let tabContent = (tabs()[currentTabIndex].content as EndpointTabContent);
+                let request = {
+                    url: baseUrl + props.setup.content.endpoint,
+                    method: selectedMethod,
+                    headers: JSON.parse(tabContent.response['Headers'].content) as { key: string, value: string }[],
+                    body: tabContent.request['Body'].content,
+                };
+                // tabContent.request = request;
+                callHttp(request).then(x => {
+                    console.log('response', x);
+                    tabContent.response['Body'].content = x.body;
+                    tabContent.response['Headers'].content = JSON.stringify(x.headers.map(pair => {return { key: pair[0], value: pair[1] }}));
+                    requestRef.current.forceUpdate();
+                    responseRef.current.forceUpdate();
+                });
             } }
                      content="GO"
                      color="green"
@@ -105,8 +149,12 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
             gap: 'var(--app-gap)',
             flex: '1 1 auto',
         } }>
-            <EndpointTextEditor data={ (tabs()[currentTabIndex].content as EndpointTabContent).inputs }/>
-            <EndpointTextEditor data={ (tabs()[currentTabIndex].content as EndpointTabContent).outputs }/>
+            <EndpointTextEditor ref={ requestRef }
+                                title="REQUEST"
+                                data={ (tabs()[currentTabIndex].content as EndpointTabContent).request }/>
+            <EndpointTextEditor ref={ responseRef }
+                                title="RESPONSE"
+                                data={ (tabs()[currentTabIndex].content as EndpointTabContent).response }/>
         </div>
     </>
 }

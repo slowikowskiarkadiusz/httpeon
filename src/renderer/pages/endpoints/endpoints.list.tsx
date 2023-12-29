@@ -1,10 +1,10 @@
 import '../../sidebar/lists.scss';
-import { dimOpenApi } from "../../common/dim.openapi";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { EndpointTabContent } from "./endpoint.tab-content";
 import { makeTabSetup } from "../tab-setup";
+import { dimOpenApi } from "../../common/dim.openapi";
 
 interface ListItem {
     label: string,
@@ -35,7 +35,7 @@ export function EndpointsList() {
                                   const tabSetup = makeTabSetup<EndpointTabContent>('endpoints', fullPath, fullPath, true, {
                                       endpoint: fullPath,
                                       method: endpoints[0],
-                                      inputs: {
+                                      request: {
                                           'Params': {
                                               content: '',
                                           },
@@ -47,14 +47,13 @@ export function EndpointsList() {
                                               content: '',
                                           },
                                       },
-                                      outputs: {
-                                          'Request': {
+                                      response: {
+                                          'Body': {
                                               content: '',
                                               allowedDisplayModes: ['text']
                                           },
-                                          'Response': {
+                                          'Headers': {
                                               content: '',
-                                              allowedDisplayModes: ['text']
                                           },
                                       }
                                   });

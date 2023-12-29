@@ -37,6 +37,7 @@ export interface EndpointTextEditorData {
 }
 
 interface EndpointTextEditorProps {
+    title: string;
     data: EndpointTextEditorData;
 }
 
@@ -88,9 +89,12 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                 borderRadius: 'var(--border-radius)',
                 display: 'grid',
                 overflow: 'scroll',
-                gridTemplateRows: '3em calc(100% - 6em) 3em',
+                gridTemplateRows: '3em 3em calc(100% - 9em) 3em',
                 backgroundColor: 'var(--theme-bc-3)',
             } }>
+                <div style={ { fontSize: '2rem', margin: 'auto', fontWeight: 'bold', textAlign: 'center' } }>
+                    { this.props.title }
+                </div>
                 <div style={ {
                     display: 'flex',
                     width: '100%',
@@ -114,6 +118,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                                 style={ {
                                     backgroundColor: 'transparent',
                                     color: 'unset',
+                                    fontWeight: currentTab === key ? 'bold' : 'normal',
                                     border: 'none',
                                     fontSize: '2rem',
                                     cursor: 'pointer',

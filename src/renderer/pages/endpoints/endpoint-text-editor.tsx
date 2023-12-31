@@ -33,11 +33,13 @@ export interface EndpointTextEditorData {
         currentDisplayMode?: DisplayMode,
         currentTextType?: TextType,
         isReadOnly?: boolean,
+        statusCode?: number;
     }
 }
 
 interface EndpointTextEditorProps {
     title: string;
+    responseStatus?: number;
     data: EndpointTextEditorData;
 }
 
@@ -47,8 +49,11 @@ interface EndpointTextEditorState {
 }
 
 export class EndpointTextEditor extends Component<EndpointTextEditorProps, EndpointTextEditorState> {
+    // private buttonRefs: HTMLButtonElement[];
     constructor(props: EndpointTextEditorProps) {
         super(props);
+        // this.buttonRefs = [];
+        // new Array(Object.keys(props.data).length).map(() => React.createRef<HTMLButtonElement>());
         this.state = {
             currentTab: Object.keys(props.data)[0],
             textType: 'json',
@@ -58,6 +63,15 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
     render() {
         const { data } = this.props;
         const { currentTab } = this.state;
+
+        // setTimeout(() => {
+        //     Object.keys(data).map((key, i, c) => {
+        //         if (data[key].customHeader)
+        //             this.buttonRefs[i].innerHTML = data[key].customHeader;
+        //         else
+        //             this.buttonRefs[i].innerText = key;
+        //     });
+        // }, 0);
 
         if (!data[currentTab].currentDisplayMode) {
             let value: DisplayMode = 'default';
@@ -93,28 +107,28 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                 backgroundColor: 'var(--theme-bc-3)',
             } }>
                 <div style={ { fontSize: '2rem', margin: 'auto', fontWeight: 'bold', textAlign: 'center' } }>
-                    { this.props.title }
+                    { this.props.title } { this.renderResponseStatus() }
                 </div>
                 <div style={ {
                     display: 'flex',
                     width: '100%',
                 } }>
                     { Object.keys(data).map((key, i, c) => (
-                        <div
-                            key={ `page-tab-${ i }` }
-                            style={ {
-                                width: `${ 100 / c.length }%`,
-                                backgroundColor: currentTab === key ? 'var(--theme-bc-3)' : 'var(--theme-bc-2)',
-                                transition: 'width 0.2s ease-out, background-color 0.2s',
-                                cursor: 'pointer',
-                                flex: 1,
-                                whiteSpace: 'nowrap',
-                                overflow: 'hidden',
-                                display: 'flex',
-                                flexDirection: 'row',
-                            } }
-                            onClick={ () => this.setCurrentTab(key) }>
+                        <div key={ `page-tab-${ i }` }
+                             style={ {
+                                 width: `${ 100 / c.length }%`,
+                                 backgroundColor: currentTab === key ? 'var(--theme-bc-3)' : 'var(--theme-bc-2)',
+                                 transition: 'width 0.2s ease-out, background-color 0.2s',
+                                 cursor: 'pointer',
+                                 flex: 1,
+                                 whiteSpace: 'nowrap',
+                                 overflow: 'hidden',
+                                 display: 'flex',
+                                 flexDirection: 'row',
+                             } }
+                             onClick={ () => this.setCurrentTab(key) }>
                             <button
+                                // ref={ ref => this.buttonRefs[i] = ref }
                                 style={ {
                                     backgroundColor: 'transparent',
                                     color: 'unset',
@@ -127,6 +141,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                                     overflow: 'hidden',
                                 } }>
                                 { key }
+                                {/*{ i } { this.buttonRefs.length }*/ }
                             </button>
                         </div>
                     )) }
@@ -167,6 +182,17 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                 </div>
             </div>
         );
+    }
+
+    renderResponseStatus() {
+        if (!this.props.responseStatus)
+            return undefined;
+
+        let statusCat = Math.floor(this.props.responseStatus) / 100;
+        return <span style={ {
+            fontWeight: 'bold',
+            color: `var(--${ [4, 5].includes(statusCat) ? 'red' : (statusCat === 3 ? 'yellow' : 'green') }-color`
+        } }>{ this.props.responseStatus }</span>
     }
 
     setCurrentTab(tab: string) {

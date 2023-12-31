@@ -11,6 +11,7 @@ import { callHttp } from "../../common/http";
 export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSetup: (setup: TabSetup<EndpointTabContent>) => void }) {
     props.setup.content.method = 'get';
     const [selectedMethod, setSelectedMethod] = useState(props.setup.content.method)
+    const [responseStatus, setResponseStatus] = useState(undefined);
     const { tabs, currentTabIndex, setBaseUrl, baseUrl } = useSpaces();
     const baseUrlRef = React.createRef<HTMLInputElement>();
     const requestRef = React.createRef<EndpointTextEditor>();
@@ -121,14 +122,17 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                 let request = {
                     url: baseUrl + props.setup.content.endpoint,
                     method: selectedMethod,
-                    headers: JSON.parse(tabContent.response['Headers'].content) as { key: string, value: string }[],
+                    headers: JSON.parse(tabContent.request['Headers'].content) as { key: string, value: string }[],
                     body: tabContent.request['Body'].content,
                 };
                 // tabContent.request = request;
+                request.body = request.body === '' ? undefined : request.body;
                 callHttp(request).then(x => {
                     console.log('response', x);
                     tabContent.response['Body'].content = x.body;
                     tabContent.response['Headers'].content = JSON.stringify(x.headers.map(pair => {return { key: pair[0], value: pair[1] }}));
+                    // tabContent.response['Headers'].customHeader = `<div>Headers <span style="${ statusCodeStyle }">${ x.status }</span></div>`;
+                    setResponseStatus(x.status);
                     requestRef.current.forceUpdate();
                     responseRef.current.forceUpdate();
                 });
@@ -154,7 +158,8 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                                 data={ (tabs()[currentTabIndex].content as EndpointTabContent).request }/>
             <EndpointTextEditor ref={ responseRef }
                                 title="RESPONSE"
-                                data={ (tabs()[currentTabIndex].content as EndpointTabContent).response }/>
+                                responseStatus={responseStatus}
+                                data={ (tabs()[currentTabIndex].content as EndpointTabContent).response }></EndpointTextEditor>
         </div>
     </>
 }

@@ -35,7 +35,11 @@ app.on('ready', () => {
 
     ipcMain.on('make-request', (event, { url, method, body, headers }: HttpCallParams) => {
         const requestHeaders = new Headers();
-        headers.forEach(header => requestHeaders.append(header.key, header.value));
+        headers
+            .filter(x => x.key !== 'transfer-encoding')
+            .forEach(header => requestHeaders.append(header.key, header.value));
+        console.log('headers', headers);
+        console.log('requestHeaders', requestHeaders);
         const options = {
             method,
             body,

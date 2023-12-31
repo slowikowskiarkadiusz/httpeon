@@ -6,6 +6,7 @@ export function callHttp(params: HttpCallParams): Promise<HttpCallResponse> {
     return new Promise<HttpCallResponse>(resolve => {
         ipcRenderer.send('make-request', { ...params });
         ipcRenderer.on('request-response', (event, response) => {
+            console.log(response);
             resolve(response);
         });
     })

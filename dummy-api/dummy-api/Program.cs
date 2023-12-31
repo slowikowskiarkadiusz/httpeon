@@ -47,6 +47,10 @@ app.MapGet("/weatherforecast", (x) =>
     .WithName("GetWeatherForecast")
     .WithOpenApi();
 
+app.MapGet("/weatherforecast_error", (x) => { throw new System.Exception("Jakis blad"); })
+    .WithName("GetWeatherForecast_Error")
+    .WithOpenApi();
+
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)

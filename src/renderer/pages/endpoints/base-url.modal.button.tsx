@@ -10,5 +10,4 @@ export function BaseUrlModalButton({ children }) {
                  content="BASE URL"
                  color="secondary"/>
     </div>
-
 }

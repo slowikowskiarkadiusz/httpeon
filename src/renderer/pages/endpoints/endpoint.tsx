@@ -122,19 +122,20 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                 let request = {
                     url: baseUrl + props.setup.content.endpoint,
                     method: selectedMethod,
-                    headers: JSON.parse(tabContent.request['Headers'].content) as { key: string, value: string }[],
-                    body: tabContent.request['Body'].content,
+                    headers: JSON.parse(tabContent.request.tabs['Headers'].content) as { key: string, value: string }[],
+                    body: tabContent.request.tabs['Body'].content,
                 };
                 // tabContent.request = request;
                 request.body = request.body === '' ? undefined : request.body;
                 callHttp(request).then(x => {
-                    console.log('response', x);
-                    tabContent.response['Body'].content = x.body;
-                    tabContent.response['Headers'].content = JSON.stringify(x.headers.map(pair => {return { key: pair[0], value: pair[1] }}));
-                    // tabContent.response['Headers'].customHeader = `<div>Headers <span style="${ statusCodeStyle }">${ x.status }</span></div>`;
+                    let statusCat = Math.floor(x.status) / 100;
+                    let headerStatus = `<span style="font-weight: bold; color: var(--${ [4, 5].includes(statusCat) ? 'red' : (statusCat === 3 ? 'yellow' : 'green') }-color">&nbsp;${ x.status }</span>`;
+                    tabContent.response.headerHtml = `<span>RESPONSE ${ headerStatus }</span>`;
+                    tabContent.response.tabs['Body'].content = x.body;
+                    tabContent.response.tabs['Headers'].content = JSON.stringify(x.headers.map(pair => {return { key: pair[0], value: pair[1] }}));
                     setResponseStatus(x.status);
-                    requestRef.current.forceUpdate();
-                    responseRef.current.forceUpdate();
+                    requestRef.current?.forceUpdate();
+                    responseRef.current?.forceUpdate();
                 });
             } }
                      content="GO"
@@ -154,12 +155,9 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
             flex: '1 1 auto',
         } }>
             <EndpointTextEditor ref={ requestRef }
-                                title="REQUEST"
                                 data={ (tabs()[currentTabIndex].content as EndpointTabContent).request }/>
             <EndpointTextEditor ref={ responseRef }
-                                title="RESPONSE"
-                                responseStatus={responseStatus}
-                                data={ (tabs()[currentTabIndex].content as EndpointTabContent).response }></EndpointTextEditor>
+                                data={ (tabs()[currentTabIndex].content as EndpointTabContent).response }/>
         </div>
     </>
 }

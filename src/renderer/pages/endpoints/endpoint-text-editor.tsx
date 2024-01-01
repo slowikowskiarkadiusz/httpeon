@@ -27,19 +27,21 @@ interface ContentEntry {
 }
 
 export interface EndpointTextEditorData {
-    [tabName: string]: {
-        content: string,
-        allowedDisplayModes?: DisplayMode[],
-        currentDisplayMode?: DisplayMode,
-        currentTextType?: TextType,
-        isReadOnly?: boolean,
-        statusCode?: number;
+    headerHtml: string;
+    tabs: {
+        [tabName: string]: {
+            content: string,
+            allowedDisplayModes?: DisplayMode[],
+            currentDisplayMode?: DisplayMode,
+            currentTextType?: TextType,
+            isReadOnly?: boolean,
+            statusCode?: number;
+        }
     }
 }
 
 interface EndpointTextEditorProps {
-    title: string;
-    responseStatus?: number;
+    // responseStatus?: number;
     data: EndpointTextEditorData;
 }
 
@@ -55,7 +57,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         // this.buttonRefs = [];
         // new Array(Object.keys(props.data).length).map(() => React.createRef<HTMLButtonElement>());
         this.state = {
-            currentTab: Object.keys(props.data)[0],
+            currentTab: Object.keys(props.data.tabs)[0],
             textType: 'json',
         };
     }
@@ -64,21 +66,12 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         const { data } = this.props;
         const { currentTab } = this.state;
 
-        // setTimeout(() => {
-        //     Object.keys(data).map((key, i, c) => {
-        //         if (data[key].customHeader)
-        //             this.buttonRefs[i].innerHTML = data[key].customHeader;
-        //         else
-        //             this.buttonRefs[i].innerText = key;
-        //     });
-        // }, 0);
-
-        if (!data[currentTab].currentDisplayMode) {
+        if (!data.tabs[currentTab].currentDisplayMode) {
             let value: DisplayMode = 'default';
-            if (!!data[currentTab].allowedDisplayModes)
-                value = data[currentTab].allowedDisplayModes[0];
-            if (data[currentTab].currentDisplayMode !== value)
-                data[currentTab].currentDisplayMode = value;
+            if (!!data.tabs[currentTab].allowedDisplayModes)
+                value = data.tabs[currentTab].allowedDisplayModes[0];
+            if (data.tabs[currentTab].currentDisplayMode !== value)
+                data.tabs[currentTab].currentDisplayMode = value;
 
             dispatchUpdateCacheEvent();
             this.forceUpdate();
@@ -106,14 +99,14 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                 gridTemplateRows: '3em 3em calc(100% - 9em) 3em',
                 backgroundColor: 'var(--theme-bc-3)',
             } }>
-                <div style={ { fontSize: '2rem', margin: 'auto', fontWeight: 'bold', textAlign: 'center' } }>
-                    { this.props.title } { this.renderResponseStatus() }
+                <div style={ { fontSize: '2rem', margin: 'auto', fontWeight: 'bold', textAlign: 'center' } }
+                     dangerouslySetInnerHTML={ { __html: data.headerHtml } }>
                 </div>
                 <div style={ {
                     display: 'flex',
                     width: '100%',
                 } }>
-                    { Object.keys(data).map((key, i, c) => (
+                    { Object.keys(data.tabs).map((key, i, c) => (
                         <div key={ `page-tab-${ i }` }
                              style={ {
                                  width: `${ 100 / c.length }%`,
@@ -151,13 +144,13 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                     { <select
                         style={ footerSelectStyle }
                         onChange={ (e) => {
-                            data[currentTab].currentDisplayMode = (e.nativeEvent.target as HTMLInputElement).value as DisplayMode;
+                            data.tabs[currentTab].currentDisplayMode = (e.nativeEvent.target as HTMLInputElement).value as DisplayMode;
                             this.forceUpdate();
                             dispatchUpdateCacheEvent();
                         } }
-                        value={ data[currentTab].currentDisplayMode }>
+                        value={ data.tabs[currentTab].currentDisplayMode }>
                         { Object.keys(displayModes)
-                            .filter((x: DisplayMode) => !data[currentTab].allowedDisplayModes || data[currentTab].allowedDisplayModes.includes(x))
+                            .filter((x: DisplayMode) => !data.tabs[currentTab].allowedDisplayModes || data.tabs[currentTab].allowedDisplayModes.includes(x))
                             .map((x) => (
                                 <option value={ x }
                                         key={ x }>
@@ -184,16 +177,16 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         );
     }
 
-    renderResponseStatus() {
-        if (!this.props.responseStatus)
-            return undefined;
-
-        let statusCat = Math.floor(this.props.responseStatus) / 100;
-        return <span style={ {
-            fontWeight: 'bold',
-            color: `var(--${ [4, 5].includes(statusCat) ? 'red' : (statusCat === 3 ? 'yellow' : 'green') }-color`
-        } }>{ this.props.responseStatus }</span>
-    }
+    // renderResponseStatus() {
+    //     if (!this.props.responseStatus)
+    //         return undefined;
+    //
+    //     let statusCat = Math.floor(this.props.responseStatus) / 100;
+    //     return <span style={ {
+    //         fontWeight: 'bold',
+    //         color: `var(--${ [4, 5].includes(statusCat) ? 'red' : (statusCat === 3 ? 'yellow' : 'green') }-color`
+    //     } }>&nbsp;{ this.props.responseStatus }</span>
+    // }
 
     setCurrentTab(tab: string) {
         this.setState({ currentTab: tab });
@@ -203,7 +196,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         const { data } = this.props;
         const { currentTab } = this.state;
 
-        switch (data[currentTab].currentDisplayMode) {
+        switch (data.tabs[currentTab].currentDisplayMode) {
             case 'default':
                 return this.renderContentAsDefault();
             case 'text':
@@ -221,10 +214,10 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
 
         let content: ContentEntry[] = [];
         try {
-            content = JSON.parse(data[currentTab].content);
+            content = JSON.parse(data.tabs[currentTab].content);
         } catch (err) {
-            if (data[currentTab].content === '')
-                data[currentTab].content = JSON.stringify(content);
+            if (data.tabs[currentTab].content === '')
+                data.tabs[currentTab].content = JSON.stringify(content);
             else
                 return <div style={ { ...inputStyle, backgroundColor: 'var(--red-color)' } }>Error while parsing JSON</div>
         }
@@ -234,7 +227,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                 content.splice(i, 1);
                 setTimeout(() => this.forceUpdate(), 0);
             }
-            data[currentTab].content = JSON.stringify(content);
+            data.tabs[currentTab].content = JSON.stringify(content);
             dispatchUpdateCacheEvent();
         }
 
@@ -254,6 +247,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                                    ref={ this.lastInputRefs.key }
                                    style={ inputStyle }
                                    placeholder="key..."
+                                   disabled={ data.tabs[currentTab].isReadOnly }
                                    onChange={ e => {
                                        content[i].key = e.target.value;
                                        updateEntry(i);
@@ -265,6 +259,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                                    ref={ this.lastInputRefs.value }
                                    style={ inputStyle }
                                    placeholder="value..."
+                                   disabled={ data.tabs[currentTab].isReadOnly }
                                    onChange={ e => {
                                        content[i].value = e.target.value;
                                        updateEntry(i);
@@ -275,6 +270,7 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                             <input type="checkbox"
                                    style={ inputStyle }
                                    defaultChecked={ x.isOn }
+                                   disabled={ data.tabs[currentTab].isReadOnly }
                                    onChange={ e => {
                                        content[i].isOn = e.target.checked;
                                        updateEntry(i);
@@ -283,41 +279,43 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                     </tr>
                 }) }
 
-            <tr>
-                <td style={ { padding: '0 0.5em' } }>
-                    <input type="text"
-                           style={ inputStyle }
-                           onChange={ e => {
-                               content.push({ key: e.target.value, value: '', isOn: true });
-                               data[currentTab].content = JSON.stringify(content);
-                               this.forceUpdate();
-                               setTimeout(() => {
-                                   this.lastInputRefs.key.current.focus();
-                                   e.target.value = '';
-                               }, 0);
-                           } }
-                           placeholder="key..."/>
-                </td>
-                <td style={ { padding: '0 0.5em' } }>
-                    <input type="text"
-                           style={ inputStyle }
-                           onChange={ e => {
-                               content.push({ key: '', value: e.target.value, isOn: true });
-                               data[currentTab].content = JSON.stringify(content);
-                               this.forceUpdate();
-                               setTimeout(() => {
-                                   this.lastInputRefs.value.current.focus();
-                                   e.target.value = '';
-                               }, 0);
-                           } }
-                           placeholder="value..."/>
-                </td>
-                <td style={ { padding: '0 0.5em' } }>
-                    <input type="checkbox"
-                           style={ inputStyle }
-                           disabled={ true }/>
-                </td>
-            </tr>
+            { !data.tabs[currentTab].isReadOnly
+                ? <tr>
+                    <td style={ { padding: '0 0.5em' } }>
+                        <input type="text"
+                               style={ inputStyle }
+                               onChange={ e => {
+                                   content.push({ key: e.target.value, value: '', isOn: true });
+                                   data.tabs[currentTab].content = JSON.stringify(content);
+                                   this.forceUpdate();
+                                   setTimeout(() => {
+                                       this.lastInputRefs.key.current.focus();
+                                       e.target.value = '';
+                                   }, 0);
+                               } }
+                               placeholder="key..."/>
+                    </td>
+                    <td style={ { padding: '0 0.5em' } }>
+                        <input type="text"
+                               style={ inputStyle }
+                               onChange={ e => {
+                                   content.push({ key: '', value: e.target.value, isOn: true });
+                                   data.tabs[currentTab].content = JSON.stringify(content);
+                                   this.forceUpdate();
+                                   setTimeout(() => {
+                                       this.lastInputRefs.value.current.focus();
+                                       e.target.value = '';
+                                   }, 0);
+                               } }
+                               placeholder="value..."/>
+                    </td>
+                    <td style={ { padding: '0 0.5em' } }>
+                        <input type="checkbox"
+                               style={ inputStyle }
+                               disabled={ true }/>
+                    </td>
+                </tr>
+                : undefined }
             </tbody>
         </table>;
     }
@@ -330,14 +328,14 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
         try {
             switch (textType) {
                 case "json":
-                    content = JSON.stringify(JSON.parse(data[currentTab].content), null, 2);
+                    content = JSON.stringify(JSON.parse(data.tabs[currentTab].content), null, 2);
                     break;
                 case "plain":
-                    content = JSON.parse(data[currentTab].content);
+                    content = JSON.parse(data.tabs[currentTab].content);
                     break;
             }
         } catch (err) {
-            content = data[currentTab].content;
+            content = data.tabs[currentTab].content;
         }
 
         return (
@@ -354,10 +352,10 @@ export class EndpointTextEditor extends Component<EndpointTextEditorProps, Endpo
                      border: 'none',
                  } }
                  dangerouslySetInnerHTML={ { __html: content } }
-                 contentEditable={ true }
+                 contentEditable={ !data.tabs[currentTab].isReadOnly }
                  key={ content }
                  onInput={ (e) => {
-                     (data[currentTab].content = (e.target as HTMLDivElement).innerText);
+                     (data.tabs[currentTab].content = (e.target as HTMLDivElement).innerText);
                      dispatchUpdateCacheEvent();
                  } }>
             </div>

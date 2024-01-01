@@ -36,25 +36,33 @@ export function EndpointsList() {
                                       endpoint: fullPath,
                                       method: endpoints[0],
                                       request: {
-                                          'Params': {
-                                              content: '',
-                                          },
-                                          'Body': {
-                                              content: '',
-                                              allowedDisplayModes: ['text']
-                                          },
-                                          'Headers': {
-                                              content: '',
-                                          },
+                                          headerHtml: '<span>REQUEST</span>',
+                                          tabs: {
+                                              'Params': {
+                                                  content: '',
+                                              },
+                                              'Body': {
+                                                  content: '',
+                                                  allowedDisplayModes: ['text']
+                                              },
+                                              'Headers': {
+                                                  content: '',
+                                              },
+                                          }
                                       },
                                       response: {
-                                          'Body': {
-                                              content: '',
-                                              allowedDisplayModes: ['text']
-                                          },
-                                          'Headers': {
-                                              content: '',
-                                          },
+                                          headerHtml: '<span>RESPONSE</span>',
+                                          tabs: {
+                                              'Body': {
+                                                  content: '',
+                                                  allowedDisplayModes: ['text'],
+                                                  isReadOnly: true,
+                                              },
+                                              'Headers': {
+                                                  content: '',
+                                                  isReadOnly: true,
+                                              },
+                                          }
                                       }
                                   });
                                   window.dispatchEvent(new CustomEvent('sidebar_list_item_selected', { detail: tabSetup }));

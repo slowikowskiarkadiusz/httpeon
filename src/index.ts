@@ -38,8 +38,6 @@ app.on('ready', () => {
         headers
             .filter(x => x.key !== 'transfer-encoding')
             .forEach(header => requestHeaders.append(header.key, header.value));
-        console.log('headers', headers);
-        console.log('requestHeaders', requestHeaders);
         const options = {
             method,
             body,
@@ -48,13 +46,14 @@ app.on('ready', () => {
 
         fetch(url, options).then(response => {
             let responseHeaders = [...response.headers];
-            response.text().then(body =>
+            response.text().then(body => {
                 event.sender.send('request-response', {
                     status: response.status,
                     statusText: response.statusText,
                     body: body,
                     headers: responseHeaders
-                }));
+                });
+            });
         })
             .catch(err => console.error(err));
     });

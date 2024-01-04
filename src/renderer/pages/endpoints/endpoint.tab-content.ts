@@ -1,8 +1,9 @@
 import { EndpointTextEditorData } from "./endpoint-text-editor";
+import { EndpointOutputData } from "./endpoint-output";
 
 export interface EndpointTabContent {
     endpoint: string;
     method: string;
-    request: EndpointTextEditorData;
-    response: EndpointTextEditorData;
+    input: EndpointTextEditorData;
+    output: EndpointOutputData;
 }

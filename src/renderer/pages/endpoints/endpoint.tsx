@@ -7,6 +7,7 @@ import { EndpointTextEditor } from "./endpoint-text-editor";
 import { useSpaces } from "../../common/spaces.context";
 import { dispatchUpdateCacheEvent } from "../../app";
 import { callHttp } from "../../common/http";
+import { EndpointOutput } from "./endpoint-output";
 
 export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSetup: (setup: TabSetup<EndpointTabContent>) => void }) {
     props.setup.content.method = 'get';
@@ -15,7 +16,7 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
     const { tabs, currentTabIndex, setBaseUrl, baseUrl } = useSpaces();
     const baseUrlRef = React.createRef<HTMLInputElement>();
     const requestRef = React.createRef<EndpointTextEditor>();
-    const responseRef = React.createRef<EndpointTextEditor>();
+    const responseRef = React.createRef<EndpointOutput>();
 
     dispatchUpdateCacheEvent();
 
@@ -122,17 +123,21 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                 let request = {
                     url: baseUrl + props.setup.content.endpoint,
                     method: selectedMethod,
-                    headers: JSON.parse(tabContent.request.tabs['Headers'].content) as { key: string, value: string }[],
-                    body: tabContent.request.tabs['Body'].content,
+                    headers: JSON.parse(tabContent.input.tabs['Headers'].content) as { key: string, value: string }[],
+                    body: tabContent.input.tabs['Body'].content,
                 };
                 // tabContent.request = request;
                 request.body = request.body === '' ? undefined : request.body;
                 callHttp(request).then(x => {
-                    let statusCat = Math.floor(x.status) / 100;
-                    let headerStatus = `<span style="font-weight: bold; color: var(--${ [4, 5].includes(statusCat) ? 'red' : (statusCat === 3 ? 'yellow' : 'green') }-color">&nbsp;${ x.status }</span>`;
-                    tabContent.response.headerHtml = `<span>RESPONSE ${ headerStatus }</span>`;
-                    tabContent.response.tabs['Body'].content = x.body;
-                    tabContent.response.tabs['Headers'].content = JSON.stringify(x.headers.map(pair => {return { key: pair[0], value: pair[1] }}));
+                    tabContent.output.Response = {
+                        ...tabContent.output.Response,
+                        status: {
+                            code: x.status,
+                            text: x.statusText
+                        },
+                        body: x.body,
+                        headers: x.headers.map(pair => [pair[0], pair[1]])
+                    };
                     setResponseStatus(x.status);
                     requestRef.current?.forceUpdate();
                     responseRef.current?.forceUpdate();
@@ -155,9 +160,9 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
             flex: '1 1 auto',
         } }>
             <EndpointTextEditor ref={ requestRef }
-                                data={ (tabs()[currentTabIndex].content as EndpointTabContent).request }/>
-            <EndpointTextEditor ref={ responseRef }
-                                data={ (tabs()[currentTabIndex].content as EndpointTabContent).response }/>
+                                data={ (tabs()[currentTabIndex].content as EndpointTabContent).input }/>
+            <EndpointOutput ref={ responseRef }
+                            data={ (tabs()[currentTabIndex].content as EndpointTabContent).output }/>
         </div>
     </>
 }

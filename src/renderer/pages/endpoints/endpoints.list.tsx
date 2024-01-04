@@ -35,34 +35,27 @@ export function EndpointsList() {
                                   const tabSetup = makeTabSetup<EndpointTabContent>('endpoints', fullPath, fullPath, true, {
                                       endpoint: fullPath,
                                       method: endpoints[0],
-                                      request: {
-                                          headerHtml: '<span>REQUEST</span>',
+                                      input: {
                                           tabs: {
-                                              'Params': {
+                                              Params: {
                                                   content: '',
                                               },
-                                              'Body': {
+                                              Body: {
                                                   content: '',
                                                   allowedDisplayModes: ['text']
                                               },
-                                              'Headers': {
+                                              Headers: {
                                                   content: '',
                                               },
                                           }
                                       },
-                                      response: {
-                                          headerHtml: '<span>RESPONSE</span>',
-                                          tabs: {
-                                              'Body': {
-                                                  content: '',
-                                                  allowedDisplayModes: ['text'],
-                                                  isReadOnly: true,
-                                              },
-                                              'Headers': {
-                                                  content: '',
-                                                  isReadOnly: true,
-                                              },
-                                          }
+                                      output: {
+                                          Request: { method: undefined },
+                                          Response: {
+                                              status: undefined,
+                                              headers: [],
+                                              body: undefined,
+                                          },
                                       }
                                   });
                                   window.dispatchEvent(new CustomEvent('sidebar_list_item_selected', { detail: tabSetup }));

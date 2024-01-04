@@ -3,11 +3,11 @@ import { EndpointTabContent } from "./endpoint.tab-content";
 import { PButton } from "../../common/pbutton";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import React, { useState } from "react";
-import { EndpointTextEditor } from "./endpoint-text-editor";
 import { useSpaces } from "../../common/spaces.context";
 import { dispatchUpdateCacheEvent } from "../../app";
 import { callHttp } from "../../common/http";
-import { EndpointOutput } from "./endpoint-output";
+import { EndpointResponse } from "./endpoint-response";
+import { EndpointRequestEditor } from "./endpoint-request-editor";
 
 export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSetup: (setup: TabSetup<EndpointTabContent>) => void }) {
     props.setup.content.method = 'get';
@@ -15,8 +15,8 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
     const [responseStatus, setResponseStatus] = useState(undefined);
     const { tabs, currentTabIndex, setBaseUrl, baseUrl } = useSpaces();
     const baseUrlRef = React.createRef<HTMLInputElement>();
-    const requestRef = React.createRef<EndpointTextEditor>();
-    const responseRef = React.createRef<EndpointOutput>();
+    const requestRef = React.createRef<EndpointRequestEditor>();
+    const responseRef = React.createRef<EndpointResponse>();
 
     dispatchUpdateCacheEvent();
 
@@ -159,10 +159,10 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
             gap: 'var(--app-gap)',
             flex: '1 1 auto',
         } }>
-            <EndpointTextEditor ref={ requestRef }
-                                data={ (tabs()[currentTabIndex].content as EndpointTabContent).input }/>
-            <EndpointOutput ref={ responseRef }
-                            data={ (tabs()[currentTabIndex].content as EndpointTabContent).output }/>
+            <EndpointRequestEditor ref={ requestRef }
+                                   data={ (tabs()[currentTabIndex].content as EndpointTabContent).input }/>
+            <EndpointResponse ref={ responseRef }
+                              data={ (tabs()[currentTabIndex].content as EndpointTabContent).output }/>
         </div>
     </>
 }

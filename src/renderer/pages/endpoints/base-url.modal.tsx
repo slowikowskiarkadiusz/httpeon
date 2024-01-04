@@ -1,5 +1,5 @@
 import React from "react";
-import { inputStyle } from "./endpoint-text-editor";
+import { inputStyle } from "./endpoint-request-editor";
 
 export function BaseUrlModal(props: {
     left: string,

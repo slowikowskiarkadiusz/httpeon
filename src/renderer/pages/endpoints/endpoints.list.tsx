@@ -45,12 +45,12 @@ export function EndpointsList() {
                                                   allowedDisplayModes: ['text']
                                               },
                                               Headers: {
-                                                  content: '',
+                                                  content: '[]',
                                               },
                                           }
                                       },
                                       output: {
-                                          Request: { method: undefined },
+                                          Request: { url: '', method: '', headers: [] },
                                           Response: {
                                               status: undefined,
                                               headers: [],
@@ -71,7 +71,7 @@ export function EndpointsList() {
                             : <div/> }
                         <span>
                             { item.label } &nbsp;&nbsp;
-                            { endpointsForPath(i, c, apiSpecs)?.map((xx, ii) => renderButtonForHttpMethod(xx, i, ii)) }
+                            { endpointsForPath(i, c, apiSpecs)?.map((xx, ii) => buttonForHttpMethod(xx, i, ii)) }
                         </span>
                     </li>
                     : undefined
@@ -168,7 +168,7 @@ function flatten(obj: { [p: string]: any }, result: { label: string, depth: numb
         });
 }
 
-function renderButtonForHttpMethod(method: string, ci: number, i: number) {
+export function buttonForHttpMethod(method: string, ci: number, i: number) {
     return <button key={ `buttonForHttpMethod-${ ci }-${ i }` }
                    style={ {
                        border: 'none',

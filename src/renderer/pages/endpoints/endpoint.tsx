@@ -123,12 +123,13 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                 let request = {
                     url: baseUrl + props.setup.content.endpoint,
                     method: selectedMethod,
-                    headers: JSON.parse(tabContent.input.tabs['Headers'].content) as { key: string, value: string }[],
-                    body: tabContent.input.tabs['Body'].content,
+                    headers: JSON.parse(tabContent.input.tabs.Headers.content ?? '[]') as [string, string][],
+                    body: tabContent.input.tabs.Body.content,
                 };
                 // tabContent.request = request;
                 request.body = request.body === '' ? undefined : request.body;
                 callHttp(request).then(x => {
+                    tabContent.output.Request = request;
                     tabContent.output.Response = {
                         ...tabContent.output.Response,
                         status: {

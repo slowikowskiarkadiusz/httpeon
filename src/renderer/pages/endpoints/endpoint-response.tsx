@@ -1,9 +1,11 @@
 import { dispatchUpdateCacheEvent } from "../../app";
 import { DisplayMode, displayModes, inputStyle } from "./endpoint-request-editor";
 import { Component } from "react";
+import { HttpCallParams } from "../../../index";
+import { buttonForHttpMethod } from "./endpoints.list";
 
 export interface EndpointResponseData {
-    Request: { method?: string },
+    Request: HttpCallParams,
     Response: {
         status?: {
             code: number,
@@ -38,7 +40,7 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
         const { data } = this.props;
         const { currentTab } = this.state;
 
-        if (!data[currentTab].currentDisplayMode) {
+        if (data[currentTab] && !data[currentTab].currentDisplayMode) {
             let value: DisplayMode = 'default';
             if (!!data[currentTab].allowedDisplayModes)
                 value = data[currentTab].allowedDisplayModes[0];
@@ -93,7 +95,6 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
                              } }
                              onClick={ () => this.setCurrentTab(key) }>
                             <button
-                                // ref={ ref => this.buttonRefs[i] = ref }
                                 style={ {
                                     backgroundColor: 'transparent',
                                     color: 'unset',
@@ -104,9 +105,19 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
                                     textAlign: 'center',
                                     width: '100%',
                                     overflow: 'hidden',
+                                    display: 'flex',
                                 } }>
-                                { key }
-                                {/*{ i } { this.buttonRefs.length }*/ }
+                                <div style={ { margin: 'auto 1em auto auto' } }>{ key }</div>
+                                <div style={ { margin: 'auto auto auto 0', height: 'min-content' } }>
+                                    { data[key] === data.Request && data.Request.method
+                                        ? buttonForHttpMethod(data.Request.method, 0, 0)
+                                        : (data[key] === data.Response && data.Response?.status
+                                            ? (() => {
+                                                let statusCat = Math.floor(data.Response.status.code / 100);
+                                                return <span style={ { fontWeight: 'bold', color: `var(--${ [4, 5].includes(statusCat) ? 'red' : (statusCat === 3 ? 'yellow' : 'green') }-color` } }>{ data.Response?.status?.code }</span>;
+                                            })()
+                                            : '') }
+                                </div>
                             </button>
                         </div>
                     )) }
@@ -130,35 +141,10 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
                                 </option>
                             )) }
                     </select> }
-
-                    {/*{ displayMode === 'text'*/ }
-                    {/*    ?*/ }
-                    {/*    <select*/ }
-                    {/*        style={ footerSelectStyle }*/ }
-                    {/*        onChange={ (e) => this.setState({ textType: ((e.nativeEvent.target as HTMLInputElement).value as TextType) }) }>*/ }
-                    {/*        { Object.keys(textTypes).map((x) => (*/ }
-                    {/*            <option value={ x }*/ }
-                    {/*                    key={ x }>*/ }
-                    {/*                { x }*/ }
-                    {/*            </option>*/ }
-                    {/*        )) }*/ }
-                    {/*    </select>*/ }
-                    {/*    : undefined }*/ }
                 </div>
             </div>
         );
     }
-
-    // renderResponseStatus() {
-    //     if (!this.props.responseStatus)
-    //         return undefined;
-    //
-    //     let statusCat = Math.floor(this.props.responseStatus) / 100;
-    //     return <span style={ {
-    //         fontWeight: 'bold',
-    //         color: `var(--${ [4, 5].includes(statusCat) ? 'red' : (statusCat === 3 ? 'yellow' : 'green') }-color`
-    //     } }>&nbsp;{ this.props.responseStatus }</span>
-    // }
 
     setCurrentTab(tab: string) {
         this.setState({ currentTab: tab });
@@ -168,14 +154,14 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
         const { data } = this.props;
         const { currentTab } = this.state;
 
-        switch (data[currentTab].currentDisplayMode) {
-            case 'default':
-                return this.renderContentAsDefault();
-            case 'text':
-                return this.renderContentAsText();
-            default:
-                return null;
-        }
+        // switch (data[currentTab].currentDisplayMode) {
+        // case 'default':
+        //     return this.renderContentAsDefault();
+        // case 'text':
+        return this.renderContentAsText();
+        // default:
+        //     return null;
+        // }
     }
 
     renderContentAsDefault() {
@@ -185,6 +171,7 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
         let content: [string, string][] = [];
         try {
             content = JSON.parse(data[currentTab].content);
+            // content = data[currentTab].content;
         } catch (err) {
             if (data[currentTab].content === '')
                 data[currentTab].content = JSON.stringify(content);
@@ -235,26 +222,6 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
                         </td>
                     </tr>
                 }) }
-
-            { !data[currentTab].isReadOnly
-                ? <tr>
-                    <td style={ { padding: '0 0.5em' } }>
-                        <input type="text"
-                               style={ inputStyle }
-                               placeholder="key..."/>
-                    </td>
-                    <td style={ { padding: '0 0.5em' } }>
-                        <input type="text"
-                               style={ inputStyle }
-                               placeholder="value..."/>
-                    </td>
-                    <td style={ { padding: '0 0.5em' } }>
-                        <input type="checkbox"
-                               style={ inputStyle }
-                               disabled={ true }/>
-                    </td>
-                </tr>
-                : undefined }
             </tbody>
         </table>;
     }
@@ -263,29 +230,53 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
         const { data } = this.props;
         const { currentTab } = this.state;
 
-        let content = data[currentTab].content;
+        let headerStyle: React.CSSProperties = { textAlign: 'center', fontWeight: 'bold' };
+        let valueStyle = { fontFamily: 'Menlo' };
 
         return (
             <div placeholder={ `${ currentTab.toLowerCase() }...` }
                  style={ {
                      padding: '1em',
                      height: 'auto',
-                     fontFamily: 'Menlo',
                      whiteSpace: 'pre',
                      minHeight: '100%',
                      width: '100%',
                      color: 'var(--theme-font-color)',
                      backgroundColor: 'var(--theme-bc-3)',
                      border: 'none',
-                 } }
-                 dangerouslySetInnerHTML={ { __html: content } }
-                 contentEditable={ !data[currentTab].isReadOnly }
-                 key={ content }
-                 onInput={ (e) => {
-                     (data[currentTab].content = (e.target as HTMLDivElement).innerText);
-                     dispatchUpdateCacheEvent();
                  } }>
+                { data[currentTab].status ? <p style={ { whiteSpace: 'pre' } }>
+                    <div style={ { ...headerStyle } }>Status </div>
+                    <span style={ { ...valueStyle } }>{ data[currentTab].status.code } { data[currentTab].status.text }</span>
+                </p> : '' }
+                { data[currentTab].method ? <p style={ { whiteSpace: 'pre' } }>
+                    <div style={ { ...headerStyle } }>Endpoint </div>
+                    <span style={ { ...valueStyle } }>{ data[currentTab].method.toUpperCase() } { data[currentTab].url }</span>
+                </p> : '' }
+                { data[currentTab].headers?.length > 0
+                    ? <p>
+                        <div style={ { ...headerStyle } }>Headers </div>
+                        { data[currentTab].headers.map(pair =>
+                            <p style={ { ...valueStyle, whiteSpace: 'pre', margin: '0' } }>{ pair[0] }: { pair[1] }</p>) }</p>
+                    : null }
+                { data[currentTab].body ?
+                    <p style={ { whiteSpace: 'pre' } }>
+                        <div style={ { ...headerStyle } }>Body </div>
+                        <span style={ { ...valueStyle } }>{ prettifyBody(data[currentTab].body, data[currentTab].headers) }</span></p>
+                    : null
+                }
             </div>
         );
     }
+}
+
+function prettifyBody(body: string, headers: [string, string][]) {
+    let contentTypeHeader = headers.filter(x => x[0].toLowerCase() === 'content-type');
+    if (contentTypeHeader.length > 0) {
+        let value = contentTypeHeader[0][1].toLowerCase();
+        if (value.includes('json'))
+            return JSON.stringify(JSON.parse(body), null, 2);
+    }
+
+    return body;
 }

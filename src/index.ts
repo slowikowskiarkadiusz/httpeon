@@ -36,13 +36,16 @@ app.on('ready', () => {
     ipcMain.on('make-request', (event, { url, method, body, headers }: HttpCallParams) => {
         const requestHeaders = new Headers();
         headers
-            .filter(x => x.key !== 'transfer-encoding')
-            .forEach(header => requestHeaders.append(header.key, header.value));
+            .filter(x => x[0] !== 'transfer-encoding')
+            .forEach(header => requestHeaders.append(header[0], header[1]));
         const options = {
             method,
-            body,
+            body: undefined,
             headers: requestHeaders,
         };
+
+        if (!['get', 'head'].includes(method.toLowerCase()))
+            options.body = body;
 
         fetch(url, options).then(response => {
             let responseHeaders = [...response.headers];
@@ -87,7 +90,7 @@ export interface HttpCallParams {
     url: string,
     method: string,
     body?: string,
-    headers: { key: string, value: string }[],
+    headers: [string, string][],
 }
 
 // app.whenReady().then(() => {

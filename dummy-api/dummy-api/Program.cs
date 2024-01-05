@@ -32,7 +32,7 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast", (x) =>
+app.MapGet("/weatherforecast", () =>
     {
         var forecast = Enumerable.Range(1, 5).Select(index =>
                 new WeatherForecast
@@ -42,12 +42,12 @@ app.MapGet("/weatherforecast", (x) =>
                     summaries[Random.Shared.Next(summaries.Length)]
                 ))
             .ToArray();
-        return Task.FromResult(forecast);
+        return forecast;
     })
     .WithName("GetWeatherForecast")
     .WithOpenApi();
 
-app.MapGet("/weatherforecast_error", (x) => { throw new System.Exception("Jakis blad"); })
+app.MapPost("/weatherforecast_error", () => { throw new System.Exception("Jakis blad"); })
     .WithName("GetWeatherForecast_Error")
     .WithOpenApi();
 

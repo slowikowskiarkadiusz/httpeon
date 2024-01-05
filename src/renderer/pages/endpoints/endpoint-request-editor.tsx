@@ -20,12 +20,6 @@ export const inputStyle = {
     fontSize: '2rem',
 };
 
-interface ContentEntry {
-    key: string;
-    value: string;
-    isOn: boolean;
-}
-
 export interface EndpointRequestEditorData {
     tabs: {
         Params: EndpointRequestEditorDataTab
@@ -212,7 +206,7 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
         const { data } = this.props;
         const { currentTab } = this.state;
 
-        let content: ContentEntry[] = [];
+        let content: [string, string, boolean][] = [];
         try {
             content = JSON.parse(data.tabs[currentTab].content);
         } catch (err) {
@@ -223,7 +217,7 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
         }
 
         const updateEntry = (i: number) => {
-            if (!content[i].key && !content[i].value) {
+            if (!content[i][0] && !content[i][1]) {
                 content.splice(i, 1);
                 setTimeout(() => this.forceUpdate(), 0);
             }
@@ -241,7 +235,7 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
             </thead>
             <tbody>{ content
                 .map((x, i, c) => {
-                    return <tr key={ x.key + i }>
+                    return <tr key={ x[0] + i }>
                         <td style={ { padding: '0 0.5em' } }>
                             <input type="text"
                                    ref={ this.lastInputRefs.key }
@@ -249,10 +243,10 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
                                    placeholder="key..."
                                    disabled={ data.tabs[currentTab].isReadOnly }
                                    onChange={ e => {
-                                       content[i].key = e.target.value;
+                                       content[i][0] = e.target.value;
                                        updateEntry(i);
                                    } }
-                                   defaultValue={ x.key }/>
+                                   defaultValue={ x[0] }/>
                         </td>
                         <td style={ { padding: '0 0.5em' } }>
                             <input type="text"
@@ -261,18 +255,18 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
                                    placeholder="value..."
                                    disabled={ data.tabs[currentTab].isReadOnly }
                                    onChange={ e => {
-                                       content[i].value = e.target.value;
+                                       content[i][1] = e.target.value;
                                        updateEntry(i);
                                    } }
-                                   defaultValue={ x.value }/>
+                                   defaultValue={ x[1] }/>
                         </td>
                         <td style={ { padding: '0 0.5em' } }>
                             <input type="checkbox"
                                    style={ inputStyle }
-                                   defaultChecked={ x.isOn }
+                                   defaultChecked={ x[2] }
                                    disabled={ data.tabs[currentTab].isReadOnly }
                                    onChange={ e => {
-                                       content[i].isOn = e.target.checked;
+                                       content[i][2] = e.target.checked;
                                        updateEntry(i);
                                    } }/>
                         </td>
@@ -285,7 +279,7 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
                         <input type="text"
                                style={ inputStyle }
                                onChange={ e => {
-                                   content.push({ key: e.target.value, value: '', isOn: true });
+                                   content.push([e.target.value, '', true]);
                                    data.tabs[currentTab].content = JSON.stringify(content);
                                    this.forceUpdate();
                                    setTimeout(() => {
@@ -299,7 +293,7 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
                         <input type="text"
                                style={ inputStyle }
                                onChange={ e => {
-                                   content.push({ key: '', value: e.target.value, isOn: true });
+                                   content.push(['', e.target.value, true]);
                                    data.tabs[currentTab].content = JSON.stringify(content);
                                    this.forceUpdate();
                                    setTimeout(() => {

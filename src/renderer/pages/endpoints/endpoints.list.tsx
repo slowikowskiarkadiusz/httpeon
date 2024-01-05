@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { EndpointTabContent } from "./endpoint.tab-content";
 import { makeTabSetup } from "../tab-setup";
-import { dimOpenApi } from "../../common/dim.openapi";
+import { testOpenApi } from "../../common/test.openapi";
 
 interface ListItem {
     label: string,
@@ -14,7 +14,7 @@ interface ListItem {
 }
 
 export function EndpointsList() {
-    const apiSpecs: { [p: string]: any } = dimOpenApi['paths'];
+    const apiSpecs: { [p: string]: any } = testOpenApi['paths'];
     const [list, setList] = useState(process(apiSpecs));
     const [lastClickedOnIndex, setLastClickedOnIndex] = useState(-1);
 

@@ -10,13 +10,15 @@ import { EndpointResponse } from "./endpoint-response";
 import { EndpointRequestEditor } from "./endpoint-request-editor";
 
 export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSetup: (setup: TabSetup<EndpointTabContent>) => void }) {
-    props.setup.content.method = 'get';
     const [selectedMethod, setSelectedMethod] = useState(props.setup.content.method)
     const [responseStatus, setResponseStatus] = useState(undefined);
     const { tabs, currentTabIndex, setBaseUrl, baseUrl } = useSpaces();
     const baseUrlRef = React.createRef<HTMLInputElement>();
     const requestRef = React.createRef<EndpointRequestEditor>();
     const responseRef = React.createRef<EndpointResponse>();
+
+    if (props.setup.content.method !== selectedMethod)
+        setSelectedMethod(props.setup.content.method);
 
     dispatchUpdateCacheEvent();
 
@@ -84,7 +86,9 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                     padding: '0em 0.5em',
                     cursor: 'pointer',
                     textAlign: 'center',
+                    transition: 'background-color 0.3s'
                 } }
+                        value={ selectedMethod }
                         onChange={ (e) => {
                             setSelectedMethod(Object.keys(e.nativeEvent.target)
                                 .filter(key => (e.nativeEvent.target as any)[key].selected)
@@ -129,17 +133,21 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                 // tabContent.request = request;
                 request.body = request.body === '' ? undefined : request.body;
                 callHttp(request).then(x => {
-                    tabContent.output.Request = request;
-                    tabContent.output.Response = {
-                        ...tabContent.output.Response,
-                        status: {
-                            code: x.status,
-                            text: x.statusText
-                        },
-                        body: x.body,
-                        headers: x.headers.map(pair => [pair[0], pair[1]])
-                    };
-                    setResponseStatus(x.status);
+                    if (x.callResponse) {
+                        tabContent.output.Request = request;
+                        tabContent.output.Response = {
+                            ...tabContent.output.Response,
+                            status: {
+                                code: x.callResponse.status,
+                                text: x.callResponse.statusText
+                            },
+                            body: x.callResponse.body,
+                            headers: x.callResponse.headers.map(pair => [pair[0], pair[1]])
+                        };
+                        setResponseStatus(x.callResponse.status);
+                    } else {
+                        console.log('dupa', x, x.internalError)
+                    }
                     requestRef.current?.forceUpdate();
                     responseRef.current?.forceUpdate();
                 });

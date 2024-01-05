@@ -51,14 +51,18 @@ app.on('ready', () => {
             let responseHeaders = [...response.headers];
             response.text().then(body => {
                 event.sender.send('request-response', {
-                    status: response.status,
-                    statusText: response.statusText,
-                    body: body,
-                    headers: responseHeaders
-                });
+                    callResponse: {
+                        status: response.status,
+                        statusText: response.statusText,
+                        body: body,
+                        headers: responseHeaders,
+                    }
+                } as HttpCallResponse);
             });
         })
-            .catch(err => console.error(err));
+            .catch((err: Error) => event.sender.send('request-response', {
+                internalError: err.message,
+            } as HttpCallResponse));
     });
 });
 
@@ -80,10 +84,13 @@ app.on('activate', () => {
 });
 
 export interface HttpCallResponse {
-    status: number;
-    statusText: string;
-    body: string;
-    headers: [string, string][];
+    callResponse?: {
+        status: number;
+        statusText: string;
+        body: string;
+        headers: [string, string][];
+    }
+    internalError?: string;
 }
 
 export interface HttpCallParams {

@@ -81,7 +81,7 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
             color: 'var(--theme-font-color)',
             backgroundColor: 'var(--theme-bc-2)',
             padding: '0.5em',
-            overflow: 'scroll',
+            overflow: 'auto',
             textAlign: 'center' as any,
             borderRadius: 'var(--border-radius)',
         };
@@ -92,7 +92,7 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
                 height: '100%',
                 borderRadius: 'var(--border-radius)',
                 display: 'grid',
-                overflow: 'scroll',
+                overflow: 'auto',
                 gridTemplateRows: '3em calc(100% - 6em) 3em',
                 backgroundColor: 'var(--theme-bc-3)',
             } }>
@@ -133,7 +133,10 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
                         </div>
                     )) }
                 </div>
-                <div style={ { overflow: 'scroll', } }>{ this.renderContent() }</div>
+                <div style={ {
+                    overflow: 'auto',
+                    padding: '1em',
+                } }>{ this.renderContent() }</div>
                 <div style={ { padding: '0.25em' } }>
                     { <select
                         style={ footerSelectStyle }
@@ -236,7 +239,7 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
             <tbody>{ content
                 .map((x, i, c) => {
                     return <tr key={ x[0] + i }>
-                        <td style={ { padding: '0 0.5em' } }>
+                        <td style={ { padding: '0 0.5em', paddingLeft: '0' } }>
                             <input type="text"
                                    ref={ this.lastInputRefs.key }
                                    style={ inputStyle }
@@ -260,7 +263,7 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
                                    } }
                                    defaultValue={ x[1] }/>
                         </td>
-                        <td style={ { padding: '0 0.5em' } }>
+                        <td style={ { padding: '0 0.5em', paddingRight: '0' } }>
                             <input type="checkbox"
                                    style={ inputStyle }
                                    defaultChecked={ x[2] }
@@ -275,7 +278,7 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
 
             { !data.tabs[currentTab].isReadOnly
                 ? <tr>
-                    <td style={ { padding: '0 0.5em' } }>
+                    <td style={ { padding: '0 0.5em', paddingLeft: '0' } }>
                         <input type="text"
                                style={ inputStyle }
                                onChange={ e => {
@@ -303,7 +306,7 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
                                } }
                                placeholder="value..."/>
                     </td>
-                    <td style={ { padding: '0 0.5em' } }>
+                    <td style={ { padding: '0 0.5em', paddingRight: '0' } }>
                         <input type="checkbox"
                                style={ inputStyle }
                                disabled={ true }/>
@@ -335,7 +338,6 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
         return (
             <div placeholder={ `${ currentTab.toLowerCase() }...` }
                  style={ {
-                     padding: '1em',
                      height: 'auto',
                      fontFamily: 'Menlo',
                      whiteSpace: 'pre',

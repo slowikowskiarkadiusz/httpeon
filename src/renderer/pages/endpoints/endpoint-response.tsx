@@ -1,19 +1,35 @@
 import { dispatchUpdateCacheEvent } from "../../app";
-import { DisplayMode, displayModes, inputStyle } from "./endpoint-request-editor";
-import { Component } from "react";
+import { inputStyle } from "./endpoint-request-editor";
+import React, { Component } from "react";
 import { HttpCallParams } from "../../../index";
 import { buttonForHttpMethod } from "./endpoints.list";
 
 export interface EndpointResponseData {
-    Request: HttpCallParams,
-    Response: {
-        status?: {
-            code: number,
-            text: string
-        },
-        headers: [string, string][],
-        body?: string,
+    Request: EndpointResponseRequestTabData,
+    Response: EndpointResponseResponseTabData,
+}
+
+interface EndpointResponseTabData {
+    isPrettyPrint?: boolean;
+    isWrap?: boolean;
+}
+
+interface EndpointResponseResponseTabData extends EndpointResponseTabData {
+    status?: {
+        code: number,
+        text: string
     },
+    headers: [string, string][],
+    body?: string,
+}
+
+interface EndpointResponseRequestTabData extends HttpCallParams, EndpointResponseTabData {
+    status?: {
+        code: number,
+        text: string
+    },
+    headers: [string, string][],
+    body?: string,
 }
 
 interface EndpointResponseProps {
@@ -40,27 +56,20 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
         const { data } = this.props;
         const { currentTab } = this.state;
 
-        if (data[currentTab] && !data[currentTab].currentDisplayMode) {
-            let value: DisplayMode = 'default';
-            if (!!data[currentTab].allowedDisplayModes)
-                value = data[currentTab].allowedDisplayModes[0];
-            if (data[currentTab].currentDisplayMode !== value)
-                data[currentTab].currentDisplayMode = value;
+        const currentDataTab: EndpointResponseRequestTabData | EndpointResponseResponseTabData = data[currentTab];
 
-            dispatchUpdateCacheEvent();
-            this.forceUpdate();
-        }
-
-        const footerSelectStyle = {
-            height: '100%',
+        const footerCheckboxStyle: React.CSSProperties = {
             border: 'none',
             fontSize: '2rem',
             color: 'var(--theme-font-color)',
             backgroundColor: 'var(--theme-bc-2)',
             padding: '0.5em',
-            overflow: 'scroll',
+            overflow: 'auto',
             textAlign: 'center' as any,
             borderRadius: 'var(--border-radius)',
+            userSelect: 'none',
+            display: 'flex',
+            width: 'max-content',
         };
 
         return (
@@ -69,7 +78,7 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
                 height: '100%',
                 borderRadius: 'var(--border-radius)',
                 display: 'grid',
-                overflow: 'scroll',
+                overflow: 'auto',
                 gridTemplateRows: '3em calc(100% - 6em) 3em',
                 backgroundColor: 'var(--theme-bc-3)',
             } }>
@@ -110,7 +119,7 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
                                 <div style={ { margin: 'auto 1em auto auto' } }>{ key }</div>
                                 <div style={ { margin: 'auto auto auto 0', height: 'min-content' } }>
                                     { data[key] === data.Request && data.Request.method
-                                        ? buttonForHttpMethod(data.Request.method, 0, 0)
+                                        ? buttonForHttpMethod(data.Request.method, '0')
                                         : (data[key] === data.Response && data.Response?.status
                                             ? (() => {
                                                 let statusCat = Math.floor(data.Response.status.code / 100);
@@ -122,25 +131,29 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
                         </div>
                     )) }
                 </div>
-                <div style={ { overflow: 'scroll', } }>{ this.renderContent() }</div>
-                <div style={ { padding: '0.25em' } }>
-                    { <select
-                        style={ footerSelectStyle }
-                        onChange={ (e) => {
-                            data[currentTab].currentDisplayMode = (e.nativeEvent.target as HTMLInputElement).value as DisplayMode;
-                            this.forceUpdate();
-                            dispatchUpdateCacheEvent();
-                        } }
-                        value={ data[currentTab].currentDisplayMode }>
-                        { Object.keys(displayModes)
-                            .filter((x: DisplayMode) => !data[currentTab].allowedDisplayModes || data[currentTab].allowedDisplayModes.includes(x))
-                            .map((x) => (
-                                <option value={ x }
-                                        key={ x }>
-                                    { x }
-                                </option>
-                            )) }
-                    </select> }
+                <div style={ { overflow: 'auto', } }>{ this.renderContent() }</div>
+                <div style={ { padding: '0.25em', display: 'flex', gap: 'var(--app-gap)' } }>
+                    { <label style={ { ...footerCheckboxStyle } }>
+                        <input type="checkbox"
+                               checked={ currentDataTab.isPrettyPrint }
+                               onChange={ newValue => {
+                                   currentDataTab.isPrettyPrint = newValue.target.checked;
+                                   this.forceUpdate();
+                                   dispatchUpdateCacheEvent();
+                               } }/>
+                        <span style={ { margin: 'auto' } }>Pretty</span>
+                    </label> }
+
+                    { <label style={ { ...footerCheckboxStyle } }>
+                        <input type="checkbox"
+                               checked={ currentDataTab.isWrap }
+                               onChange={ newValue => {
+                                   currentDataTab.isWrap = newValue.target.checked;
+                                   this.forceUpdate();
+                                   dispatchUpdateCacheEvent();
+                               } }/>
+                        <span style={ { margin: 'auto' } }>Wrap</span>
+                    </label> }
                 </div>
             </div>
         );
@@ -230,8 +243,19 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
         const { data } = this.props;
         const { currentTab } = this.state;
 
-        let headerStyle: React.CSSProperties = { textAlign: 'center', fontWeight: 'bold' };
-        let valueStyle = { fontFamily: 'Menlo' };
+        const currentDataTab: EndpointResponseRequestTabData | EndpointResponseResponseTabData = data[currentTab];
+
+        let sectionStyle: React.CSSProperties = { margin: '1em 0' };
+        let headerStyle: React.CSSProperties = { fontWeight: 'bold', userSelect: 'none' };
+        let valueStyle: React.CSSProperties = {
+            fontFamily: 'Menlo',
+            whiteSpace: 'pre',
+        };
+
+        if (currentDataTab.isWrap) {
+            valueStyle.overflowWrap = 'anywhere';
+            valueStyle.whiteSpace = 'break-spaces';
+        }
 
         return (
             <div placeholder={ `${ currentTab.toLowerCase() }...` }
@@ -239,32 +263,37 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
                      padding: '1em',
                      height: 'auto',
                      whiteSpace: 'pre',
-                     minHeight: '100%',
-                     width: '100%',
+                     maxHeight: '100%',
+                     maxWidth: '100%',
                      color: 'var(--theme-font-color)',
                      backgroundColor: 'var(--theme-bc-3)',
                      border: 'none',
                  } }>
-                { data[currentTab].status ? <p style={ { whiteSpace: 'pre' } }>
-                    <div style={ { ...headerStyle } }>Status </div>
-                    <span style={ { ...valueStyle } }>{ data[currentTab].status.code } { data[currentTab].status.text }</span>
-                </p> : '' }
-                { data[currentTab].method ? <p style={ { whiteSpace: 'pre' } }>
-                    <div style={ { ...headerStyle } }>Endpoint </div>
-                    <span style={ { ...valueStyle } }>{ data[currentTab].method.toUpperCase() } { data[currentTab].url }</span>
-                </p> : '' }
+                { data[currentTab].status
+                    ? <div style={ sectionStyle }>
+                        <div style={ { ...headerStyle } }>Status</div>
+                        <div style={ { ...valueStyle } }>{ data[currentTab].status.code } { data[currentTab].status.text }</div>
+                    </div>
+                    : null }
+                { data[currentTab].method
+                    ? <div style={ sectionStyle }>
+                        <div style={ { ...headerStyle } }>Endpoint</div>
+                        <div style={ { ...valueStyle } }>{ data[currentTab].method.toUpperCase() } { data[currentTab].url }</div>
+                    </div>
+                    : null }
                 { data[currentTab].headers?.length > 0
-                    ? <p>
-                        <div style={ { ...headerStyle } }>Headers </div>
+                    ? <div style={ sectionStyle }>
+                        <div style={ { ...headerStyle } }>Headers</div>
                         { data[currentTab].headers.map(pair =>
-                            <p style={ { ...valueStyle, whiteSpace: 'pre', margin: '0' } }>{ pair[0] }: { pair[1] }</p>) }</p>
+                            <div key={ pair[0] + pair[1] }
+                                 style={ { ...valueStyle, margin: '0' } }>{ pair[0] }: { pair[1] }</div>) }</div>
                     : null }
                 { data[currentTab].body ?
-                    <p style={ { whiteSpace: 'pre' } }>
-                        <div style={ { ...headerStyle } }>Body </div>
-                        <span style={ { ...valueStyle } }>{ prettifyBody(data[currentTab].body, data[currentTab].headers) }</span></p>
-                    : null
-                }
+                    <div style={ sectionStyle }>
+                        <div style={ { ...headerStyle } }>Body</div>
+                        <div style={ { ...valueStyle } }>{ prettifyBody(data[currentTab].body, data[currentTab].headers) }</div>
+                    </div>
+                    : null }
             </div>
         );
     }

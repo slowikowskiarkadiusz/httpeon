@@ -56,7 +56,7 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                            borderTopRightRadius: 'var(--cell-border-radius)',
                            borderBottomRightRadius: 'var(--cell-border-radius)',
                            lineHeight: '2em',
-                           overflow: 'scroll',
+                           overflow: 'auto',
                        } }
                        defaultValue={ baseUrl }
                        key={ baseUrl }
@@ -113,7 +113,7 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                            borderTopRightRadius: 'var(--cell-border-radius)',
                            borderBottomRightRadius: 'var(--cell-border-radius)',
                            lineHeight: '2.73em',
-                           overflow: 'scroll',
+                           overflow: 'auto',
                        } }
                        defaultValue={ props.setup.content.endpoint }
                        key={ props.setup.content.endpoint }

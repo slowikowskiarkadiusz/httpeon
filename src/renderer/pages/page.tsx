@@ -33,7 +33,7 @@ export function Page() {
         <div style={ {
             display: 'flex',
             width: '100%',
-            overflow: 'scroll',
+            overflow: 'auto',
             height: 'min-content',
             flexShrink: 0,
         } }>

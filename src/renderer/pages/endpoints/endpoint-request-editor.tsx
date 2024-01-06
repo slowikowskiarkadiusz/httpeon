@@ -9,7 +9,7 @@ type TextType = keyof typeof textTypes;
 
 export const inputStyle = {
     width: '100%',
-    backgroundColor: 'var(--theme-bc-2)',
+    backgroundColor: 'var(--theme-bc-3)',
     borderRadius: 'var(--border-radius)',
     boxShadow: 'none',
     border: 'none',
@@ -79,7 +79,7 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
             border: 'none',
             fontSize: '2rem',
             color: 'var(--theme-font-color)',
-            backgroundColor: 'var(--theme-bc-2)',
+            backgroundColor: 'var(--theme-bc-3)',
             padding: '0.5em',
             overflow: 'auto',
             textAlign: 'center' as any,
@@ -94,7 +94,7 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
                 display: 'grid',
                 overflow: 'auto',
                 gridTemplateRows: '3em calc(100% - 6em) 3em',
-                backgroundColor: 'var(--theme-bc-3)',
+                backgroundColor: 'var(--theme-bc-2)',
             } }>
                 <div style={ {
                     display: 'flex',
@@ -104,7 +104,7 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
                         <div key={ `page-tab-${ i }` }
                              style={ {
                                  width: `${ 100 / c.length }%`,
-                                 backgroundColor: currentTab === key ? 'var(--theme-bc-3)' : 'var(--theme-bc-2)',
+                                 backgroundColor: currentTab !== key ? 'var(--theme-bc-3)' : 'var(--theme-bc-2)',
                                  transition: 'width 0.2s ease-out, background-color 0.2s',
                                  cursor: 'pointer',
                                  flex: 1,
@@ -344,7 +344,7 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
                      minHeight: '100%',
                      width: '100%',
                      color: 'var(--theme-font-color)',
-                     backgroundColor: 'var(--theme-bc-3)',
+                     backgroundColor: 'var(--theme-bc-2)',
                      border: 'none',
                  } }
                  dangerouslySetInnerHTML={ { __html: content } }

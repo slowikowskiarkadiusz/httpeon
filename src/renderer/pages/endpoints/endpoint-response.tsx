@@ -62,7 +62,7 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
             border: 'none',
             fontSize: '2rem',
             color: 'var(--theme-font-color)',
-            backgroundColor: 'var(--theme-bc-2)',
+            backgroundColor: 'var(--theme-bc-3)',
             padding: '0.5em',
             overflow: 'auto',
             textAlign: 'center' as any,
@@ -80,7 +80,7 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
                 display: 'grid',
                 overflow: 'auto',
                 gridTemplateRows: '3em calc(100% - 6em) 3em',
-                backgroundColor: 'var(--theme-bc-3)',
+                backgroundColor: 'var(--theme-bc-2)',
             } }>
                 {/*<div style={ { fontSize: '2rem', margin: 'auto', fontWeight: 'bold', textAlign: 'center' } }*/ }
                 {/*     dangerouslySetInnerHTML={ { __html:  } }>*/ }
@@ -93,7 +93,7 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
                         <div key={ `page-tab-${ i }` }
                              style={ {
                                  width: `${ 100 / c.length }%`,
-                                 backgroundColor: currentTab === key ? 'var(--theme-bc-3)' : 'var(--theme-bc-2)',
+                                 backgroundColor: currentTab === key ? 'var(--theme-bc-2)' : 'var(--theme-bc-3)',
                                  transition: 'width 0.2s ease-out, background-color 0.2s',
                                  cursor: 'pointer',
                                  flex: 1,
@@ -266,7 +266,7 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
                      maxHeight: '100%',
                      maxWidth: '100%',
                      color: 'var(--theme-font-color)',
-                     backgroundColor: 'var(--theme-bc-3)',
+                     backgroundColor: 'var(--theme-bc-2)',
                      border: 'none',
                  } }>
                 { data[currentTab].status

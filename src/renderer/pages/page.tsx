@@ -42,7 +42,7 @@ export function Page() {
                 style={ {
                     width: `${ 100 / c.length }%`,
                     minWidth: '15em',
-                    backgroundColor: currentTabIndex === i ? 'var(--theme-bc-3)' : 'var(--theme-bc-2)',
+                    backgroundColor: currentTabIndex === i ? 'var(--theme-bc)' : 'var(--theme-bc-2)',
                     transition: 'width 0.2s ease-out, background-color 0.2s',
                     cursor: 'pointer',
                     flex: '1 0 auto',

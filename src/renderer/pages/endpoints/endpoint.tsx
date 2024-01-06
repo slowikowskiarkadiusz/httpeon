@@ -9,6 +9,8 @@ import { callHttp } from "../../common/http";
 import { EndpointResponse } from "./endpoint-response";
 import { EndpointRequestEditor } from "./endpoint-request-editor";
 
+let lastSetup = undefined;
+
 export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSetup: (setup: TabSetup<EndpointTabContent>) => void }) {
     const [selectedMethod, setSelectedMethod] = useState(props.setup.content.method)
     const [responseStatus, setResponseStatus] = useState(undefined);
@@ -17,8 +19,10 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
     const requestRef = React.createRef<EndpointRequestEditor>();
     const responseRef = React.createRef<EndpointResponse>();
 
-    if (props.setup.content.method !== selectedMethod)
+    if (lastSetup !== props.setup)
         setSelectedMethod(props.setup.content.method);
+
+    lastSetup = props.setup;
 
     dispatchUpdateCacheEvent();
 
@@ -50,7 +54,7 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                            flex: '1 1 auto',
                            paddingLeft: '1em',
                            border: 'none',
-                           backgroundColor: 'var(--theme-bc-3)',
+                           backgroundColor: 'var(--theme-bc-2)',
                            color: 'var(--theme-font-color)',
                            fontFamily: 'Menlo',
                            borderTopRightRadius: 'var(--cell-border-radius)',
@@ -90,9 +94,11 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                 } }
                         value={ selectedMethod }
                         onChange={ (e) => {
-                            setSelectedMethod(Object.keys(e.nativeEvent.target)
+                            const value = Object.keys(e.nativeEvent.target)
                                 .filter(key => (e.nativeEvent.target as any)[key].selected)
-                                .map(key => (e.nativeEvent.target as any)[key])[0].value);
+                                .map(key => (e.nativeEvent.target as any)[key])[0].value;
+                            setSelectedMethod(props.setup.content.method = value);
+                            dispatchUpdateCacheEvent();
                         } }>
                     <option value="get">GET</option>
                     <option value="post">POST</option>
@@ -107,7 +113,7 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                            flex: '1 1 auto',
                            paddingLeft: '1em',
                            border: 'none',
-                           backgroundColor: 'var(--theme-bc-3)',
+                           backgroundColor: 'var(--theme-bc-2)',
                            color: 'var(--theme-font-color)',
                            fontFamily: 'Menlo',
                            borderTopRightRadius: 'var(--cell-border-radius)',

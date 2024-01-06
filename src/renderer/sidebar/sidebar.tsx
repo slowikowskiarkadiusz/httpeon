@@ -76,7 +76,7 @@ export function Sidebar() {
                 borderTop: '1px solid var(--theme-bc)',
                 margin: '0',
             } }/>
-            <div style={ { overflowX: 'scroll' } }>
+            <div style={ { overflowX: 'auto' } }>
                 <ul className="sidebar-content"
                     style={ {
                         listStyleType: 'none',

@@ -91,8 +91,10 @@ export class ContextMenuList extends React.Component<IProps, IState> {
                          onMouseEnter={ () => this.onMouseEnter(refs[i].current!, item, i) }
                          onMouseLeave={ () => {if (this.props.onmouseleave) this.props.onmouseleave()} }>
                         <div className="left-cell context-menu-cell">
-                            <FontAwesomeIcon className="icon-content"
-                                             icon={ item.icon }/>
+                            { item.icon
+                                ? <FontAwesomeIcon className="icon-content"
+                                                   icon={ item.icon }/>
+                                : null }
                         </div>
 
                         <div className="middle-cell context-menu-cell">

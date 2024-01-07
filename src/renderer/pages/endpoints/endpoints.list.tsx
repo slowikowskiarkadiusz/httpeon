@@ -175,6 +175,7 @@ export function buttonForHttpMethod(method: string, id: string) {
                     border: 'none',
                     borderRadius: '9em',
                     display: 'inline',
+                    fontWeight: 'normal',
                     fontSize: '0.9em',
                     backgroundColor: `var(--http-${ method }-bc)`,
                     color: 'var(--theme-bc)',

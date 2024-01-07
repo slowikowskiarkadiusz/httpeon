@@ -1,0 +1,12 @@
+.sidebar-action-button {
+    color: var(--theme-font-color-3);
+    transition: color 0.2s;
+}
+
+.sidebar-action-button:hover {
+    color: var(--theme-font-color);
+}
+
+.sidebar-action-button:active {
+    color: var(--theme-font-color-3);
+}

@@ -4,7 +4,7 @@ import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { ContextMenuList } from './context-menu-list';
 
 export interface ContextMenuItem {
-    icon: IconDefinition;
+    icon?: IconDefinition;
     label: string;
     action?: () => void;
     nested?: ContextMenuItem[];

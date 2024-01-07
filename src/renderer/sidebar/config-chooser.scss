@@ -10,3 +10,9 @@
 .config-chooser:active {
     background-color: var(--theme-bc-3);
 }
+
+.config-chooser-li:hover {
+    div {
+        background-color: var(--cell-hover-bc);
+    }
+}

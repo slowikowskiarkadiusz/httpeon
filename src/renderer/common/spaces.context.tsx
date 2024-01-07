@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { TabSetup } from "../pages/tab-setup";
+import { testOpenApi } from "./test.openapi";
 
 export interface Space {
     'name': string;
@@ -60,6 +61,7 @@ export const SpacesProvider = ({ children }: any) => {
     const [activeSpace, _setActiveSpace] = useState(spaces.filter(x => x.active)[0] ?? spaces[0]);
     const [baseUrl, _setBaseUrl] = useState(activeSpace.baseUrl);
     const [currentTabIndex, setCurrentTabIndex] = useState(-1);
+    // const [endpointList, setEndpointList] = useState<any[]>([]);
 
     let newCurrentTabIndex = loadedSpaces.filter(x => x.active)[0]?.tabs.findIndex(x => x.active) ?? -1;
     if (newCurrentTabIndex !== currentTabIndex)

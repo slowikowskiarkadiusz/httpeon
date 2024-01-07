@@ -28,7 +28,6 @@ export function Page() {
         display: 'flex',
         flexDirection: 'column',
         gap: 'var(--app-gap)',
-        // gridTemplateRows: '3em calc(100vh - calc(3em + var(--app-gap))'
     } }>
         <div style={ {
             display: 'flex',

@@ -26,8 +26,8 @@
 
     display: grid;
     grid-template-columns: 4em auto 3em;
-    
-    svg{
+
+    svg {
         font-size: 2rem;
     }
 
@@ -94,20 +94,18 @@
     }
 
     .context-menu-row:hover {
-        $cell-background-color: rgba(0, 44, 187, 0.54);
-
         .left-cell {
-            background-color: $cell-background-color;
+            background-color: var(--cell-hover-bc);
             border-top-left-radius: var(--cell-border-radius);
             border-bottom-left-radius: var(--cell-border-radius);
         }
 
         .middle-cell {
-            background-color: $cell-background-color;
+            background-color: var(--cell-hover-bc);
         }
 
         .right-cell {
-            background-color: $cell-background-color;
+            background-color: var(--cell-hover-bc);
             border-top-right-radius: var(--cell-border-radius);
             border-bottom-right-radius: var(--cell-border-radius);
         }

@@ -35,19 +35,28 @@ export function ConfigChooserModal(props: {
         <ul style={ {
             listStyleType: 'none',
             padding: '0',
-            margin: '1rem 0',
+            margin: '0 0',
         } }>
             { props.items.map((x, i) =>
                 <li key={ `${ props.configName }-config-chooser-modal-li-item-${ i }` }
                     style={ {
+                        userSelect: 'none',
+                        cursor: 'pointer',
+                    } }
+                    className="config-chooser-li">
+                    <div style={ {
+                        borderRadius: 'var(--cell-border-radius)',
+                        margin: '0 1rem',
+                        padding: '0.75rem 1rem',
                         display: 'flex',
                         flexDirection: 'row',
                         justifyContent: 'space-between',
-                        padding: '1rem 2rem',
+                        height: '100%',
                     } }>
-                    <span onClick={ () => props.onSelect(x, i) }>{ x }</span>
-                    <FontAwesomeIcon onClick={ () => props.onDelete(x, i) }
-                                     icon={ faTrashCan }/>
+                        <span onClick={ () => props.onSelect(x, i) }>{ x }</span>
+                        <FontAwesomeIcon onClick={ () => props.onDelete(x, i) }
+                                         icon={ faTrashCan }/>
+                    </div>
                 </li>) }
         </ul>
         <hr style={ hrStyle }/>

@@ -15,6 +15,7 @@ interface ListItem {
 
 export function EndpointsList() {
     const apiSpecs: { [p: string]: any } = testOpenApi['paths'];
+    // const { endpointList } = useSpaces();
     const [list, setList] = useState(process(apiSpecs));
     const [lastClickedOnIndex, setLastClickedOnIndex] = useState(-1);
 
@@ -71,7 +72,7 @@ export function EndpointsList() {
                             : <div/> }
                         <span>
                             { item.label } &nbsp;&nbsp;
-                            { endpointsForPath(i, c, apiSpecs)?.map((xx, ii) => buttonForHttpMethod(xx, `${i}-${ii}`)) }
+                            { endpointsForPath(i, c, apiSpecs)?.map((xx, ii) => buttonForHttpMethod(xx, `${ i }-${ ii }`)) }
                         </span>
                     </li>
                     : undefined
@@ -170,16 +171,16 @@ function flatten(obj: { [p: string]: any }, result: { label: string, depth: numb
 
 export function buttonForHttpMethod(method: string, id: string) {
     return <div key={ `buttonForHttpMethod-${ id }` }
-                   style={ {
-                       border: 'none',
-                       borderRadius: '9em',
-                       display: 'inline',
-                       fontSize: '0.9em',
-                       backgroundColor: `var(--http-${ method }-bc)`,
-                       color: 'var(--theme-bc)',
-                       padding: '0.2em 0.75em',
-                       height: '100%',
-                   } }>
+                style={ {
+                    border: 'none',
+                    borderRadius: '9em',
+                    display: 'inline',
+                    fontSize: '0.9em',
+                    backgroundColor: `var(--http-${ method }-bc)`,
+                    color: 'var(--theme-bc)',
+                    padding: '0.2em 0.75em',
+                    height: '100%',
+                } }>
         { method }
     </div>
 }

@@ -13,7 +13,8 @@ let lastSetup = undefined;
 
 export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSetup: (setup: TabSetup<EndpointTabContent>) => void }) {
     const [selectedMethod, setSelectedMethod] = useState(props.setup.content.method)
-    const [responseStatus, setResponseStatus] = useState(undefined);
+    const [responseStatus, setResponseStatus] = useState<number>(undefined);
+    const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
     const { tabs, currentTabIndex, setBaseUrl, baseUrl } = useSpaces();
     const baseUrlRef = React.createRef<HTMLInputElement>();
     const requestRef = React.createRef<EndpointRequestEditor>();
@@ -25,6 +26,15 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
     lastSetup = props.setup;
 
     dispatchUpdateCacheEvent();
+
+    const endpointCallParams = {
+        currentTab: tabs()[currentTabIndex],
+        setIsRequestInProgress,
+        baseUrl,
+        setResponseStatus,
+        requestRef,
+        responseRef,
+    };
 
     return <>
         <div id="baseUrlModalParent"
@@ -54,13 +64,17 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                            flex: '1 1 auto',
                            paddingLeft: '1em',
                            border: 'none',
-                           backgroundColor: 'var(--theme-bc-2)',
+                           backgroundColor: baseUrl?.length > 0 ? 'var(--theme-bc-2)' : 'var(--red-color)',
                            color: 'var(--theme-font-color)',
                            fontFamily: 'Menlo',
                            borderTopRightRadius: 'var(--cell-border-radius)',
                            borderBottomRightRadius: 'var(--cell-border-radius)',
                            lineHeight: '2em',
                            overflow: 'auto',
+                       } }
+                       onKeyDown={ e => {
+                           if (e.key === 'Enter')
+                               callEndpoint(endpointCallParams)
                        } }
                        defaultValue={ baseUrl }
                        key={ baseUrl }
@@ -123,44 +137,21 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                        } }
                        defaultValue={ props.setup.content.endpoint }
                        key={ props.setup.content.endpoint }
+                       onKeyDown={ e => {
+                           if (e.key === 'Enter')
+                               callEndpoint(endpointCallParams)
+                       } }
                        onChange={ e => {
                            props.setup.content.endpoint = e.target.value;
                            props.updateSetup(props.setup);
                        } }/>
             </div>
-            <PButton onClick={ () => {
-                let tabContent = (tabs()[currentTabIndex].content as EndpointTabContent);
-                let request = {
-                    url: baseUrl + props.setup.content.endpoint,
-                    method: selectedMethod,
-                    headers: JSON.parse(tabContent.input.tabs.Headers.content ?? '[]') as [string, string][],
-                    body: tabContent.input.tabs.Body.content,
-                };
-                // tabContent.request = request;
-                request.body = request.body === '' ? undefined : request.body;
-                callHttp(request).then(x => {
-                    if (x.callResponse) {
-                        tabContent.output.Request = request;
-                        tabContent.output.Response = {
-                            ...tabContent.output.Response,
-                            status: {
-                                code: x.callResponse.status,
-                                text: x.callResponse.statusText
-                            },
-                            body: x.callResponse.body,
-                            headers: x.callResponse.headers.map(pair => [pair[0], pair[1]])
-                        };
-                        setResponseStatus(x.callResponse.status);
-                    } else {
-                        console.log('dupa', x, x.internalError)
-                    }
-                    requestRef.current?.forceUpdate();
-                    responseRef.current?.forceUpdate();
-                });
-            } }
+            <PButton onClick={ () => callEndpoint(endpointCallParams) }
                      content="GO"
                      color="green"
-                     icon={ faPaperPlane }/>
+                     icon={ faPaperPlane }
+                     isLoading={ isRequestInProgress }/>
+
             <div></div>
 
             {/*<PButton action={ () => {} }*/ }
@@ -177,7 +168,52 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
             <EndpointRequestEditor ref={ requestRef }
                                    data={ (tabs()[currentTabIndex].content as EndpointTabContent).input }/>
             <EndpointResponse ref={ responseRef }
+                              isLoading={ isRequestInProgress }
                               data={ (tabs()[currentTabIndex].content as EndpointTabContent).output }/>
         </div>
     </>
+}
+
+async function callEndpoint(
+    params: {
+        currentTab: TabSetup<any>,
+        setIsRequestInProgress: React.Dispatch<React.SetStateAction<boolean>>,
+        baseUrl: string,
+        setResponseStatus: React.Dispatch<React.SetStateAction<number>>,
+        requestRef: React.RefObject<EndpointRequestEditor>,
+        responseRef: React.RefObject<EndpointResponse>
+    }): Promise<void> {
+    params.setIsRequestInProgress(true);
+    let tabContent = params.currentTab.content as EndpointTabContent;
+    let request = {
+        url: params.baseUrl + params.currentTab.content.endpoint,
+        method: params.currentTab.content.method,
+        headers: JSON.parse(tabContent.input.tabs.Headers.content ?? '[]') as [string, string][],
+        body: tabContent.input.tabs.Body.content,
+    };
+    request.body = request.body === '' ? undefined : request.body;
+
+    let response = await callHttp(request);
+
+    if (response.callResponse) {
+        tabContent.output.Request = request;
+        tabContent.output.Response = {
+            ...tabContent.output.Response,
+            status: {
+                code: response.callResponse.status,
+                text: response.callResponse.statusText
+            },
+            execTime: response.execTime,
+            body: response.callResponse.body,
+            headers: response.callResponse.headers.map(pair => [pair[0], pair[1]])
+        };
+        params.setResponseStatus(response.callResponse.status);
+    } else {
+        console.log('dupa', response, response.internalError)
+    }
+
+    params.requestRef.current?.forceUpdate();
+    params.responseRef.current?.forceUpdate();
+
+    params.setIsRequestInProgress(false);
 }

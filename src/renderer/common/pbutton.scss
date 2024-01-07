@@ -43,3 +43,16 @@
         border: 2px solid var(--#{$name}-color-3);
     }
 }
+
+.loading-spinner {
+    animation: pbutton-rotate 1s linear infinite;
+}
+
+@keyframes pbutton-rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

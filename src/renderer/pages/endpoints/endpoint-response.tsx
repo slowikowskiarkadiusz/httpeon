@@ -3,6 +3,8 @@ import { inputStyle } from "./endpoint-request-editor";
 import React, { Component } from "react";
 import { HttpCallParams } from "../../../index";
 import { buttonForHttpMethod } from "./endpoints.list";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
 export interface EndpointResponseData {
     Request: EndpointResponseRequestTabData,
@@ -21,6 +23,7 @@ interface EndpointResponseResponseTabData extends EndpointResponseTabData {
     },
     headers: [string, string][],
     body?: string,
+    execTime?: number,
 }
 
 interface EndpointResponseRequestTabData extends HttpCallParams, EndpointResponseTabData {
@@ -35,6 +38,7 @@ interface EndpointResponseRequestTabData extends HttpCallParams, EndpointRespons
 interface EndpointResponseProps {
     // responseStatus?: number;
     data: EndpointResponseData;
+    isLoading: boolean;
 }
 
 interface EndpointResponseState {
@@ -53,7 +57,7 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
     }
 
     render() {
-        const { data } = this.props;
+        const { data, isLoading } = this.props;
         const { currentTab } = this.state;
 
         const currentDataTab: EndpointResponseRequestTabData | EndpointResponseResponseTabData = data[currentTab];
@@ -81,10 +85,8 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
                 overflow: 'auto',
                 gridTemplateRows: '3em calc(100% - 6em) 3em',
                 backgroundColor: 'var(--theme-bc-2)',
+                position: 'relative'
             } }>
-                {/*<div style={ { fontSize: '2rem', margin: 'auto', fontWeight: 'bold', textAlign: 'center' } }*/ }
-                {/*     dangerouslySetInnerHTML={ { __html:  } }>*/ }
-                {/*</div>*/ }
                 <div style={ {
                     display: 'flex',
                     width: '100%',
@@ -155,6 +157,24 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
                         <span style={ { margin: 'auto' } }>Wrap</span>
                     </label> }
                 </div>
+
+                { isLoading
+                    ? <div style={ {
+                        position: 'absolute',
+                        display: 'flex',
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgb(0, 0, 0, 0.15)'
+                    } }>
+                        <FontAwesomeIcon className={ 'loading-spinner' }
+                                         style={ {
+                                             fontSize: '3em',
+                                             margin: 'auto'
+                                         } }
+                                         icon={ faCircleNotch }></FontAwesomeIcon>
+                    </div>
+                    : null
+                }
             </div>
         );
     }
@@ -269,29 +289,35 @@ export class EndpointResponse extends Component<EndpointResponseProps, EndpointR
                      backgroundColor: 'var(--theme-bc-2)',
                      border: 'none',
                  } }>
-                { data[currentTab].status
+                { currentDataTab.status
                     ? <div style={ sectionStyle }>
                         <div style={ { ...headerStyle } }>Status</div>
-                        <div style={ { ...valueStyle } }>{ data[currentTab].status.code } { data[currentTab].status.text }</div>
+                        <div style={ { ...valueStyle } }>{ currentDataTab.status.code } { currentDataTab.status.text }</div>
                     </div>
                     : null }
-                { data[currentTab].method
+                { (currentDataTab as EndpointResponseResponseTabData).execTime
+                    ? <div style={ sectionStyle }>
+                        <div style={ { ...headerStyle } }>Execution Time</div>
+                        <div style={ { ...valueStyle } }>{ (currentDataTab as EndpointResponseResponseTabData).execTime }ms</div>
+                    </div>
+                    : null }
+                { (currentDataTab as EndpointResponseRequestTabData).method
                     ? <div style={ sectionStyle }>
                         <div style={ { ...headerStyle } }>Endpoint</div>
-                        <div style={ { ...valueStyle } }>{ data[currentTab].method.toUpperCase() } { data[currentTab].url }</div>
+                        <div style={ { ...valueStyle } }>{ (currentDataTab as EndpointResponseRequestTabData).method.toUpperCase() } { (currentDataTab as EndpointResponseRequestTabData).url }</div>
                     </div>
                     : null }
-                { data[currentTab].headers?.length > 0
+                { currentDataTab.headers?.length > 0
                     ? <div style={ sectionStyle }>
                         <div style={ { ...headerStyle } }>Headers</div>
-                        { data[currentTab].headers.map(pair =>
+                        { currentDataTab.headers.map(pair =>
                             <div key={ pair[0] + pair[1] }
                                  style={ { ...valueStyle, margin: '0' } }>{ pair[0] }: { pair[1] }</div>) }</div>
                     : null }
-                { data[currentTab].body ?
+                { currentDataTab.body ?
                     <div style={ sectionStyle }>
                         <div style={ { ...headerStyle } }>Body</div>
-                        <div style={ { ...valueStyle } }>{ prettifyBody(data[currentTab].body, data[currentTab].headers) }</div>
+                        <div style={ { ...valueStyle } }>{ prettifyBody(currentDataTab.body, currentDataTab.headers) }</div>
                     </div>
                     : null }
             </div>

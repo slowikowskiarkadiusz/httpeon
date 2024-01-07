@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { TabSetup } from "./tab-setup";
 import { Endpoint } from "./endpoints/endpoint";
 import { useSpaces } from "../common/spaces.context";
-import { fromEvent, throttleTime } from "rxjs";
+import { debounceTime, fromEvent } from "rxjs";
 
 let update_spaces_cache_event = undefined;
 
@@ -15,7 +15,7 @@ export function Page() {
 
     if (!update_spaces_cache_event)
         update_spaces_cache_event = fromEvent(window, 'update_spaces_cache')
-            .pipe(throttleTime(2000))
+            .pipe(debounceTime(1000))
             .subscribe(() => updateCache());
 
     useEffect(() => window.addEventListener('sidebar_list_item_selected', (e: CustomEvent) => {

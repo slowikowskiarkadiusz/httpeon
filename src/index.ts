@@ -34,6 +34,8 @@ app.on('ready', () => {
     createWindow();
 
     ipcMain.on('make-request', (event, { url, method, body, headers }: HttpCallParams) => {
+        const startTime = performance.now();
+
         const requestHeaders = new Headers();
         headers
             .filter(x => x[0] !== 'transfer-encoding')
@@ -48,6 +50,7 @@ app.on('ready', () => {
             options.body = body;
 
         fetch(url, options).then(response => {
+            const elapsedTime = performance.now() - startTime;
             let responseHeaders = [...response.headers];
             response.text().then(body => {
                 event.sender.send('request-response', {
@@ -56,13 +59,18 @@ app.on('ready', () => {
                         statusText: response.statusText,
                         body: body,
                         headers: responseHeaders,
-                    }
+                    },
+                    execTime: elapsedTime,
                 } as HttpCallResponse);
             });
         })
-            .catch((err: Error) => event.sender.send('request-response', {
-                internalError: err.message,
-            } as HttpCallResponse));
+            .catch((err: Error) => {
+                const elapsedTime = performance.now() - startTime;
+                event.sender.send('request-response', {
+                    internalError: err.message,
+                    execTime: elapsedTime,
+                } as HttpCallResponse)
+            });
     });
 });
 
@@ -91,6 +99,7 @@ export interface HttpCallResponse {
         headers: [string, string][];
     }
     internalError?: string;
+    execTime: number;
 }
 
 export interface HttpCallParams {

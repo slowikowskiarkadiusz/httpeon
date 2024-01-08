@@ -1,19 +1,18 @@
-import { testOpenApi } from "../../common/test.openapi";
-
 export interface Endpoints {
     [path: string]: {
         methods: string[];
     }
 }
 
-function fromOpenApi(apiSpecs: { [p: string]: any }): Endpoints {
+export function fromOpenApi(apiSpecs: { [p: string]: any }): Endpoints {
     let result: { [p: string]: any } = {};
-    let paths = testOpenApi['paths'];
+    let paths = apiSpecs['paths'];
 
     Object.keys(paths).forEach(path => {
-        path = path.startsWith('/') ? path.substring(1) : path;
+        let modifiedPath = path.startsWith('/') ? path.substring(1) : path;
+        console.log(path);
         const methods = Object.keys(paths[path]);
-        result[path] = { ...result[path], methods };
+        result[modifiedPath] = { ...result[modifiedPath], methods };
     });
 
     return result;

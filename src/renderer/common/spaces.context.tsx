@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState } from 'react';
 import { TabSetup } from "../pages/tab-setup";
-import { testOpenApi } from "./test.openapi";
+import { Endpoints } from "../pages/endpoints/endpoints.utils";
 
 export interface Space {
-    'name': string;
-    'active': boolean;
-    'tabs': TabSetup<any>[];
-    'baseUrl': string;
+    name: string;
+    active: boolean;
+    tabs: TabSetup<any>[];
+    baseUrl: string;
+    endpoints: Endpoints;
 
     [configKey: string]: any;
 }
@@ -14,28 +15,30 @@ export interface Space {
 const spacesLocalStorageKey = 'spaces';
 const loadedSpaces: Space[] = JSON.parse(localStorage.getItem('spaces')) ?? [
     {
-        'name': 'space1',
-        'tabs': [],
-        'active': false,
-        'envs': [{
-            'name': 'dev',
+        name: 'space1',
+        tabs: [],
+        active: false,
+        endpoints: {},
+        envs: [{
+            name: 'dev',
             active: false
         },
             {
-                'name': 'local',
+                name: 'local',
                 active: true
             }]
     },
     {
-        'name': 'space2',
-        'tabs': [],
-        'active': true,
-        'envs': [{
-            'name': 'test',
+        name: 'space2',
+        tabs: [],
+        active: true,
+        endpoints: {},
+        envs: [{
+            name: 'test',
             active: false
         },
             {
-                'name': 'prod',
+                name: 'prod',
                 active: true
             }]
     }];
@@ -54,6 +57,9 @@ const SpacesContext = createContext({
     removeTab: (index: number) => {},
     setCurrentTab: (index: number) => {},
     updateTab: (index: number, setup: TabSetup<any>) => {},
+    endpoints: () => ({} as Endpoints),
+    addEndpoints: (newEndpoints: Endpoints) => {},
+    removeEndpoint: (path: string) => {},
 });
 
 export const SpacesProvider = ({ children }: any) => {
@@ -61,7 +67,6 @@ export const SpacesProvider = ({ children }: any) => {
     const [activeSpace, _setActiveSpace] = useState(spaces.filter(x => x.active)[0] ?? spaces[0]);
     const [baseUrl, _setBaseUrl] = useState(activeSpace.baseUrl);
     const [currentTabIndex, setCurrentTabIndex] = useState(-1);
-    // const [endpointList, setEndpointList] = useState<any[]>([]);
 
     let newCurrentTabIndex = loadedSpaces.filter(x => x.active)[0]?.tabs.findIndex(x => x.active) ?? -1;
     if (newCurrentTabIndex !== currentTabIndex)
@@ -104,6 +109,8 @@ export const SpacesProvider = ({ children }: any) => {
         if (currentTabIndex > -1 && activeSpace.tabs[currentTabIndex])
             activeSpace.tabs[currentTabIndex].active = false;
 
+        console.log(activeSpace.tabs, index, activeSpace.tabs[index]);
+        
         if (activeSpace.tabs[index])
             activeSpace.tabs[index].active = true;
         else
@@ -125,8 +132,40 @@ export const SpacesProvider = ({ children }: any) => {
         localStorage.setItem(spacesLocalStorageKey, JSON.stringify(spaces));
     }
 
+    const endpoints = () => activeSpace.endpoints;
+
+    const addEndpoints = (newEndpoints: Endpoints) => {
+        activeSpace.endpoints = ({ ...endpoints(), ...newEndpoints });
+        _setSpaces([ ...spaces ]);
+        updateCache();
+    }
+
+    const removeEndpoint = (path: string) => {
+        delete endpoints()[path];
+        activeSpace.endpoints = ({ ...endpoints() });
+        _setSpaces([ ...spaces ]);
+        updateCache();
+    }
+
     return (
-        <SpacesContext.Provider value={ { spaces, setSpaceConfig, getActive, setActive, tabs, updateCache, currentTabIndex, baseUrl, setBaseUrl, addTab, removeTab, setCurrentTab, updateTab } }>
+        <SpacesContext.Provider value={ {
+            spaces,
+            setSpaceConfig,
+            getActive,
+            setActive,
+            tabs,
+            updateCache,
+            currentTabIndex,
+            baseUrl,
+            setBaseUrl,
+            addTab,
+            removeTab,
+            setCurrentTab,
+            updateTab,
+            endpoints,
+            addEndpoints,
+            removeEndpoint
+        } }>
             { children }
         </SpacesContext.Provider>
     );

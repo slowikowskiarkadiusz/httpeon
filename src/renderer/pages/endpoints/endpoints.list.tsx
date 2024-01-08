@@ -1,10 +1,11 @@
 import '../../sidebar/lists.scss';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { EndpointTabContent } from "./endpoint.tab-content";
 import { makeTabSetup } from "../tab-setup";
-import { testOpenApi } from "../../common/test.openapi";
+import { useSpaces } from "../../common/spaces.context";
+import { Endpoints } from "./endpoints.utils";
 
 interface ListItem {
     label: string,
@@ -13,11 +14,16 @@ interface ListItem {
     isFoldable: boolean,
 }
 
+let lastEndpoints = undefined;
+
 export function EndpointsList() {
-    const apiSpecs: { [p: string]: any } = testOpenApi['paths'];
-    // const { endpointList } = useSpaces();
-    const [list, setList] = useState(process(apiSpecs));
+    const { endpoints } = useSpaces();
+    const [list, setList] = useState([]);
     const [lastClickedOnIndex, setLastClickedOnIndex] = useState(-1);
+    
+    if(lastEndpoints!==endpoints())
+        setList(process(endpoints()));
+    lastEndpoints = endpoints();
 
     return <>
         { list
@@ -30,12 +36,12 @@ export function EndpointsList() {
                               if (item.isFoldable)
                                   fold(!item.isFolded, i, c, (list: ListItem[]) => setList(list));
                               setLastClickedOnIndex(i);
-                              let endpoints = endpointsForPath(i, c, apiSpecs);
-                              if (endpoints?.length) {
+                              let pathEndpoints = endpointsForPath(i, c, endpoints());
+                              if (pathEndpoints?.length) {
                                   const fullPath = getFullPath(i, c);
                                   const tabSetup = makeTabSetup<EndpointTabContent>('endpoints', fullPath, fullPath, true, {
                                       endpoint: fullPath,
-                                      method: endpoints[0],
+                                      method: pathEndpoints[0],
                                       input: {
                                           tabs: {
                                               Params: {
@@ -72,7 +78,7 @@ export function EndpointsList() {
                             : <div/> }
                         <span>
                             { item.label } &nbsp;&nbsp;
-                            { endpointsForPath(i, c, apiSpecs)?.map((xx, ii) => buttonForHttpMethod(xx, `${ i }-${ ii }`)) }
+                            { endpointsForPath(i, c, endpoints())?.map((xx, ii) => buttonForHttpMethod(xx, `${ i }-${ ii }`)) }
                         </span>
                     </li>
                     : undefined
@@ -80,15 +86,15 @@ export function EndpointsList() {
     </>
 }
 
-function endpointsForPath(i: number, array: ListItem[], apiSpecs: { [p: string]: any }) {
+function endpointsForPath(i: number, array: ListItem[], apiSpecs: Endpoints) {
     let fullPath = getFullPath(i, array);
     let inSpecs = apiSpecs[fullPath];
-    return inSpecs ? Object.keys(inSpecs) : undefined;
+    return inSpecs ? inSpecs.methods : undefined;
 }
 
 function getFullPath(i: number, array: ListItem[]): string {
     let parentId = getParentId(i, array);
-    return `${ parentId >= 0 ? getFullPath(parentId, array) : '' }/${ array[i].label }`;
+    return `${ parentId >= 0 ? `${getFullPath(parentId, array)}/` : '' }${ array[i].label }`;
 }
 
 function getParentId(i: number, array: ListItem[]): number {
@@ -115,16 +121,16 @@ function fold(newValue: boolean,
     if (!newValue)
         array[i].isFolded = false;
     else
-        for (let j = i; j === i || array[j].depth > array[i].depth; j++)
+        for (let j = i; j === i || array[j]?.depth > array[i]?.depth; j++)
             array[j].isFolded = true;
 
     setState([...array]);
 }
 
-function process(apiSpecs: { [p: string]: any }): ListItem[] {
+function process(endpoints: Endpoints): ListItem[] {
     let result: { [p: string]: any } = {};
 
-    Object.keys(apiSpecs).forEach(path => {
+    Object.keys(endpoints).forEach(path => {
         if (path.startsWith('/'))
             path = path.substring(1);
         const split = path.split('/')

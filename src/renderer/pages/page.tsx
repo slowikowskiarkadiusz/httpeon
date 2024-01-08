@@ -19,7 +19,10 @@ export function Page() {
             .subscribe(() => updateCache());
 
     useEffect(() => window.addEventListener('sidebar_list_item_selected', (e: CustomEvent) => {
-        setCurrentTab(addTab(e.detail as TabSetup<any>));
+        let targetIndex = tabs().findIndex(x => x == (e.detail as TabSetup<any>));
+        if (targetIndex === -1)
+            targetIndex = addTab(e.detail as TabSetup<any>);
+        setCurrentTab(targetIndex);
         setA(a + 1);
     }), []);
 

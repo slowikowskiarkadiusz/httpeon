@@ -65,7 +65,7 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                            paddingLeft: '1em',
                            border: 'none',
                            backgroundColor: baseUrl?.length > 0 ? 'var(--theme-bc-2)' : 'var(--red-color)',
-                           color: 'var(--theme-font-color)',
+                           color: baseUrl?.length > 0 ? 'var(--theme-font-color)' : 'var(--theme-bc)',
                            fontFamily: 'Menlo',
                            borderTopRightRadius: 'var(--cell-border-radius)',
                            borderBottomRightRadius: 'var(--cell-border-radius)',

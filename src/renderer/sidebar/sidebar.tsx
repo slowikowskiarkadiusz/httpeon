@@ -10,6 +10,8 @@ import { PageCode } from "../pages/tab-setup";
 import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontawesome";
 import { useContextMenu } from "../common/context-menu/context-menu.context";
 import { ContextMenuItem } from "../common/context-menu/context-menu";
+import { Endpoints, fromOpenApi } from "../pages/endpoints/endpoints.utils";
+import { useSpaces } from "../common/spaces.context";
 
 const pageIcons: { icon: IconDefinition, code: PageCode }[] = [
     { icon: faCog, code: 'settings' },
@@ -20,9 +22,16 @@ const pageIcons: { icon: IconDefinition, code: PageCode }[] = [
 const configChoosersSize = 50;
 
 export function Sidebar() {
+    const [dummy, setDummy] = useState(0);
     const defaultPage = 1;
+    const { addEndpoints } = useSpaces();
     const { invokeContextMenu } = useContextMenu();
     const [selectedPageIndex, setSelectedPageIndex] = useState(defaultPage);
+
+    const addEndpointsAndReload = (newEndpoints: Endpoints) => {
+        addEndpoints(newEndpoints);
+        setDummy(dummy + 1);
+    };
 
     return <div id="configChooserModalParent"
                 style={ {
@@ -82,7 +91,7 @@ export function Sidebar() {
                     flexDirection: 'row',
                     height: '100%',
                 } }>
-                    { getEndpointActions(pageIcons[selectedPageIndex].code, invokeContextMenu).map(y =>
+                    { getEndpointActions(pageIcons[selectedPageIndex].code, invokeContextMenu, addEndpointsAndReload).map(y =>
                         <div className="sidebar-action-button"
                              key={ y.title }
                              style={ {
@@ -128,7 +137,8 @@ function renderList(pageCode: string) {
 }
 
 function getEndpointActions(code: PageCode,
-                            invokeContextMenu: (event: MouseEvent, items: ContextMenuItem[]) => void): {
+                            invokeContextMenu: (event: MouseEvent, items: ContextMenuItem[]) => void,
+                            addEndpoints: (newEndpoints: Endpoints) => void): {
     action: (event: MouseEvent) => void,
     title: string,
     icon: FontAwesomeIconProps
@@ -142,10 +152,10 @@ function getEndpointActions(code: PageCode,
                 title: 'Import API specs',
                 action: (event: MouseEvent) => invokeContextMenu(event, [{
                     label: 'Import OpenAPI specs',
-                    action: () => openFileUploadWindow(['.json'])
+                    action: () => openFileUploadWindow(['.json'], fromOpenApi, addEndpoints)
                 }, {
                     label: 'Import some other specs',
-                    action: () => openFileUploadWindow(['.json'])
+                    action: () => openFileUploadWindow(['.json'], x => {return {}}, addEndpoints)
                 }])
             }, {
                 icon: { icon: faPlus },
@@ -157,7 +167,9 @@ function getEndpointActions(code: PageCode,
     }
 }
 
-function openFileUploadWindow(formats: string[]) {
+function openFileUploadWindow(formats: string[],
+                              callback: (apiSpecs: { [p: string]: any }) => Endpoints,
+                              addEndpoints: (newEndpoints: Endpoints) => void) {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.style.display = 'none';
@@ -165,13 +177,26 @@ function openFileUploadWindow(formats: string[]) {
     document.body.appendChild(fileInput);
     fileInput.click();
     document.body.removeChild(fileInput);
-    fileInput.addEventListener('change', handleFileSelect);
+    fileInput.addEventListener('change', e => handleFileSelect(e, callback, addEndpoints));
 }
 
-function handleFileSelect(event: Event) {
+function handleFileSelect(event: Event,
+                          process: (apiSpecs: { [p: string]: any }) => Endpoints,
+                          addEndpoints: (newEndpoints: Endpoints) => void) {
     const selectedFile = (event.target as HTMLInputElement).files[0];
-
-    if (selectedFile) {
-        console.log('Selected file:', selectedFile);
-    }
+    selectedFile.text().then(content => {
+        switch (selectedFile.type) {
+            case 'application/json':
+                const json = JSON.parse(content);
+                console.log(content, json);
+                const endpoints = process(json);
+                addEndpoints(endpoints);
+                break;
+            case 'application/xml':
+                break;
+            default:
+                console.error(`File type ${ selectedFile.type } is not supported`);
+                break;
+        }
+    })
 }

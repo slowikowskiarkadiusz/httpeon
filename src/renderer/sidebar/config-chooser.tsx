@@ -39,12 +39,12 @@ function copyContextItems() {
     return undefined;
 }
 
-export function ConfigChooser(props: { label: string, configKeyPath?: string[], options: string[], onClose: (value: string, index: number) => void }) {
+export function ConfigChooser(props: { label: string, configKeyPath: string[], options: string[], onClose: (value: string, index: number) => void }) {
     const { spaces } = useSpaces();
     const { invokeContextMenu } = useContextMenu();
     const { invoke } = useConfigChooserModal();
     let configs = spaces;
-    props.configKeyPath?.forEach(x => configs = configs.filter(x => x.active)[0][x]);
+    props.configKeyPath.forEach(x => configs = configs.filter(x => x.active)[0][x]);
     const activeConfigs = configs.filter((x: any) => x.active);
     const buttonId = Math.floor(Math.random() * 10000000).toString();
 
@@ -62,7 +62,7 @@ export function ConfigChooser(props: { label: string, configKeyPath?: string[], 
                        cursor: 'pointer',
                    } }
                    onContextMenu={ $event => invokeContextMenu($event.nativeEvent, [copyContextItems()]) }
-                   onClick={ () => invoke(props.label,
+                   onClick={ () => invoke(props.configKeyPath,
                        () => document.getElementById(buttonId),
                        props.options,
                        props.onClose) }>

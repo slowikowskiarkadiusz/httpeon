@@ -3,7 +3,7 @@ import { faFileExport, faFileImport, faPlus, faTrashCan } from "@fortawesome/fre
 import { PButton } from "../common/pbutton";
 
 export function ConfigChooserModal(props: {
-    configName: string,
+    configPath: string[],
     items: string[],
     onSelect: (item: string, index: number) => void,
     onDelete: (item: string, index: number) => void,
@@ -30,7 +30,7 @@ export function ConfigChooserModal(props: {
         borderRadius: 'var(--border-radius)',
         boxShadow: 'rgba(0, 0, 0, 0.5) 0px 0px 36px',
     } }>
-        <div style={ { textAlign: 'center', padding: '1rem' } }><b>Switch { props.configName }</b></div>
+        <div style={ { textAlign: 'center', padding: '1rem' } }><b>Switch { props.configPath[props.configPath.length - 1] }</b></div>
         <hr style={ hrStyle }/>
         <ul style={ {
             listStyleType: 'none',
@@ -38,7 +38,7 @@ export function ConfigChooserModal(props: {
             margin: '0 0',
         } }>
             { props.items.map((x, i) =>
-                <li key={ `${ props.configName }-config-chooser-modal-li-item-${ i }` }
+                <li key={ `${ props.configPath }-config-chooser-modal-li-item-${ i }` }
                     style={ {
                         userSelect: 'none',
                         cursor: 'pointer',

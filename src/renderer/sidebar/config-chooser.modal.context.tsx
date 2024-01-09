@@ -1,24 +1,28 @@
 import React, { createContext, useContext } from 'react';
 import { ConfigChooserModal } from "./config-chooser.modal";
 import ReactDOM from 'react-dom';
+import { useSpaces } from "../common/spaces.context";
 
 export const ConfigChooserModalContext = createContext({
-    invoke: (config: string, triggeringElement: () => HTMLElement, options: string[], onClose: (chosen: string | undefined, index: number | undefined) => void) => {},
+    invoke: (configPath: string[], triggeringElement: () => HTMLElement, options: string[], onClose: (chosen: string | undefined, index: number | undefined) => void) => {},
 });
 
 const width = 250;
 const offset = 5;
 
 export const ConfigChooserModalProvider = ({ children, parent }: { children: any, parent: () => HTMLElement }) => {
-    const invoke = (config: string,
+    const { setActiveConfig } = useSpaces();
+
+    const invoke = (configPath: string[],
                     triggeringElement: () => HTMLElement,
                     options: string[],
                     onClose: (chosen: string | undefined, index: number | undefined) => void) => {
         const element = triggeringElement();
         const modal = <ConfigChooserModal
-            configName={ config }
+            configPath={ configPath }
             items={ options }
             onSelect={ (item, index) => {
+                setActiveConfig(configPath, item);
                 onClose(item, index);
                 setTimeout(() => div.remove(), 100);
             } }

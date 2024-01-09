@@ -8,7 +8,8 @@ interface IProps {
     items: ContextMenuItem[],
     spawnAt: { top: number, left: number },
     onmouseover?: () => void,
-    onmouseleave?: () => void
+    onmouseleave?: () => void,
+    onActionPerformed?: () => void,
 }
 
 interface IState {
@@ -20,7 +21,6 @@ interface IState {
 }
 
 export class ContextMenuList extends React.Component<IProps, IState> {
-
     constructor(props: IProps) {
         super(props);
 
@@ -34,11 +34,13 @@ export class ContextMenuList extends React.Component<IProps, IState> {
     }
 
     onItemClick($event: MouseEvent, item: ContextMenuItem) {
-        if (item.action)
+        if (item.action) {
             item.action();
-        else if (item.nested && item.nested.length > 0 && item.nested[0].action)
+            this.props.onActionPerformed();
+        } else if (item.nested && item.nested.length > 0 && item.nested[0].action) {
             item.nested[0].action();
-        else
+            this.props.onActionPerformed();
+        } else
             $event.stopImmediatePropagation();
     }
 
@@ -119,7 +121,8 @@ export class ContextMenuList extends React.Component<IProps, IState> {
                 ? <ContextMenuList items={ this.state.nextMenuItems || [] }
                                    spawnAt={ this.state.nextMenuAt || this.props.spawnAt }
                                    onmouseover={ () => this.setState({ isMouseOverChild: true }) }
-                                   onmouseleave={ () => this.setState({ isMouseOverChild: false }) }/>
+                                   onmouseleave={ () => this.setState({ isMouseOverChild: false }) }
+                                   onActionPerformed={ () => this.props.onActionPerformed() }/>
                 : undefined }
         </>
     }

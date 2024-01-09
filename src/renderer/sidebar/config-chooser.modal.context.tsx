@@ -3,20 +3,28 @@ import { ConfigChooserModal } from "./config-chooser.modal";
 import ReactDOM from 'react-dom';
 
 export const ConfigChooserModalContext = createContext({
-    invoke: (config: string, triggeringElement: () => HTMLElement, onClose: (v: any) => void) => {},
+    invoke: (config: string, triggeringElement: () => HTMLElement, options: string[], onClose: (chosen: string | undefined, index: number | undefined) => void) => {},
 });
 
 const width = 250;
 const offset = 5;
 
 export const ConfigChooserModalProvider = ({ children, parent }: { children: any, parent: () => HTMLElement }) => {
-    const invoke = (config: string, triggeringElement: () => HTMLElement, onClose: (v: any) => void,) => {
+    const invoke = (config: string,
+                    triggeringElement: () => HTMLElement,
+                    options: string[],
+                    onClose: (chosen: string | undefined, index: number | undefined) => void) => {
         const element = triggeringElement();
         const modal = <ConfigChooserModal
             configName={ config }
-            items={ ['ab', 'cd'] }
-            onSelect={ () => console.log('onSelect') }
-            onDelete={ () => console.log('onDelete') }
+            items={ options }
+            onSelect={ (item, index) => {
+                onClose(item, index);
+                setTimeout(() => div.remove(), 100);
+            } }
+            onDelete={ (item, index) => {
+                const confirmed = confirm('yes no??');
+            } }
             onNew={ () => console.log('onNew') }
             onExport={ () => console.log('onExport') }
             onImport={ () => console.log('onImport') }

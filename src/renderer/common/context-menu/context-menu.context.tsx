@@ -10,6 +10,7 @@ export const ContextMenuProvider = ({ children }: { children: any }) => {
     const invokeContextMenu = (event: MouseEvent, items: ContextMenuItem[]) => {
         const modal = <ContextMenu
             { ...{ event, items } }
+            onActionPerformed={ () => div.remove() }
         />
 
         const div = document.createElement('div');
@@ -19,6 +20,10 @@ export const ContextMenuProvider = ({ children }: { children: any }) => {
 
         setTimeout(() => {
             document.addEventListener('click', (event: MouseEvent) => {
+                if (!div.contains(event.target as any))
+                    div.remove();
+            });
+            document.addEventListener('contextmenu', (event: MouseEvent) => {
                 if (!div.contains(event.target as any))
                     div.remove();
             });

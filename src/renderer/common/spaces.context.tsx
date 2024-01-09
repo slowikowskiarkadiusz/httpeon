@@ -2,12 +2,16 @@ import React, { createContext, useContext, useState } from 'react';
 import { TabSetup } from "../pages/tab-setup";
 import { Endpoints } from "../pages/endpoints/endpoints.utils";
 
-export interface Space {
+interface SpaceConfig {
     name: string;
     active: boolean;
+}
+
+export interface Space extends SpaceConfig {
     tabs: TabSetup<any>[];
     baseUrl: string;
     endpoints: Endpoints;
+    envs: SpaceConfig[];
 
     [configKey: string]: any;
 }
@@ -15,32 +19,31 @@ export interface Space {
 const spacesLocalStorageKey = 'spaces';
 const loadedSpaces: Space[] = JSON.parse(localStorage.getItem('spaces')) ?? [
     {
-        name: 'space1',
-        tabs: [],
-        active: false,
-        endpoints: {},
-        envs: [{
-            name: 'dev',
-            active: false
-        },
-            {
-                name: 'local',
-                active: true
-            }]
-    },
-    {
-        name: 'space2',
+        name: 'my first space',
         tabs: [],
         active: true,
         endpoints: {},
         envs: [{
-            name: 'test',
+            name: 'dev',
             active: false
-        },
-            {
-                name: 'prod',
-                active: true
-            }]
+        }, {
+            name: 'local',
+            active: true
+        }]
+// },
+// {
+//     name: 'space2',
+//     tabs: [],
+//     active: true,
+//     endpoints: {},
+//     envs: [{
+//         name: 'test',
+//         active: false
+//     },
+//         {
+//             name: 'prod',
+//             active: true
+//         }]
     }];
 
 const SpacesContext = createContext({
@@ -48,6 +51,8 @@ const SpacesContext = createContext({
     setSpaceConfig: (spaceKey: string, configKey: string, value: any) => {},
     getActive: () => loadedSpaces[0],
     setActive: (name: string) => {},
+    getActiveEnv: () => loadedSpaces[0].envs[0],
+    setActiveEnv: (name: string) => {},
     tabs: () => ([] as TabSetup<any>[]),
     updateCache: () => {},
     currentTabIndex: 0,
@@ -64,13 +69,18 @@ const SpacesContext = createContext({
 
 export const SpacesProvider = ({ children }: any) => {
     const [spaces, _setSpaces] = useState(loadedSpaces);
-    const [activeSpace, _setActiveSpace] = useState(spaces.filter(x => x.active)[0] ?? spaces[0]);
-    const [baseUrl, _setBaseUrl] = useState(activeSpace.baseUrl);
-    const [currentTabIndex, setCurrentTabIndex] = useState(-1);
+    const [activeSpace, _setActiveSpace] = useState<Space | undefined>(spaces.filter(x => x.active)[0]);
+    const [baseUrl, _setBaseUrl] = useState(activeSpace?.baseUrl);
+    const [currentTabIndex, setCurrentTabIndex] = useState(loadedSpaces.filter(x => x.active)[0]?.tabs.findIndex(x => x.active) ?? -1);
 
-    let newCurrentTabIndex = loadedSpaces.filter(x => x.active)[0]?.tabs.findIndex(x => x.active) ?? -1;
-    if (newCurrentTabIndex !== currentTabIndex)
-        setCurrentTabIndex(newCurrentTabIndex);
+    if (!activeSpace && spaces.length > 0)
+        _setActiveSpace(spaces[0]);
+
+    // let newCurrentTabIndex = loadedSpaces.filter(x => x.active)[0]?.tabs.findIndex(x => x.active) ?? -1;
+    // if (newCurrentTabIndex !== currentTabIndex)
+    //     setCurrentTabIndex(newCurrentTabIndex);
+
+    const getCurrentTabIndex = () => activeSpace.tabs.findIndex(x => x.active) ?? -1;
 
     const setSpaceConfig = (spaceKey: string, configKey: string, value: any) => {
         activeSpace[configKey] = value;
@@ -85,7 +95,15 @@ export const SpacesProvider = ({ children }: any) => {
         updateCache();
     }
 
-    const tabs = () => activeSpace.tabs;
+    const getActiveEnv = () => getActive().envs.filter(x => x.active)[0];
+    const setActiveEnv = (name: string) => {
+        getActiveEnv().active = false;
+        getActive().envs.filter(x => x.name === name)[0].active = true;
+        
+        updateCache();
+    }
+
+    const tabs = () => activeSpace?.tabs ?? [];
 
     const addTab = (newTab: TabSetup<any>) => {
         if (!activeSpace.tabs.some((x) => x.id == newTab.id))
@@ -96,11 +114,20 @@ export const SpacesProvider = ({ children }: any) => {
     };
 
     const removeTab = (index: number) => {
-        const newTabs = activeSpace.tabs.filter((_, i) => i !== index);
+        activeSpace.tabs[index].active = false;
         activeSpace.tabs.splice(index, 1);
 
-        if (currentTabIndex >= newTabs.length)
-            setCurrentTabIndex(newTabs.length - 1);
+        const currentIndex = getCurrentTabIndex();
+        if (index === currentIndex) {
+            if (currentIndex > 0) {
+                if (activeSpace.tabs[currentIndex - 1])
+                    activeSpace.tabs[currentIndex - 1].active = true;
+                else
+                    setCurrentTabIndex(-1);
+                setCurrentTabIndex(currentIndex - 1);
+                updateCache();
+            }
+        }
 
         updateCache();
     };
@@ -109,8 +136,6 @@ export const SpacesProvider = ({ children }: any) => {
         if (currentTabIndex > -1 && activeSpace.tabs[currentTabIndex])
             activeSpace.tabs[currentTabIndex].active = false;
 
-        console.log(activeSpace.tabs, index, activeSpace.tabs[index]);
-        
         if (activeSpace.tabs[index])
             activeSpace.tabs[index].active = true;
         else
@@ -129,21 +154,22 @@ export const SpacesProvider = ({ children }: any) => {
     }
 
     const updateCache = () => {
+        _setSpaces([...spaces]);
         localStorage.setItem(spacesLocalStorageKey, JSON.stringify(spaces));
     }
 
-    const endpoints = () => activeSpace.endpoints;
+    const endpoints = () => activeSpace?.endpoints;
 
     const addEndpoints = (newEndpoints: Endpoints) => {
         activeSpace.endpoints = ({ ...endpoints(), ...newEndpoints });
-        _setSpaces([ ...spaces ]);
+        // _setSpaces([...spaces]);
         updateCache();
     }
 
     const removeEndpoint = (path: string) => {
-        delete endpoints()[path];
-        activeSpace.endpoints = ({ ...endpoints() });
-        _setSpaces([ ...spaces ]);
+        delete activeSpace.endpoints[path];
+        activeSpace.endpoints = { ...endpoints() };
+        // _setSpaces([...spaces]);
         updateCache();
     }
 
@@ -153,6 +179,8 @@ export const SpacesProvider = ({ children }: any) => {
             setSpaceConfig,
             getActive,
             setActive,
+            getActiveEnv,
+            setActiveEnv,
             tabs,
             updateCache,
             currentTabIndex,

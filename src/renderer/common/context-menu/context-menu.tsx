@@ -13,6 +13,7 @@ export interface ContextMenuItem {
 interface IProps {
     event: MouseEvent;
     items: ContextMenuItem[];
+    onActionPerformed: () => void;
 }
 
 interface IState {
@@ -57,7 +58,8 @@ export class ContextMenu extends React.Component<IProps, IState> {
             left: left,
         } }>
             <ContextMenuList spawnAt={ { top: this.state.top, left: this.state.left } }
-                             items={ this.props.items }/>
+                             items={ this.props.items }
+                             onActionPerformed={ () => this.props.onActionPerformed() }/>
         </div>
     }
 }

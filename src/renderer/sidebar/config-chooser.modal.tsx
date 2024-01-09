@@ -42,19 +42,24 @@ export function ConfigChooserModal(props: {
                     style={ {
                         userSelect: 'none',
                         cursor: 'pointer',
+                        padding: '0.5rem 0',
                     } }
                     className="config-chooser-li">
                     <div style={ {
                         borderRadius: 'var(--cell-border-radius)',
                         margin: '0 1rem',
-                        padding: '0.75rem 1rem',
+                        padding: '1rem 1rem',
                         display: 'flex',
                         flexDirection: 'row',
                         justifyContent: 'space-between',
                         height: '100%',
-                    } }>
-                        <span onClick={ () => props.onSelect(x, i) }>{ x }</span>
-                        <FontAwesomeIcon onClick={ () => props.onDelete(x, i) }
+                    } }
+                         onClick={ () => props.onSelect(x, i) }>
+                        <span>{ x }</span>
+                        <FontAwesomeIcon onClick={ (e) => {
+                            props.onDelete(x, i);
+                            e.stopPropagation();
+                        } }
                                          icon={ faTrashCan }/>
                     </div>
                 </li>) }

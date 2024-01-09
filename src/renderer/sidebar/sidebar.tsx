@@ -24,7 +24,7 @@ const configChoosersSize = 50;
 export function Sidebar() {
     const [dummy, setDummy] = useState(0);
     const defaultPage = 1;
-    const { addEndpoints } = useSpaces();
+    const { spaces, addEndpoints, setActive, setActiveEnv } = useSpaces();
     const { invokeContextMenu } = useContextMenu();
     const [selectedPageIndex, setSelectedPageIndex] = useState(defaultPage);
 
@@ -70,9 +70,15 @@ export function Sidebar() {
             justifyContent: 'space-between',
         } }>
             <ConfigChooserModalProvider parent={ () => document.getElementById('configChooserModalParent') }>
-                <ConfigChooser label={ 'Space' }/>
-                <ConfigChooser label={ 'Env' }
-                               configKeyPath={ ['envs'] }/>
+                <ConfigChooser label={ 'Space' }
+                               options={ spaces.map(x => x.name) }
+                               onClose={ (value, index) => setActive(value) }/>
+                { spaces.length > 0
+                    ? <ConfigChooser label={ 'Env' }
+                                     options={ spaces.filter(x => x.active)[0].envs.map(x => x.name) }
+                                     onClose={ (value, index) => setActiveEnv(value) }
+                                     configKeyPath={ ['envs'] }/>
+                    : null }
             </ConfigChooserModalProvider>
         </div>
 

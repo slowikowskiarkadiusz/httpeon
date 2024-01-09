@@ -14,5 +14,27 @@
 .config-chooser-li:hover {
     div {
         background-color: var(--cell-hover-bc);
+        color: var(--theme-bc);
+    }
+}
+
+.config-chooser-li:active {
+    div {
+        animation: clickedLiDiv 0.1s linear;
+    }
+}
+
+@keyframes clickedLiDiv {
+    0% {
+        background-color: transparent;
+    }
+    49% {
+        background-color: transparent;
+    }
+    50% {
+        background-color: var(--cell-hover-bc);
+    }
+    100% {
+        background-color: var(--cell-hover-bc);
     }
 }

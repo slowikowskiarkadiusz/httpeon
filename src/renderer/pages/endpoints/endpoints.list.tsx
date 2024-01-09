@@ -1,11 +1,12 @@
 import '../../sidebar/lists.scss';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faChevronRight, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { EndpointTabContent } from "./endpoint.tab-content";
 import { makeTabSetup } from "../tab-setup";
 import { useSpaces } from "../../common/spaces.context";
 import { Endpoints } from "./endpoints.utils";
+import { useContextMenu } from "../../common/context-menu/context-menu.context";
 
 interface ListItem {
     label: string,
@@ -17,11 +18,12 @@ interface ListItem {
 let lastEndpoints = undefined;
 
 export function EndpointsList() {
-    const { endpoints } = useSpaces();
-    const [list, setList] = useState([]);
+    const { endpoints, removeEndpoint } = useSpaces();
+    const [list, setList] = useState<ListItem[]>([]);
     const [lastClickedOnIndex, setLastClickedOnIndex] = useState(-1);
-    
-    if(lastEndpoints!==endpoints())
+    const { invokeContextMenu } = useContextMenu();
+
+    if (lastEndpoints !== endpoints())
         setList(process(endpoints()));
     lastEndpoints = endpoints();
 
@@ -42,31 +44,15 @@ export function EndpointsList() {
                                   const tabSetup = makeTabSetup<EndpointTabContent>('endpoints', fullPath, fullPath, true, {
                                       endpoint: fullPath,
                                       method: pathEndpoints[0],
-                                      input: {
-                                          tabs: {
-                                              Params: {
-                                                  content: '',
-                                              },
-                                              Body: {
-                                                  content: '',
-                                                  allowedDisplayModes: ['text']
-                                              },
-                                              Headers: {
-                                                  content: '[]',
-                                              },
-                                          }
-                                      },
-                                      output: {
-                                          Request: { url: '', method: '', headers: [] },
-                                          Response: {
-                                              status: undefined,
-                                              headers: [],
-                                              body: undefined,
-                                          },
-                                      }
+                                      input: { tabs: { Params: { content: '', }, Body: { content: '', allowedDisplayModes: ['text'] }, Headers: { content: '[]', }, } },
+                                      output: { Request: { url: '', method: '', headers: [] }, Response: { status: undefined, headers: [], body: undefined, }, }
                                   });
                                   window.dispatchEvent(new CustomEvent('sidebar_list_item_selected', { detail: tabSetup }));
                               }
+                          } }
+                          onContextMenu={ e => {
+                              setLastClickedOnIndex(i);
+                              invokeContextMenu(e.nativeEvent, [{ icon: faTrashCan, label: 'Delete', action: () => removeEndpoint(getFullPath(i, c)) }])
                           } }>
                         { item.isFoldable
                             ? <FontAwesomeIcon style={ {
@@ -94,7 +80,7 @@ function endpointsForPath(i: number, array: ListItem[], apiSpecs: Endpoints) {
 
 function getFullPath(i: number, array: ListItem[]): string {
     let parentId = getParentId(i, array);
-    return `${ parentId >= 0 ? `${getFullPath(parentId, array)}/` : '' }${ array[i].label }`;
+    return `${ parentId >= 0 ? `${ getFullPath(parentId, array) }/` : '' }${ array[i].label }`;
 }
 
 function getParentId(i: number, array: ListItem[]): number {

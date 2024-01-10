@@ -12,6 +12,7 @@ import { useContextMenu } from "../common/context-menu/context-menu.context";
 import { ContextMenuItem } from "../common/context-menu/context-menu";
 import { Endpoints, fromOpenApi } from "../pages/endpoints/endpoints.utils";
 import { useSpaces } from "../common/spaces.context";
+import { upload } from "../app";
 
 const pageIcons: { icon: IconDefinition, code: PageCode }[] = [
     { icon: faCog, code: 'settings' },
@@ -22,15 +23,15 @@ const pageIcons: { icon: IconDefinition, code: PageCode }[] = [
 const configChoosersSize = 50;
 
 export function Sidebar() {
-    const [dummy, setDummy] = useState(0);
+    const [_, setDummy] = useState(0);
     const defaultPage = 1;
-    const { spaces, addEndpoints, setActive, setActiveEnv } = useSpaces();
+    const { spaces, addEndpoints } = useSpaces();
     const { invokeContextMenu } = useContextMenu();
     const [selectedPageIndex, setSelectedPageIndex] = useState(defaultPage);
 
     const addEndpointsAndReload = (newEndpoints: Endpoints) => {
         addEndpoints(newEndpoints);
-        setDummy(dummy + 1);
+        setDummy(x => x + 1);
     };
 
     return <div id="configChooserModalParent"
@@ -173,14 +174,7 @@ function getEndpointActions(code: PageCode,
 function openFileUploadWindow(formats: string[],
                               callback: (apiSpecs: { [p: string]: any }) => Endpoints,
                               addEndpoints: (newEndpoints: Endpoints) => void) {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.style.display = 'none';
-    fileInput.accept = formats.join(', ');
-    document.body.appendChild(fileInput);
-    fileInput.click();
-    document.body.removeChild(fileInput);
-    fileInput.addEventListener('change', e => handleFileSelect(e, callback, addEndpoints));
+    upload(formats, e => handleFileSelect(e, callback, addEndpoints));
 }
 
 function handleFileSelect(event: Event,

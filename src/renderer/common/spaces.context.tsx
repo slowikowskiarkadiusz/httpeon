@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from 'react';
 import { TabSetup } from "../pages/tab-setup";
 import { Endpoints } from "../pages/endpoints/endpoints.utils";
 
-interface SpaceConfig {
+export interface SpaceConfig {
     name: string;
     active: boolean;
 
@@ -92,10 +92,6 @@ const SpacesContext = createContext({
     getConfigs: (configPath: string[]) => ([] as SpaceConfig[]),
     setActiveConfig: (configPath: string[], newActiveConfigName: string) => {},
     addConfig: (configPath: string[], newConfigName: string) => {},
-    getActive: () => loadedSpaces[0],
-    setActive: (name: string) => {},
-    getActiveEnv: () => loadedSpaces[0].envs[0],
-    setActiveEnv: (name: string) => {},
     tabs: () => ([] as TabSetup<any>[]),
     updateCache: () => {},
     currentTabIndex: 0,
@@ -131,8 +127,6 @@ export const SpacesProvider = ({ children }: any) => {
         updateCache();
     }
 
-    const getActive = () => activeSpace;
-    const setActive = (name: string) => _setActiveSpace(spaces.filter(x => x.name === name)[0] ?? spaces[0]);
     const setBaseUrl = (newBaseUrl: string) => {
         _setBaseUrl(activeSpace.baseUrl = newBaseUrl);
         updateCache();
@@ -162,14 +156,6 @@ export const SpacesProvider = ({ children }: any) => {
         nestedConfigs.splice(nestedConfigs.length, 0, newConfig)
         updateCache();
     };
-
-    const getActiveEnv = () => getActive().envs.filter(x => x.active)[0];
-    const setActiveEnv = (name: string) => {
-        getActiveEnv().active = false;
-        getActive().envs.filter(x => x.name === name)[0].active = true;
-
-        updateCache();
-    }
 
     const tabs = () => activeSpace?.tabs ?? [];
 
@@ -249,10 +235,6 @@ export const SpacesProvider = ({ children }: any) => {
             getActiveConfig,
             setActiveConfig,
             addConfig,
-            getActive,
-            setActive,
-            getActiveEnv,
-            setActiveEnv,
             tabs,
             updateCache,
             currentTabIndex,
@@ -264,7 +246,7 @@ export const SpacesProvider = ({ children }: any) => {
             updateTab,
             endpoints,
             addEndpoints,
-            removeEndpoint
+            removeEndpoint,
         } }>
             { children }
         </SpacesContext.Provider>

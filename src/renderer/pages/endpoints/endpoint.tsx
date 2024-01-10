@@ -73,8 +73,9 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                            overflow: 'auto',
                        } }
                        onKeyDown={ e => {
-                           if (e.key === 'Enter')
-                               callEndpoint(endpointCallParams)
+                           if (e.key === 'Enter') {
+                               callEndpoint({ ...endpointCallParams, baseUrl: (e.target as HTMLInputElement).value });
+                           }
                        } }
                        defaultValue={ baseUrl }
                        key={ baseUrl }
@@ -186,7 +187,7 @@ async function callEndpoint(
     params.setIsRequestInProgress(true);
     let tabContent = params.currentTab.content as EndpointTabContent;
     let request = {
-        url: params.baseUrl + params.currentTab.content.endpoint,
+        url: `${ params.baseUrl }/${ params.currentTab.content.endpoint }`,
         method: params.currentTab.content.method,
         headers: JSON.parse(tabContent.input.tabs.Headers.content ?? '[]') as [string, string][],
         body: tabContent.input.tabs.Body.content,

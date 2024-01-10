@@ -12,16 +12,22 @@
 }
 
 .config-chooser-li:hover {
-    div {
+    div:first-child {
         background-color: var(--cell-hover-bc);
         color: white;
     }
 }
 
-.config-chooser-li:active {
-    div {
-        animation: clickedLiDiv 0.1s linear;
-    }
+.config-chooser-li-export:hover {
+    color: var(--yellow-color);
+}
+
+.config-chooser-li-delete:hover {
+    color: var(--red-color);
+}
+
+.config-chooser-li:active:first-child {
+    animation: clickedLiDiv 0.1s linear;
 }
 
 @keyframes clickedLiDiv {

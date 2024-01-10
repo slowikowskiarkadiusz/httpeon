@@ -21,8 +21,8 @@ export const ConfigChooserModalProvider = ({ children, parent }: { children: any
         const modal = <TextInputModalProvider>
             <ConfigChooserModal
                 configPath={ configPath }
-                items={ getConfigs(configPath).map(x => x.name) }
-                activeItem={ getActiveConfig(configPath).name }
+                allConfigs={ getConfigs(configPath) }
+                onClose={ () => div.remove() }
                 onSelect={ (item, index) => {
                     setActiveConfig(configPath, item);
                     if (onClose) onClose(item, index);

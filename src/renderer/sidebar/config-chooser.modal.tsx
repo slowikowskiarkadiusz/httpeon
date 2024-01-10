@@ -1,35 +1,40 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExport, faFileImport, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { PButton } from "../common/pbutton";
+import { useTextInputModal } from "../common/text-input.modal.context";
 
 export function ConfigChooserModal(props: {
     configPath: string[],
     items: string[],
+    activeItem: string,
     onSelect: (item: string, index: number) => void,
     onDelete: (item: string, index: number) => void,
-    onNew: () => void,
+    onNew: (name: string) => void,
     onExport: () => void,
     onImport: () => void,
     left: string,
     top: string,
     width: string,
 }) {
+    const { invokeTextInputModal } = useTextInputModal();
+
     const hrStyle = {
         border: 'none',
         borderTop: '1px solid var(--theme-bc)',
         margin: '0',
     };
 
-    return <div style={ {
-        position: 'absolute',
-        left: props.left,
-        top: props.top,
-        width: props.width,
-        backdropFilter: 'blur(7px)',
-        backgroundColor: `var(--theme-bc-3t)`,
-        borderRadius: 'var(--border-radius)',
-        boxShadow: 'rgba(0, 0, 0, 0.5) 0px 0px 36px',
-    } }>
+    return <div
+        style={ {
+            position: 'absolute',
+            left: props.left,
+            top: props.top,
+            width: props.width,
+            backdropFilter: 'blur(7px)',
+            backgroundColor: `var(--theme-bc-3t)`,
+            borderRadius: 'var(--border-radius)',
+            boxShadow: 'rgba(0, 0, 0, 0.5) 0px 0px 36px',
+        } }>
         <div style={ { textAlign: 'center', padding: '1rem' } }><b>Switch { props.configPath[props.configPath.length - 1] }</b></div>
         <hr style={ hrStyle }/>
         <ul style={ {
@@ -55,7 +60,7 @@ export function ConfigChooserModal(props: {
                         height: '100%',
                     } }
                          onClick={ () => props.onSelect(x, i) }>
-                        <span>{ x }</span>
+                        <span style={ { fontWeight: props.activeItem === x ? 'bold' : 'unset' } }>{ x }</span>
                         <FontAwesomeIcon onClick={ (e) => {
                             props.onDelete(x, i);
                             e.stopPropagation();
@@ -70,18 +75,37 @@ export function ConfigChooserModal(props: {
             display: 'flex',
             flexDirection: 'column',
             gap: '1rem'
-        } }><PButton content="NEW"
+        } }>
+            <PButton content="NEW"
                      color="green"
-                     onClick={ () => {} }
-                     icon={ faPlus }/>
+                     icon={ faPlus }
+                     onClick={ e => {
+                         invokeTextInputModal('',
+                             'New space name',
+                             () => document.getElementById('modal-parent'),
+                             { x: e.screenX, y: e.screenY },
+                             'space name...',
+                             (value) => {
+                                 let newActiveItem = props.activeItem;
+                                 if (value) {
+                                     newActiveItem = value;
+                                     props.onNew(value);
+                                 }
+                                 props.onSelect(newActiveItem, props.items.indexOf(newActiveItem));
+                             });
+                     } }/>
             <PButton content="EXPORT"
                      color="yellow"
-                     onClick={ () => {} }
-                     icon={ faFileExport }/>
+                     icon={ faFileExport }
+                     onClick={ e => {
+                         //invokeTextInputModal('abcEXPORT', () => document.getElementById('modal-parent'), { x: e.screenX, y: e.screenY }, () => {});
+                     } }/>
             <PButton content="IMPORT"
                      color="purple"
-                     onClick={ () => {} }
-                     icon={ faFileImport }/>
+                     icon={ faFileImport }
+                     onClick={ e => {
+                         //invokeTextInputModal('abcIMPORT', () => document.getElementById('modal-parent'), { x: e.screenX, y: e.screenY }, () => {});
+                     } }/>
         </div>
     </div>;
 }

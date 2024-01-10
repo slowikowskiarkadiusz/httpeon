@@ -39,7 +39,7 @@ function copyContextItems() {
     return undefined;
 }
 
-export function ConfigChooser(props: { label: string, configKeyPath: string[], options: string[], onClose: (value: string, index: number) => void }) {
+export function ConfigChooser(props: { label: string, configKeyPath: string[], onClose?: (value: string, index: number) => void }) {
     const { spaces } = useSpaces();
     const { invokeContextMenu } = useContextMenu();
     const { invoke } = useConfigChooserModal();
@@ -64,7 +64,6 @@ export function ConfigChooser(props: { label: string, configKeyPath: string[], o
                    onContextMenu={ $event => invokeContextMenu($event.nativeEvent, [copyContextItems()]) }
                    onClick={ () => invoke(props.configKeyPath,
                        () => document.getElementById(buttonId),
-                       props.options,
                        props.onClose) }>
         <span style={ { margin: 'auto' } }>{ props.label }:&nbsp;</span>
         <span style={ { margin: 'auto' } }><b>{ activeConfigs.length > 0 ? activeConfigs[0]['name'] : '---' }</b></span>

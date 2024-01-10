@@ -21,6 +21,26 @@ export interface EnvConfig extends SpaceConfig {
 }
 
 const spacesLocalStorageKey = 'spaces';
+const configTemplates: [string[], SpaceConfig][] = [
+    [[], {
+        name: '',
+        active: false,
+        tabs: [],
+        endpoints: {},
+        envs: [{
+            name: 'default env',
+            active: true,
+            list: []
+        }]
+    }],
+    [['envs'], {
+        name: '',
+        active: false,
+        list: []
+    }
+    ],
+];
+
 const loadedSpaces: Space[] = JSON.parse(localStorage.getItem('spaces')) ?? [
     {
         name: 'my first space',
@@ -67,24 +87,27 @@ const loadedSpaces: Space[] = JSON.parse(localStorage.getItem('spaces')) ?? [
 
 const SpacesContext = createContext({
     spaces: loadedSpaces,
-    setSpaceConfig: (_spaceKey: string, _configKey: string, _value: any) => {},
-    setActiveConfig: (_configPath: string[], _newActiveConfigName: string) => {},
+    setSpaceConfig: (spaceKey: string, configKey: string, value: any) => {},
+    getActiveConfig: (configPath: string[]) => ({} as SpaceConfig),
+    getConfigs: (configPath: string[]) => ([] as SpaceConfig[]),
+    setActiveConfig: (configPath: string[], newActiveConfigName: string) => {},
+    addConfig: (configPath: string[], newConfigName: string) => {},
     getActive: () => loadedSpaces[0],
-    setActive: (_name: string) => {},
+    setActive: (name: string) => {},
     getActiveEnv: () => loadedSpaces[0].envs[0],
-    setActiveEnv: (_name: string) => {},
+    setActiveEnv: (name: string) => {},
     tabs: () => ([] as TabSetup<any>[]),
     updateCache: () => {},
     currentTabIndex: 0,
     baseUrl: null as string,
-    setBaseUrl: (_newUrl: string) => {},
-    addTab: (_newTab: TabSetup<any>) => {return 0 as number},
-    removeTab: (_index: number) => {},
-    setCurrentTab: (_index: number) => {},
-    updateTab: (_index: number, _setup: TabSetup<any>) => {},
+    setBaseUrl: (newUrl: string) => {},
+    addTab: (newTab: TabSetup<any>) => {return 0 as number},
+    removeTab: (index: number) => {},
+    setCurrentTab: (index: number) => {},
+    updateTab: (index: number, setup: TabSetup<any>) => {},
     endpoints: () => ({} as Endpoints),
-    addEndpoints: (_newEndpoints: Endpoints) => {},
-    removeEndpoint: (_path: string) => {},
+    addEndpoints: (newEndpoints: Endpoints) => {},
+    removeEndpoint: (path: string) => {},
 });
 
 export const SpacesProvider = ({ children }: any) => {
@@ -115,21 +138,9 @@ export const SpacesProvider = ({ children }: any) => {
         updateCache();
     }
 
+    const getConfigs = (configPath: string[]) => getNestedConfig(configPath, spaces);
+    const getActiveConfig = (configPath: string[]) => getNestedConfig(configPath, spaces).filter(x => x.active)[0]
     const setActiveConfig = (configPath: string[], newActiveConfigName: string) => {
-        const getNestedConfig = (configPath: string[], configs: SpaceConfig[]): SpaceConfig[] => {
-            let currentConfig = configs.filter(x => x.active)[0];
-            if (!currentConfig) {
-                configs[0].active = true;
-                currentConfig = configs[0];
-            }
-            if (configPath.length === 0)
-                return configs;
-            if (configPath.length === 1)
-                return currentConfig[configPath[0]];
-            else
-                return getNestedConfig(configPath.filter((_v, i) => i > 0), currentConfig[configPath[0]]);
-        };
-
         const nestedConfigs = getNestedConfig(configPath, spaces);
 
         const currentActiveConfig = nestedConfigs.filter(x => x.active)[0];
@@ -139,6 +150,18 @@ export const SpacesProvider = ({ children }: any) => {
 
         updateCache();
     }
+
+    const addConfig = (configPath: string[], newConfigName: string) => {
+        const nestedConfigs = getNestedConfig(configPath, spaces);
+        const currentActiveConfig = nestedConfigs.filter(x => x.active)[0];
+        if (currentActiveConfig)
+            currentActiveConfig.active = false;
+        const newConfig = { ...configTemplates.filter(x => compareArrays(x[0], configPath))[0][1] };
+        newConfig.name = newConfigName;
+        newConfig.active = true;
+        nestedConfigs.splice(nestedConfigs.length, 0, newConfig)
+        updateCache();
+    };
 
     const getActiveEnv = () => getActive().envs.filter(x => x.active)[0];
     const setActiveEnv = (name: string) => {
@@ -222,7 +245,10 @@ export const SpacesProvider = ({ children }: any) => {
         <SpacesContext.Provider value={ {
             spaces,
             setSpaceConfig,
+            getConfigs,
+            getActiveConfig,
             setActiveConfig,
+            addConfig,
             getActive,
             setActive,
             getActiveEnv,
@@ -244,5 +270,26 @@ export const SpacesProvider = ({ children }: any) => {
         </SpacesContext.Provider>
     );
 };
+
+const getNestedConfig = (configPath: string[], configs: SpaceConfig[]): SpaceConfig[] => {
+    let currentConfig = configs.filter(x => x.active)[0];
+    if (!currentConfig) {
+        configs[0].active = true;
+        currentConfig = configs[0];
+    }
+    if (configPath.length === 0)
+        return configs;
+    if (configPath.length === 1)
+        return currentConfig[configPath[0]];
+    else
+        return getNestedConfig(configPath.filter((_v, i) => i > 0), currentConfig[configPath[0]]);
+};
+
+const compareArrays = (a1: any[], a2: any[]) => {
+    if (a1.length !== a2.length)
+        return false;
+
+    return a1.every((_v, i) => a1[i] === a2[i]);
+}
 
 export const useSpaces = () => useContext(SpacesContext);

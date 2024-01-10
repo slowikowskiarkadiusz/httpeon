@@ -14,7 +14,7 @@ export const ContextMenuProvider = ({ children }: { children: any }) => {
         />
 
         const div = document.createElement('div');
-        document.getElementById('context-menu-parent').append(div)
+        document.getElementById('modal-parent').append(div)
         // TODO switch to createroot
         ReactDOM.render(modal, div);
 

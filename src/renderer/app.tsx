@@ -5,10 +5,9 @@ import { ContextMenuProvider } from "./common/context-menu/context-menu.context"
 import { Page } from "./pages/page";
 
 export function App() {
-    return (
-        <ContextMenuProvider>
+    return (<ContextMenuProvider>
             <SpacesProvider>
-                <div id="context-menu-parent"
+                <div id="modal-parent"
                      style={ { zIndex: 1, position: 'relative', width: '0', height: '0' } }></div>
                 <div style={ {
                     fontSize: '2rem',

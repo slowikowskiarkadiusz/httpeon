@@ -71,13 +71,9 @@ export function Sidebar() {
         } }>
             <ConfigChooserModalProvider parent={ () => document.getElementById('configChooserModalParent') }>
                 <ConfigChooser label={ 'Space' }
-                               options={ spaces.map(x => x.name) }
-                               onClose={ (value, index) => setActive(value) }
                                configKeyPath={ [] }/>
                 { spaces.length > 0
                     ? <ConfigChooser label={ 'Env' }
-                                     options={ spaces.filter(x => x.active)[0].envs.map(x => x.name) }
-                                     onClose={ (value, index) => setActiveEnv(value) }
                                      configKeyPath={ ['envs'] }/>
                     : null }
             </ConfigChooserModalProvider>

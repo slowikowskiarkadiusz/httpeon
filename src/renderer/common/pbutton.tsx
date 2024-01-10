@@ -4,7 +4,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import React from "react";
 
-type Color = 'primary' | 'secondary' | 'green' | 'purple' | 'yellow' | 'gray';
+export type Color = 'primary' | 'secondary' | 'green' | 'purple' | 'yellow' | 'gray';
 
 export function PButton(props: {
     content?: string,

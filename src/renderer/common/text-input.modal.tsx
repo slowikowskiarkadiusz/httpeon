@@ -1,7 +1,9 @@
 import React from "react";
-import { inputStyle } from "./endpoint-request-editor";
+import { inputStyle } from "../pages/endpoints/endpoint-request-editor";
 
-export function BaseUrlModal(props: {
+export function TextInputModal(props: {
+    header: string,
+    placeholder?: string,
     left: string,
     top: string,
     width: string,
@@ -16,14 +18,15 @@ export function BaseUrlModal(props: {
         margin: '0',
     };
 
-    setTimeout(() => {
-        document.addEventListener('click', (event: MouseEvent) => {
-            if (!ref.current.contains(event.target as any)) {
-                props.onFinish(inputRef.current.value);
-                ref.current.parentElement.remove();
-            }
-        });
-    }, 0);
+    const clickListener = (event: MouseEvent) => {
+        if (!ref.current.contains(event.target as any)) {
+            props.onFinish(undefined);
+            ref.current.parentElement.remove();
+            document.removeEventListener('click', clickListener);
+        }
+    };
+
+    setTimeout(() => document.addEventListener('click', clickListener), 0);
 
     return <div
         ref={ ref }
@@ -36,15 +39,16 @@ export function BaseUrlModal(props: {
             backdropFilter: 'blur(7px)',
             backgroundColor: `var(--theme-bc-3t)`,
             borderRadius: 'var(--border-radius)',
+            fontSize: '2rem',
             boxShadow: 'rgba(0, 0, 0, 0.5) 0px 0px 36px',
         } }>
-        <div style={ { textAlign: 'center', padding: '1rem' } }><b>Base URL</b></div>
+        <div style={ { textAlign: 'center', padding: '1rem' } }><b>{ props.header }</b></div>
         <hr style={ hrStyle }/>
         <div style={ { marginTop: '0.5em', display: 'flex' } }>
             <input ref={ inputRef }
                    type="text"
                    style={ inputStyle }
-                   placeholder="base url..."
+                   placeholder={ props.placeholder }
                    autoFocus={ true }
                    onKeyUp={ (e) => {
                        if (['Enter', 'Return'].includes(e.code)) {
@@ -58,4 +62,4 @@ export function BaseUrlModal(props: {
     </div>;
 }
 
-export default { BaseUrlModal };
+export default { BaseUrlModal: TextInputModal };

@@ -39,7 +39,17 @@ export interface EndpointRequestEditorDataTab {
 
 interface EndpointRequestEditorProps {
     // responseStatus?: number;
-    data: EndpointRequestEditorData;
+    data: EditorData;
+    onDataUpdate?: (data: EditorData) => void;
+}
+
+export interface EditorData {
+    tabs: {
+        [p: string]: EndpointRequestEditorDataTab,
+        // Params: EndpointRequestEditorDataTab,
+        // Headers: EndpointRequestEditorDataTab,
+        // Body: EndpointRequestEditorDataTab,
+    }
 }
 
 interface EndpointRequestEditorState {
@@ -174,17 +184,6 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
         );
     }
 
-    // renderResponseStatus() {
-    //     if (!this.props.responseStatus)
-    //         return undefined;
-    //
-    //     let statusCat = Math.floor(this.props.responseStatus) / 100;
-    //     return <span style={ {
-    //         fontWeight: 'bold',
-    //         color: `var(--${ [4, 5].includes(statusCat) ? 'red' : (statusCat === 3 ? 'yellow' : 'green') }-color`
-    //     } }>&nbsp;{ this.props.responseStatus }</span>
-    // }
-
     setCurrentTab(tab: string) {
         this.setState({ currentTab: tab });
     }
@@ -225,6 +224,7 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
                 setTimeout(() => this.forceUpdate(), 0);
             }
             data.tabs[currentTab].content = JSON.stringify(content);
+            this.props.onDataUpdate(data);
             dispatchUpdateCacheEvent();
         }
 
@@ -352,6 +352,7 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
                  key={ content }
                  onInput={ (e) => {
                      (data.tabs[currentTab].content = (e.target as HTMLDivElement).innerText);
+                     this.props.onDataUpdate(data);
                      dispatchUpdateCacheEvent();
                  } }>
             </div>

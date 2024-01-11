@@ -6,7 +6,7 @@ export interface TabSetup<T> {
     content: T,
 }
 
-export type PageCode = 'settings' | 'endpoints' | 'scenarios';
+export type PageCode = 'settings' | 'endpoints' | 'scenarios' | 'envs';
 
 export function makeTabSetup<T>(
     pageCode: PageCode,

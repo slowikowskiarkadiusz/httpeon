@@ -6,6 +6,7 @@ import { TabSetup } from "./tab-setup";
 import { Endpoint } from "./endpoints/endpoint";
 import { useSpaces } from "../common/spaces.context";
 import { debounceTime, fromEvent } from "rxjs";
+import { Env } from "./env/env";
 
 let update_spaces_cache_event = undefined;
 let a = 1;
@@ -21,7 +22,7 @@ export function Page() {
             .subscribe(() => updateCache());
 
     useEffect(() => {
-        window.addEventListener('sidebar_list_item_selected', (e: CustomEvent) => {
+        window.addEventListener('open_tab', (e: CustomEvent) => {
             let targetIndex = tabs().findIndex(x => x.title == (e.detail as TabSetup<any>).title);
             if (targetIndex === -1)
                 targetIndex = addTab(e.detail as TabSetup<any>);
@@ -110,12 +111,15 @@ export function Page() {
 
 function renderContent(tabSetup: TabSetup<any> | null, updateSetup: (setup: TabSetup<any>) => void) {
     switch (tabSetup?.pageCode) {
-        case "settings":
+        case 'settings':
             break;
-        case "endpoints":
+        case 'endpoints':
             return <Endpoint setup={ tabSetup }
                              updateSetup={ updateSetup }/>
-        case "scenarios":
+        case 'scenarios':
             break;
+        case 'envs':
+            return <Env setup={ tabSetup }
+                        updateSetup={ updateSetup }/>
     }
 }

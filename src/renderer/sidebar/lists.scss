@@ -10,12 +10,12 @@
         grid-template-columns: 1.5em 1fr;
     }
 
-    li:hover {
+    li.selected {
         border-radius: var(--cell-border-radius);
         background-color: var(--cell-hover-background-color);
     }
 
-    li.selected {
+    li:focus {
         border-radius: var(--cell-border-radius);
         background-color: var(--cell-selected-background-color);
     }

@@ -8,8 +8,6 @@ import { dispatchUpdateCacheEvent, download, upload } from "../app";
 export function ConfigChooserModal(props: {
     configPath: string[],
     allConfigs: SpaceConfig[],
-    // items: string[],
-    // activeItem: string,
     onClose: () => void,
     onSelect: (item: string, index: number) => void,
     onDelete: (item: string, index: number) => void,

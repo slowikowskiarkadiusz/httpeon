@@ -17,7 +17,7 @@ export interface Space extends SpaceConfig {
 }
 
 export interface EnvConfig extends SpaceConfig {
-    list: SpaceConfig[];
+    values: [string, string, boolean][];
 }
 
 const spacesLocalStorageKey = 'spaces';
@@ -30,13 +30,12 @@ const configTemplates: [string[], SpaceConfig][] = [
         envs: [{
             name: 'default env',
             active: true,
-            list: []
         }]
     }],
     [['envs'], {
         name: '',
         active: false,
-        list: []
+        values: [] as [string, string, boolean][]
     }
     ],
 ];
@@ -50,17 +49,11 @@ const loadedSpaces: Space[] = JSON.parse(localStorage.getItem('spaces')) ?? [
         envs: [{
             name: 'firstdev',
             active: false,
-            list: [{
-                name: 'devList',
-                active: false,
-            }]
+            values: [],
         }, {
             name: 'firstlocal',
             active: true,
-            list: [{
-                name: 'localList',
-                active: true,
-            }]
+            values: [],
         }]
     },
     {
@@ -71,17 +64,11 @@ const loadedSpaces: Space[] = JSON.parse(localStorage.getItem('spaces')) ?? [
         envs: [{
             name: 'seconddev',
             active: false,
-            list: [{
-                name: 'devList',
-                active: false,
-            }]
+            values: [],
         }, {
             name: 'secondlocal',
             active: true,
-            list: [{
-                name: 'localList',
-                active: true,
-            }]
+            values: [],
         }]
     }];
 

@@ -34,6 +34,7 @@ export function EndpointsList() {
                     ? <li key={ `endpoint-list-item-${ i }` }
                           className={ lastClickedOnIndex === i ? 'selected' : null }
                           style={ { paddingLeft: `${ item.depth * 1.5 }em` } }
+                          tabIndex={ -1 }
                           onClick={ () => {
                               if (item.isFoldable)
                                   fold(!item.isFolded, i, c, (list: ListItem[]) => setList(list));
@@ -47,7 +48,7 @@ export function EndpointsList() {
                                       input: { tabs: { Params: { content: '', }, Body: { content: '', allowedDisplayModes: ['text'] }, Headers: { content: '[]', }, } },
                                       output: { Request: { url: '', method: '', headers: [] }, Response: { status: undefined, headers: [], body: undefined, }, }
                                   });
-                                  window.dispatchEvent(new CustomEvent('sidebar_list_item_selected', { detail: tabSetup }));
+                                  window.dispatchEvent(new CustomEvent('open_tab', { detail: tabSetup }));
                               }
                           } }
                           onContextMenu={ e => {

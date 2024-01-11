@@ -6,13 +6,14 @@ import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { ConfigChooser } from "./config-chooser";
 import { ConfigChooserModalProvider } from "./config-chooser.modal.context";
 import { EndpointsList } from "../pages/endpoints/endpoints.list";
-import { PageCode } from "../pages/tab-setup";
+import { makeTabSetup, PageCode } from "../pages/tab-setup";
 import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontawesome";
 import { useContextMenu } from "../common/context-menu/context-menu.context";
 import { ContextMenuItem } from "../common/context-menu/context-menu";
 import { Endpoints, fromOpenApi } from "../pages/endpoints/endpoints.utils";
-import { useSpaces } from "../common/spaces.context";
+import { EnvConfig, useSpaces } from "../common/spaces.context";
 import { upload } from "../app";
+import { EnvTabContent } from "../pages/env/env.tab-content";
 
 const pageIcons: { icon: IconDefinition, code: PageCode }[] = [
     { icon: faCog, code: 'settings' },
@@ -25,7 +26,7 @@ const configChoosersSize = 50;
 export function Sidebar() {
     const [_, setDummy] = useState(0);
     const defaultPage = 1;
-    const { spaces, addEndpoints } = useSpaces();
+    const { spaces, addEndpoints, getConfigs } = useSpaces();
     const { invokeContextMenu } = useContextMenu();
     const [selectedPageIndex, setSelectedPageIndex] = useState(defaultPage);
 
@@ -75,7 +76,19 @@ export function Sidebar() {
                                configKeyPath={ [] }/>
                 { spaces.length > 0
                     ? <ConfigChooser label={ 'Env' }
-                                     configKeyPath={ ['envs'] }/>
+                                     configKeyPath={ ['envs'] }
+                                     onClose={ (chosen) => {
+                                         if (chosen) {
+                                             const myConfig = getConfigs(['envs']).filter(x => x.name === chosen)[0] as EnvConfig;
+                                             const tabSetup = makeTabSetup<EnvTabContent>('envs', chosen, `env_${ chosen }`, true, {
+                                                 env: chosen,
+                                                 tabs: {
+                                                     Variables: { content: JSON.stringify(myConfig.values) },
+                                                 }
+                                             });
+                                             window.dispatchEvent(new CustomEvent('open_tab', { detail: tabSetup }));
+                                         }
+                                     } }/>
                     : null }
             </ConfigChooserModalProvider>
         </div>

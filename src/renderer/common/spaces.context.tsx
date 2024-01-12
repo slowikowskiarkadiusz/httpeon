@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import { TabSetup } from "../pages/tab-setup";
 import { Endpoints } from "../pages/endpoints/endpoints.utils";
+import { clamp } from "../app";
 
 export interface SpaceConfig {
     name: string;
@@ -11,12 +12,12 @@ export interface SpaceConfig {
 
 export interface Space extends SpaceConfig {
     tabs: TabSetup<any>[];
-    baseUrl: string;
     endpoints: Endpoints;
     envs: SpaceConfig[];
 }
 
 export interface EnvConfig extends SpaceConfig {
+    baseUrl: string;
     values: [string, string, boolean][];
 }
 
@@ -96,11 +97,11 @@ const SpacesContext = createContext({
 export const SpacesProvider = ({ children }: any) => {
     const [spaces, _setSpaces] = useState(loadedSpaces);
     let activeSpace = spaces.filter(x => x.active)[0];
-    const [baseUrl, _setBaseUrl] = useState(activeSpace?.baseUrl);
     const [currentTabIndex, setCurrentTabIndex] = useState(loadedSpaces.filter(x => x.active)[0]?.tabs.findIndex(x => x.active) ?? -1);
 
+    function getActiveConfig<T>(configPath: string[]): T {return getNestedConfig(configPath, spaces).filter(x => x.active)[0] as any}
+
     const getConfigs = (configPath: string[]) => getNestedConfig(configPath, spaces);
-    const getActiveConfig = (configPath: string[]) => getNestedConfig(configPath, spaces).filter(x => x.active)[0]
     const setActiveConfig = (configPath: string[], newActiveConfigName: string) => {
         const nestedConfigs = getNestedConfig(configPath, spaces);
 
@@ -111,6 +112,8 @@ export const SpacesProvider = ({ children }: any) => {
 
         updateCache();
     }
+
+    const [baseUrl, _setBaseUrl] = useState(getActiveConfig<EnvConfig>(['envs']).baseUrl);
 
     if (!activeSpace && spaces.length > 0)
         setActiveConfig([], spaces[0].name);
@@ -124,7 +127,7 @@ export const SpacesProvider = ({ children }: any) => {
     }
 
     const setBaseUrl = (newBaseUrl: string) => {
-        _setBaseUrl(activeSpace.baseUrl = newBaseUrl);
+        _setBaseUrl(getActiveConfig<EnvConfig>(['envs']).baseUrl = newBaseUrl);
         updateCache();
     }
 
@@ -146,23 +149,21 @@ export const SpacesProvider = ({ children }: any) => {
         if (!activeSpace.tabs.some((x) => x.id == newTab.id))
             activeSpace.tabs.push(newTab);
 
+        setCurrentTab(activeSpace.tabs.length - 1);
         updateCache();
         return activeSpace.tabs.findIndex(x => x.id === newTab.id);
     };
 
     const removeTab = (index: number) => {
+        const currentIndex = getCurrentTabIndex();
         activeSpace.tabs[index].active = false;
         activeSpace.tabs.splice(index, 1);
-
-        const currentIndex = getCurrentTabIndex();
         if (index === currentIndex) {
-            if (currentIndex > 0) {
-                if (activeSpace.tabs[currentIndex - 1])
-                    activeSpace.tabs[currentIndex - 1].active = true;
-                else
-                    setCurrentTabIndex(-1);
-                setCurrentTabIndex(currentIndex - 1);
-                updateCache();
+            if (activeSpace.tabs.length > 0) {
+                let newIndex = clamp(currentIndex - 1, 0, activeSpace.tabs.length);
+                setCurrentTab(newIndex);
+            } else {
+                setCurrentTab(-1);
             }
         }
 
@@ -171,7 +172,7 @@ export const SpacesProvider = ({ children }: any) => {
 
     const setCurrentTab = (index: number) => {
         if (currentTabIndex > -1 && activeSpace.tabs[currentTabIndex])
-            activeSpace.tabs[currentTabIndex].active = false;
+            activeSpace.tabs.forEach(tab => tab.active = false);
 
         if (activeSpace.tabs[index])
             activeSpace.tabs[index].active = true;

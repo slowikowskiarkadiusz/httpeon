@@ -51,7 +51,7 @@ export function download(filename: string, text: string) {
     } else {
         pom.click();
     }
-    
+
     pom.remove();
 }
 
@@ -64,4 +64,13 @@ export function upload(formats: string[], callback: (this: HTMLInputElement, ev:
     fileInput.click();
     document.body.removeChild(fileInput);
     fileInput.addEventListener('change', callback);
+}
+
+export function clamp(value: number, min: number, max: number): number {
+    if (value < min)
+        return min;
+    else if (value > max)
+        return max;
+    else
+        return value;
 }

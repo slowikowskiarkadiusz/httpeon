@@ -9,11 +9,10 @@ import { debounceTime, fromEvent } from "rxjs";
 import { Env } from "./env/env";
 
 let update_spaces_cache_event = undefined;
-let a = 1;
 
 export function Page() {
     const { tabs, currentTabIndex, updateCache, addTab, removeTab, setCurrentTab, updateTab } = useSpaces();
-    const [_, setA] = useState(a);
+    const [_, setA] = useState(1);
     const tabsParentRef = useRef<HTMLDivElement>();
 
     if (!update_spaces_cache_event)
@@ -31,7 +30,7 @@ export function Page() {
                 if (tabsParentRef.current.children[targetIndex])
                     tabsParentRef.current.children[targetIndex].scrollIntoView({ behavior: 'smooth' })
             }, 1);
-            setA(a *= -1);
+            setA(a => a * -1);
         });
 
         window.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -39,7 +38,7 @@ export function Page() {
                 const currentIndex = tabs().findIndex(x => x.active);
                 if (currentIndex > -1) {
                     removeTab(currentIndex);
-                    setA(a *= -1);
+                    setA(a => a * -1);
                     e.stopImmediatePropagation();
                     e.preventDefault();
                 }
@@ -65,24 +64,25 @@ export function Page() {
                 <div key={ `page-tab-${ i }` }
                      style={ {
                          width: `${ 100 / c.length }%`,
-                         minWidth: '15em',
+                         minWidth: '25em',
                          borderLeft: '1px solid var(--theme-bc-3)',
                          borderRight: '1px solid var(--theme-bc-3)',
                          backgroundColor: currentTabIndex === i ? 'var(--theme-bc)' : 'var(--theme-bc-3)',
                          transition: 'width 0.2s ease-out, background-color 0.2s',
                          cursor: 'pointer',
                          flex: '1 0 auto',
-                         fontSize: '1.5rem',
+                         fontSize: '2rem',
                          textOverflow: 'ellipsis',
                          whiteSpace: 'nowrap',
                          overflow: 'hidden',
-                         height: '3em',
+                         height: '2em',
                          display: 'flex',
                          flexDirection: 'row',
                      } }
+                     title={ x.title }
                      onClick={ () => {
                          setCurrentTab(i);
-                         setA(a + 1);
+                         setA(a => a * -1);
                      } }>
                     <FontAwesomeIcon className="tab-close"
                                      style={ { margin: 'auto 0.5em' } }

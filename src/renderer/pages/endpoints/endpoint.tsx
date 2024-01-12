@@ -1,4 +1,4 @@
-import { TabSetup } from "../tab-setup";
+import { makeTabSetup, TabSetup } from "../tab-setup";
 import { EndpointTabContent } from "./endpoint.tab-content";
 import { PButton } from "../../common/pbutton";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
@@ -8,6 +8,7 @@ import { dispatchUpdateCacheEvent } from "../../app";
 import { callHttp } from "../../common/http";
 import { EndpointResponse } from "./endpoint-response";
 import { EndpointRequestEditor } from "./endpoint-request-editor";
+import { EnvTabContent } from "../env/env.tab-content";
 
 let lastSetup = undefined;
 
@@ -15,8 +16,7 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
     const [selectedMethod, setSelectedMethod] = useState(props.setup.content.method)
     const [responseStatus, setResponseStatus] = useState<number>(undefined);
     const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-    const { tabs, currentTabIndex, setBaseUrl, baseUrl, getActiveConfig } = useSpaces();
-    const baseUrlRef = React.createRef<HTMLInputElement>();
+    const { tabs, currentTabIndex, baseUrl, getActiveConfig } = useSpaces();
     const requestRef = React.createRef<EndpointRequestEditor>();
     const responseRef = React.createRef<EndpointResponse>();
 
@@ -38,55 +38,6 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
     };
 
     return <>
-        <div id="baseUrlModalParent"
-             style={ { width: '100%', display: 'flex', flexDirection: 'row', gap: 'var(--app-gap)', } }>
-            <div style={ { backgroundColor: 'var(--theme-bc-2)', fontSize: '2rem', flex: '1 0 auto', display: 'flex', borderRadius: 'var(--cell-border-radius)' } }>
-                <div style={ {
-                    display: 'flex',
-                    height: '100%',
-                    cursor: 'default',
-                    borderTopLeftRadius: 'var(--cell-border-radius)',
-                    borderBottomLeftRadius: 'var(--cell-border-radius)',
-                    border: 'none',
-                    fontWeight: 'bold',
-                    backgroundColor: 'var(--secondary-color)',
-                    color: 'var(--theme-bc-2)',
-                    padding: '0em 0.25em',
-                } }
-                     onClick={ () => baseUrlRef.current?.focus() }>
-                    <span style={ {
-                        margin: 'auto',
-                    } }>BASE URL</span>
-                </div>
-                <input type="text"
-                       ref={ baseUrlRef }
-                       style={ {
-                           fontSize: '2rem',
-                           flex: '1 1 auto',
-                           paddingLeft: '1em',
-                           border: 'none',
-                           backgroundColor: baseUrl?.length > 0 ? 'var(--theme-bc-2)' : 'var(--red-color)',
-                           color: baseUrl?.length > 0 ? 'var(--theme-font-color)' : 'var(--theme-bc)',
-                           fontFamily: 'Menlo',
-                           borderTopRightRadius: 'var(--cell-border-radius)',
-                           borderBottomRightRadius: 'var(--cell-border-radius)',
-                           lineHeight: '2em',
-                           overflow: 'auto',
-                       } }
-                       onKeyDown={ e => {
-                           if (e.key === 'Enter') {
-                               callEndpoint({ ...endpointCallParams, baseUrl: (e.target as HTMLInputElement).value });
-                           }
-                       } }
-                       defaultValue={ baseUrl }
-                       key={ baseUrl }
-                       placeholder="base url..."
-                       onBlur={ e => {
-                           setBaseUrl((e.target as HTMLInputElement).value)
-                       } }/>
-            </div>
-        </div>
-
         <div style={ {
             width: '100%',
             display: 'flex',
@@ -188,6 +139,17 @@ async function callEndpoint(
         responseRef: React.RefObject<EndpointResponse>,
         getActiveConfig: (configPath: string[]) => SpaceConfig
     }): Promise<void> {
+    if (!params.baseUrl) {
+        const currentEnv = params.getActiveConfig(['envs']);
+        const tabSetup = makeTabSetup<EnvTabContent>('envs', currentEnv.name, `env_${ currentEnv.name }`, true, {
+            env: currentEnv.name,
+            tabs: {
+                Variables: { content: JSON.stringify(currentEnv.values) },
+            }
+        });
+        window.dispatchEvent(new CustomEvent('open_tab', { detail: tabSetup }));
+        return;
+    }
     params.setIsRequestInProgress(true);
     let tabContent = params.currentTab.content as EndpointTabContent;
     let request = {

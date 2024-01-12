@@ -5,6 +5,7 @@ import { faChevronDown, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { useConfigChooserModal } from "./config-chooser.modal.context";
 import { ContextMenuItem } from "../common/context-menu/context-menu";
 import { useContextMenu } from "../common/context-menu/context-menu.context";
+import { CSSProperties } from "react";
 
 function copyContextItems() {
     let copyNestedItems: ContextMenuItem[] = [];
@@ -39,7 +40,7 @@ function copyContextItems() {
     return undefined;
 }
 
-export function ConfigChooser(props: { label: string, configKeyPath: string[], onClose?: (value: string, index: number) => void }) {
+export function ConfigChooser(props: { label: string, style?: CSSProperties, configKeyPath: string[], onClose?: (value: string, index: number) => void }) {
     const { spaces } = useSpaces();
     const { invokeContextMenu } = useContextMenu();
     const { invoke } = useConfigChooserModal();
@@ -60,6 +61,7 @@ export function ConfigChooser(props: { label: string, configKeyPath: string[], o
                        color: 'unset',
                        border: 'none',
                        cursor: 'pointer',
+                       ...props.style,
                    } }
                    onContextMenu={ $event => invokeContextMenu($event.nativeEvent, [copyContextItems()]) }
                    onClick={ () => invoke(props.configKeyPath,

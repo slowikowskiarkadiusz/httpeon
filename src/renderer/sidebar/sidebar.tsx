@@ -1,5 +1,6 @@
 import './sidebar.scss';
 import { faArrowRightToBracket, faCog, faLocationDot, faPlus, faScroll } from "@fortawesome/free-solid-svg-icons";
+import { faRectangleList } from "@fortawesome/free-regular-svg-icons";
 import { PageButton } from "./page-button";
 import React, { useState } from "react";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
@@ -26,7 +27,7 @@ const configChoosersSize = 50;
 export function Sidebar() {
     const [_, setDummy] = useState(0);
     const defaultPage = 1;
-    const { spaces, addEndpoints, getConfigs, setActiveConfig } = useSpaces();
+    const { spaces, addEndpoints, baseUrl, getActiveConfig, setActiveConfig } = useSpaces();
     const { invokeContextMenu } = useContextMenu();
     const [selectedPageIndex, setSelectedPageIndex] = useState(defaultPage);
 
@@ -34,6 +35,17 @@ export function Sidebar() {
         addEndpoints(newEndpoints);
         setDummy(x => x + 1);
     };
+
+    const openEnvTab = () => {
+        const myConfig = getActiveConfig(['envs']) as EnvConfig;
+        const tabSetup = makeTabSetup<EnvTabContent>('envs', myConfig.name, `env_${ myConfig.name }`, true, {
+            env: myConfig.name,
+            tabs: {
+                Variables: { content: JSON.stringify(myConfig.values) },
+            }
+        });
+        window.dispatchEvent(new CustomEvent('open_tab', { detail: tabSetup }));
+    }
 
     return <div id="configChooserModalParent"
                 style={ {
@@ -76,21 +88,34 @@ export function Sidebar() {
                                onClose={ (value, index) => setActiveConfig([], value) }
                                configKeyPath={ [] }/>
                 { spaces.length > 0
-                    ? <ConfigChooser label={ 'Env' }
-                                     configKeyPath={ ['envs'] }
-                                     onClose={ (chosen) => {
-                                         if (chosen) {
-                                             setActiveConfig(['envs'], chosen)
-                                             const myConfig = getConfigs(['envs']).filter(x => x.name === chosen)[0] as EnvConfig;
-                                             const tabSetup = makeTabSetup<EnvTabContent>('envs', chosen, `env_${ chosen }`, true, {
-                                                 env: chosen,
-                                                 tabs: {
-                                                     Variables: { content: JSON.stringify(myConfig.values) },
-                                                 }
-                                             });
-                                             window.dispatchEvent(new CustomEvent('open_tab', { detail: tabSetup }));
-                                         }
-                                     } }/>
+                    ? <div style={ { display: 'flex', flexDirection: 'row' } }>
+                        <ConfigChooser label={ 'Env' }
+                                       style={ { paddingRight: '0.25em' } }
+                                       configKeyPath={ ['envs'] }
+                                       onClose={ (chosen) => {
+                                           if (chosen) {
+                                               setActiveConfig(['envs'], chosen)
+                                               openEnvTab();
+                                           }
+                                       } }/>
+                        <button className="config-chooser"
+                                style={ {
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    userSelect: 'none',
+                                    borderRadius: 'var(--border-radius)',
+                                    padding: '1em',
+                                    paddingLeft: '0.25em',
+                                    margin: '0.1em 0',
+                                    color: !baseUrl ? 'var(--red-color)' : 'unset',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                } }
+                                onClick={ openEnvTab }>
+                            <FontAwesomeIcon style={ { margin: 'auto' } }
+                                             icon={ faRectangleList }/>
+                        </button>
+                    </div>
                     : null }
             </ConfigChooserModalProvider>
         </div>

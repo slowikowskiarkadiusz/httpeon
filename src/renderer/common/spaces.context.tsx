@@ -95,29 +95,9 @@ const SpacesContext = createContext({
 
 export const SpacesProvider = ({ children }: any) => {
     const [spaces, _setSpaces] = useState(loadedSpaces);
-    const [activeSpace, _setActiveSpace] = useState<Space | undefined>(spaces.filter(x => x.active)[0]);
+    let activeSpace = spaces.filter(x => x.active)[0];
     const [baseUrl, _setBaseUrl] = useState(activeSpace?.baseUrl);
     const [currentTabIndex, setCurrentTabIndex] = useState(loadedSpaces.filter(x => x.active)[0]?.tabs.findIndex(x => x.active) ?? -1);
-
-    if (!activeSpace && spaces.length > 0)
-        _setActiveSpace(spaces[0]);
-
-    // let newCurrentTabIndex = loadedSpaces.filter(x => x.active)[0]?.tabs.findIndex(x => x.active) ?? -1;
-    // if (newCurrentTabIndex !== currentTabIndex)
-    //     setCurrentTabIndex(newCurrentTabIndex);
-
-    const getCurrentTabIndex = () => activeSpace.tabs.findIndex(x => x.active) ?? -1;
-
-    const setSpaceConfig = (spaceKey: string, configKey: string, value: any) => {
-        activeSpace[configKey] = value;
-        _setSpaces(spaces);
-        updateCache();
-    }
-
-    const setBaseUrl = (newBaseUrl: string) => {
-        _setBaseUrl(activeSpace.baseUrl = newBaseUrl);
-        updateCache();
-    }
 
     const getConfigs = (configPath: string[]) => getNestedConfig(configPath, spaces);
     const getActiveConfig = (configPath: string[]) => getNestedConfig(configPath, spaces).filter(x => x.active)[0]
@@ -129,6 +109,22 @@ export const SpacesProvider = ({ children }: any) => {
             currentActiveConfig.active = false;
         nestedConfigs.filter(x => x.name === newActiveConfigName)[0].active = true;
 
+        updateCache();
+    }
+
+    if (!activeSpace && spaces.length > 0)
+        setActiveConfig([], spaces[0].name);
+
+    const getCurrentTabIndex = () => activeSpace.tabs.findIndex(x => x.active) ?? -1;
+
+    const setSpaceConfig = (spaceKey: string, configKey: string, value: any) => {
+        activeSpace[configKey] = value;
+        _setSpaces(spaces);
+        updateCache();
+    }
+
+    const setBaseUrl = (newBaseUrl: string) => {
+        _setBaseUrl(activeSpace.baseUrl = newBaseUrl);
         updateCache();
     }
 

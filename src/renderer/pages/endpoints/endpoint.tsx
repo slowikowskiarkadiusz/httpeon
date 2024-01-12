@@ -3,7 +3,7 @@ import { EndpointTabContent } from "./endpoint.tab-content";
 import { PButton } from "../../common/pbutton";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import React, { useState } from "react";
-import { useSpaces } from "../../common/spaces.context";
+import { EnvConfig, SpaceConfig, useSpaces } from "../../common/spaces.context";
 import { dispatchUpdateCacheEvent } from "../../app";
 import { callHttp } from "../../common/http";
 import { EndpointResponse } from "./endpoint-response";
@@ -15,7 +15,7 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
     const [selectedMethod, setSelectedMethod] = useState(props.setup.content.method)
     const [responseStatus, setResponseStatus] = useState<number>(undefined);
     const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-    const { tabs, currentTabIndex, setBaseUrl, baseUrl } = useSpaces();
+    const { tabs, currentTabIndex, setBaseUrl, baseUrl, getActiveConfig } = useSpaces();
     const baseUrlRef = React.createRef<HTMLInputElement>();
     const requestRef = React.createRef<EndpointRequestEditor>();
     const responseRef = React.createRef<EndpointResponse>();
@@ -34,6 +34,7 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
         setResponseStatus,
         requestRef,
         responseRef,
+        getActiveConfig
     };
 
     return <>
@@ -139,10 +140,12 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                        defaultValue={ props.setup.content.endpoint }
                        key={ props.setup.content.endpoint }
                        onKeyDown={ e => {
-                           if (e.key === 'Enter')
+                           if (e.key === 'Enter') {
+                               props.setup.content.endpoint = (e.target as HTMLInputElement).value;
                                callEndpoint(endpointCallParams)
+                           }
                        } }
-                       onChange={ e => {
+                       onBlur={ e => {
                            props.setup.content.endpoint = e.target.value;
                            props.updateSetup(props.setup);
                        } }/>
@@ -177,12 +180,13 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
 
 async function callEndpoint(
     params: {
-        currentTab: TabSetup<any>,
+        currentTab: TabSetup<EndpointTabContent>,
         setIsRequestInProgress: React.Dispatch<React.SetStateAction<boolean>>,
         baseUrl: string,
         setResponseStatus: React.Dispatch<React.SetStateAction<number>>,
         requestRef: React.RefObject<EndpointRequestEditor>,
-        responseRef: React.RefObject<EndpointResponse>
+        responseRef: React.RefObject<EndpointResponse>,
+        getActiveConfig: (configPath: string[]) => SpaceConfig
     }): Promise<void> {
     params.setIsRequestInProgress(true);
     let tabContent = params.currentTab.content as EndpointTabContent;
@@ -193,6 +197,11 @@ async function callEndpoint(
         body: tabContent.input.tabs.Body.content,
     };
     request.body = request.body === '' ? undefined : request.body;
+
+    [...(JSON.parse(tabContent.input.tabs.Params.content) as [string, string, boolean][]),
+        ...(params.getActiveConfig(['envs']) as EnvConfig).values]
+        .filter(x => x[2])
+        .forEach(x => request.url = request.url.replace(x[0], x[1]));
 
     let response = await callHttp(request);
 

@@ -26,7 +26,7 @@ const configChoosersSize = 50;
 export function Sidebar() {
     const [_, setDummy] = useState(0);
     const defaultPage = 1;
-    const { spaces, addEndpoints, getConfigs } = useSpaces();
+    const { spaces, addEndpoints, getConfigs, setActiveConfig } = useSpaces();
     const { invokeContextMenu } = useContextMenu();
     const [selectedPageIndex, setSelectedPageIndex] = useState(defaultPage);
 
@@ -73,12 +73,14 @@ export function Sidebar() {
         } }>
             <ConfigChooserModalProvider parent={ () => document.getElementById('configChooserModalParent') }>
                 <ConfigChooser label={ 'Space' }
+                               onClose={ (value, index) => setActiveConfig([], value) }
                                configKeyPath={ [] }/>
                 { spaces.length > 0
                     ? <ConfigChooser label={ 'Env' }
                                      configKeyPath={ ['envs'] }
                                      onClose={ (chosen) => {
                                          if (chosen) {
+                                             setActiveConfig(['envs'], chosen)
                                              const myConfig = getConfigs(['envs']).filter(x => x.name === chosen)[0] as EnvConfig;
                                              const tabSetup = makeTabSetup<EnvTabContent>('envs', chosen, `env_${ chosen }`, true, {
                                                  env: chosen,

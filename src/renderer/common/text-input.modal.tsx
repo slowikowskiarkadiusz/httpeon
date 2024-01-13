@@ -8,7 +8,7 @@ export function TextInputModal(props: {
     top: string,
     width: string,
     defaultValue: string,
-    onFinish: (newUrl: string) => void
+    onClose: (newUrl: string) => void
 }) {
     const ref = React.createRef<HTMLDivElement>();
     const inputRef = React.createRef<HTMLInputElement>();
@@ -20,7 +20,7 @@ export function TextInputModal(props: {
 
     const clickListener = (event: MouseEvent) => {
         if (!ref.current.contains(event.target as any)) {
-            props.onFinish(undefined);
+            props.onClose(undefined);
             ref.current.parentElement.remove();
             document.removeEventListener('click', clickListener);
         }
@@ -52,7 +52,7 @@ export function TextInputModal(props: {
                    autoFocus={ true }
                    onKeyUp={ (e) => {
                        if (['Enter', 'Return'].includes(e.code)) {
-                           props.onFinish((e.target as HTMLInputElement).value);
+                           props.onClose((e.target as HTMLInputElement).value);
                            ref.current.parentElement.remove();
                        }
                    } }

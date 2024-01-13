@@ -335,27 +335,25 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
             content = data.tabs[currentTab].content;
         }
 
-        return (
-            <div placeholder={ `${ currentTab.toLowerCase() }...` }
-                 style={ {
-                     height: 'auto',
-                     fontFamily: 'Menlo',
-                     whiteSpace: 'pre',
-                     minHeight: '100%',
-                     width: '100%',
-                     color: 'var(--theme-font-color)',
-                     backgroundColor: 'var(--theme-bc-2)',
-                     border: 'none',
-                 } }
-                 dangerouslySetInnerHTML={ { __html: content } }
-                 contentEditable={ !data.tabs[currentTab].isReadOnly }
-                 key={ content }
-                 onInput={ (e) => {
-                     (data.tabs[currentTab].content = (e.target as HTMLDivElement).innerText);
-                     this.props.onDataUpdate(data);
-                     dispatchUpdateCacheEvent();
-                 } }>
-            </div>
-        );
+        return <div placeholder={ `${ currentTab.toLowerCase() }...` }
+                    style={ {
+                        height: 'auto',
+                        fontFamily: 'Menlo',
+                        whiteSpace: 'pre',
+                        minHeight: '100%',
+                        width: '100%',
+                        color: 'var(--theme-font-color)',
+                        backgroundColor: 'var(--theme-bc-2)',
+                        border: 'none',
+                    } }
+                    dangerouslySetInnerHTML={ { __html: content } }
+                    contentEditable={ !data.tabs[currentTab].isReadOnly }
+                    key={ content }
+                    onInput={ (e) => {
+                        (data.tabs[currentTab].content = (e.target as HTMLDivElement).innerText);
+                        this.props.onDataUpdate(data);
+                        dispatchUpdateCacheEvent();
+                    } }>
+        </div>;
     }
 }

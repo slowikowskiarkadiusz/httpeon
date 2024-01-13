@@ -1,6 +1,6 @@
 @use "sass:map";
 
-$colors: ('primary', 'secondary', 'green', 'yellow', 'purple', 'gray');
+$colors: ('primary', 'secondary', 'green', 'yellow', 'purple', 'gray', 'blue', 'red');
 
 $--dark-theme-bc: #000000;
 $--dark-theme-bc-2: lighten($--dark-theme-bc, 6);
@@ -16,20 +16,23 @@ $--dark-secondary-color: #FAC8FA;
 $--dark-secondary-color-2: darken($--dark-secondary-color, 10);
 $--dark-secondary-color-3: darken($--dark-secondary-color, 20);
 $--dark-green-color: #58CA13;
-$--dark-green-color-2: darken(#58CA13, 5);
-$--dark-green-color-3: darken(#58CA13, 10);
+$--dark-green-color-2: darken($--dark-green-color, 5);
+$--dark-green-color-3: darken($--dark-green-color, 10);
 $--dark-red-color: #ca1313;
 $--dark-red-color-2: darken($--dark-red-color, 5);
 $--dark-red-color-3: darken($--dark-red-color, 10);
 $--dark-yellow-color: #CAC713;
-$--dark-yellow-color-2: darken(#CAC713, 5);
-$--dark-yellow-color-3: darken(#CAC713, 10);
+$--dark-yellow-color-2: darken($--dark-yellow-color, 5);
+$--dark-yellow-color-3: darken($--dark-yellow-color, 10);
 $--dark-purple-color: #9A13CA;
-$--dark-purple-color-2: darken(#9A13CA, 5);
-$--dark-purple-color-3: darken(#9A13CA, 10);
+$--dark-purple-color-2: darken($--dark-purple-color, 5);
+$--dark-purple-color-3: darken($--dark-purple-color, 10);
 $--dark-gray-color: #b4b4b4;
 $--dark-gray-color-2: darken($--dark-gray-color, 5);
 $--dark-gray-color-3: darken($--dark-gray-color, 10);
+$--dark-blue-color: #77B9FF;
+$--dark-blue-color-2: darken($--dark-blue-color, 5);
+$--dark-blue-color-3: darken($--dark-blue-color, 10);
 
 $--light-theme-bc: #ffffff;
 $--light-theme-bc-2: darken($--light-theme-bc, 4);
@@ -45,23 +48,33 @@ $--light-secondary-color: #6a1b71;
 $--light-secondary-color-2: darken($--light-secondary-color, 15);
 $--light-secondary-color-3: darken($--light-secondary-color, 30);
 $--light-green-color: #58CA13;
-$--light-green-color-2: darken(#58CA13, 5);
-$--light-green-color-3: darken(#58CA13, 10);
+$--light-green-color-2: darken($--light-green-color, 5);
+$--light-green-color-3: darken($--light-green-color, 10);
 $--light-red-color: #ca1313;
 $--light-red-color-2: darken($--light-red-color, 5);
 $--light-red-color-3: darken($--light-red-color, 10);
 $--light-yellow-color: #CAC713;
-$--light-yellow-color-2: darken(#CAC713, 5);
-$--light-yellow-color-3: darken(#CAC713, 10);
+$--light-yellow-color-2: darken($--light-yellow-color, 5);
+$--light-yellow-color-3: darken($--light-yellow-color, 10);
 $--light-purple-color: #9A13CA;
-$--light-purple-color-2: darken(#9A13CA, 5);
-$--light-purple-color-3: darken(#9A13CA, 10);
+$--light-purple-color-2: darken($--light-purple-color, 5);
+$--light-purple-color-3: darken($--light-purple-color, 10);
 $--light-gray-color: #a2a2a2;
 $--light-gray-color-2: darken($--light-gray-color, 5);
 $--light-gray-color-3: darken($--light-gray-color, 10);
+$--light-blue-color: #0B4685;
+$--light-blue-color-2: darken($--light-blue-color, 5);
+$--light-blue-color-3: darken($--light-blue-color, 10);
 
 :root {
     --cell-hover-background-color: rgba(139, 149, 180, 0.20);
+    --http-get-bc: #61affe;
+    --http-post-bc: #49cc90;
+    --http-put-bc: #fca130;
+    --http-delete-bc: #f93e3e;
+    --http-patch-bc: #50e3c2;
+    --http-options-bc: #0d5aa7;
+    --http-head-bc: #9012fe;
 
     @media (prefers-color-scheme: dark) {
         --theme-bc: #{$--dark-theme-bc};
@@ -93,16 +106,11 @@ $--light-gray-color-3: darken($--light-gray-color, 10);
         --gray-color: #{$--dark-gray-color};
         --gray-color-2: #{$--dark-gray-color-2};
         --gray-color-3: #{$--dark-gray-color-3};
+        --blue-color: #{$--dark-blue-color};
+        --blue-color-2: #{$--dark-blue-color-2};
+        --blue-color-3: #{$--dark-blue-color-3};
 
         --cell-selected-background-color: rgba(75, 117, 255, 0.4);
-
-        --http-get-bc: #61affe;
-        --http-post-bc: #49cc90;
-        --http-put-bc: #fca130;
-        --http-delete-bc: #f93e3e;
-        --http-patch-bc: #50e3c2;
-        --http-options-bc: #0d5aa7;
-        --http-head-bc: #9012fe;
     }
 
     @media (prefers-color-scheme: light) {
@@ -135,15 +143,10 @@ $--light-gray-color-3: darken($--light-gray-color, 10);
         --gray-color: #{$--light-gray-color};
         --gray-color-2: #{$--light-gray-color-2};
         --gray-color-3: #{$--light-gray-color-3};
+        --blue-color: #{$--light-blue-color};
+        --blue-color-2: #{$--light-blue-color-2};
+        --blue-color-3: #{$--light-blue-color-3};
 
         --cell-selected-background-color: rgba(0, 44, 187, 0.2);
-
-        --http-get-bc: #61affe;
-        --http-post-bc: #49cc90;
-        --http-put-bc: #fca130;
-        --http-delete-bc: #f93e3e;
-        --http-patch-bc: #50e3c2;
-        --http-options-bc: #0d5aa7;
-        --http-head-bc: #9012fe;
     }
 }

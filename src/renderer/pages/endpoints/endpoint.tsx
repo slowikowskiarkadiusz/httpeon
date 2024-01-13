@@ -9,12 +9,16 @@ import { callHttp } from "../../common/http";
 import { EndpointResponse } from "./endpoint-response";
 import { EndpointRequestEditor } from "./endpoint-request-editor";
 import { EnvTabContent } from "../env/env.tab-content";
+import { faJs } from "@fortawesome/free-brands-svg-icons";
+import { useModal } from "../../common/modal/modal.context";
+import { ScriptModal } from "../../common/modal/script/script.modal";
 
 let lastSetup = undefined;
 
 export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSetup: (setup: TabSetup<EndpointTabContent>) => void }) {
+    const { invokeModal } = useModal();
     const [selectedMethod, setSelectedMethod] = useState(props.setup.content.method)
-    const [responseStatus, setResponseStatus] = useState<number>(undefined);
+    const [_responseStatus, setResponseStatus] = useState<number>(undefined);
     const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
     const { tabs, currentTabIndex, baseUrl, getActiveConfig } = useSpaces();
     const requestRef = React.createRef<EndpointRequestEditor>();
@@ -125,6 +129,18 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
             <EndpointResponse ref={ responseRef }
                               isLoading={ isRequestInProgress }
                               data={ (tabs()[currentTabIndex].content as EndpointTabContent).output }/>
+        </div>
+        <div style={ { marginBottom: 'var(--app-gap)' } }>
+            <PButton content="Post-exec script"
+                     icon={ faJs }
+                     color="blue"
+                     onClick={ () => {
+                         invokeModal(<ScriptModal originalValue={ '' }
+                                                  placeholder={ 'JavaScript...' }
+                                                  onDataUpdate={ (e) => {console.log('on data update', e) } }/>,
+                             'Post-exec script',
+                             (e) => {console.log('on close', e)})
+                     } }/>
         </div>
     </>
 }

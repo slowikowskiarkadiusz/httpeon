@@ -25,7 +25,7 @@ export const TextInputModalProvider = ({ children }: { children: any }) => {
             top={ `${ clickAt.y + offset }px` }
             width={ `${ width }px` }
             defaultValue={ originalValue }
-            onFinish={ onClose }
+            onClose={ onClose }
         />
         const div = document.createElement('div');
         element.append(div)

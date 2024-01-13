@@ -3,9 +3,11 @@ import { Sidebar } from './sidebar/sidebar';
 import { SpacesProvider } from "./common/spaces.context";
 import { ContextMenuProvider } from "./common/context-menu/context-menu.context";
 import { Page } from "./pages/page";
+import { ModalProvider } from "./common/modal/modal.context";
 
 export function App() {
-    return (<ContextMenuProvider>
+    return <ModalProvider parent={ () => document.getElementById("modal-parent") as HTMLDivElement }>
+        <ContextMenuProvider>
             <SpacesProvider>
                 <div id="modal-parent"
                      style={ { zIndex: 1, position: 'relative', width: '0', height: '0' } }></div>
@@ -32,7 +34,7 @@ export function App() {
                 </div>
             </SpacesProvider>
         </ContextMenuProvider>
-    );
+    </ModalProvider>;
 }
 
 export function dispatchUpdateCacheEvent() {

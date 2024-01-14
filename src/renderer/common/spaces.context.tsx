@@ -76,7 +76,7 @@ const loadedSpaces: Space[] = JSON.parse(localStorage.getItem('spaces')) ?? [
 const SpacesContext = createContext({
     spaces: loadedSpaces,
     setSpaceConfig: (spaceKey: string, configKey: string, value: any) => {},
-    getActiveConfig: (configPath: string[]) => ({} as SpaceConfig),
+    getActiveConfig: function getActiveConfig<T>(configPath: string[]): T {return {} as T},
     getConfigs: (configPath: string[]) => ([] as SpaceConfig[]),
     setActiveConfig: (configPath: string[], newActiveConfigName: string) => {},
     addConfig: (configPath: string[], newConfigName: string) => {},

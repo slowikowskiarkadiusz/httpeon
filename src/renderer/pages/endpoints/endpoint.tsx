@@ -151,6 +151,8 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
 //   headers: [string,string][] 
 // }
 // to set an environment variable use the 'vars' variable.
+// to set request params use 'params' variable.
+// to set request headers use 'headers' variable.
 // e.g. setting 'Authentication' variable:
 // vars['{Authentication}'] = \`Bearer \${JSON.parse(response.body)}\``,
                                      placeholder: 'JavaScript...',
@@ -176,7 +178,7 @@ async function callEndpoint(
         setResponseStatus: React.Dispatch<React.SetStateAction<number>>,
         requestRef: React.RefObject<EndpointRequestEditor>,
         responseRef: React.RefObject<EndpointResponse>,
-        getActiveConfig: (configPath: string[]) => SpaceConfig
+        getActiveConfig: <T extends SpaceConfig>(configPath: string[]) => T
     }): Promise<void> {
     if (!params.baseUrl) {
         const currentEnv = params.getActiveConfig(['envs']);
@@ -207,7 +209,7 @@ async function callEndpoint(
     let response = await callHttp(request);
 
     if (response.callResponse) {
-        evalPostExecScript(response, tabContent.postExecScript);
+        evalPostExecScript(response, tabContent.postExecScript, params.currentTab, params.getActiveConfig);
         tabContent.output.Request = request;
         tabContent.output.Response = {
             ...tabContent.output.Response,
@@ -221,7 +223,7 @@ async function callEndpoint(
         };
         params.setResponseStatus(response.callResponse.status);
     } else {
-        console.log('dupa', response, response.internalError)
+        console.log('http call error', response, response.internalError)
     }
 
     params.requestRef.current?.forceUpdate();
@@ -230,12 +232,24 @@ async function callEndpoint(
     params.setIsRequestInProgress(false);
 }
 
-function evalPostExecScript(callResponse: HttpCallResponse, postExecScript: string) {
+function evalPostExecScript(callResponse: HttpCallResponse,
+                            postExecScript: string,
+                            currentTab: TabSetup<EndpointTabContent>,
+                            getActiveConfig: <T extends SpaceConfig>(config: string[]) => T) {
     let response = { ...callResponse };
     let vars = {};
     let params = {};
+    let headers = {};
 
     eval(postExecScript);
 
-    console.log('context', vars);
+    Object.keys(vars).forEach(key => getActiveConfig<EnvConfig>(['envs']).values.push([key, vars[key], true]));
+
+    let paramsArray: [string, string, boolean][] = JSON.parse(currentTab.content.input.tabs.Params.content);
+    Object.keys(params).forEach(key => paramsArray.push([key, params[key], true]));
+    currentTab.content.input.tabs.Params.content = JSON.stringify(paramsArray);
+    
+    let headersArray: [string, string, boolean][] = JSON.parse(currentTab.content.input.tabs.Headers.content);
+    Object.keys(headers).forEach(key => headersArray.push([key, headers[key], true]));
+    currentTab.content.input.tabs.Headers.content = JSON.stringify(headersArray);
 }

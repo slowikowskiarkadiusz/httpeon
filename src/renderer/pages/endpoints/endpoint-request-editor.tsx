@@ -224,7 +224,8 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
                 setTimeout(() => this.forceUpdate(), 0);
             }
             data.tabs[currentTab].content = JSON.stringify(content);
-            this.props.onDataUpdate(data);
+            if (this.props.onDataUpdate)
+                this.props.onDataUpdate(data);
             dispatchUpdateCacheEvent();
         }
 
@@ -351,7 +352,8 @@ export class EndpointRequestEditor extends Component<EndpointRequestEditorProps,
                     key={ content }
                     onInput={ (e) => {
                         (data.tabs[currentTab].content = (e.target as HTMLDivElement).innerText);
-                        this.props.onDataUpdate(data);
+                        if (this.props.onDataUpdate)
+                            this.props.onDataUpdate(data);
                         dispatchUpdateCacheEvent();
                     } }>
         </div>;

@@ -15,11 +15,12 @@ export function PButton(props: {
     isLoading?: boolean,
     isDisabled?: boolean,
 }) {
+    let col = props.color;
     if (props.isDisabled)
-        props.color = 'gray';
+        col = 'gray';
 
     let classes = ['pbutton'];
-    let color = props.color ?? 'primary';
+    let color = col ?? 'primary';
     classes.push(`pbutton-${ color }`);
 
     return <button className={ classes.join(' ') }

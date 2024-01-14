@@ -1,37 +1,104 @@
+import React from 'react';
 import { dispatchUpdateCacheEvent } from "../../../app";
+import { Modal } from "../modal";
 
-export function ScriptModal(props: {
-    originalValue: string,
-    placeholder: string,
-    onUpdate?: (value: string) => void,
-    onFinish?: (value: string, context: { [p: string]: any }) => void
-}) {
-    return <div style={ {
-        display: 'flex',
-        height: '100%',
-        width: '100%',
-    } }>
-        <div placeholder={ props.placeholder }
-             style={ {
-                 fontFamily: 'Menlo',
-                 whiteSpace: 'pre',
-                 flex: '1 0 auto',
-                 padding: '0.25em',
-                 color: 'var(--theme-font-color)',
-                 backgroundColor: 'var(--theme-bc-2)',
-                 border: 'none',
-             } }
-             dangerouslySetInnerHTML={ { __html: props.originalValue } }
-             contentEditable={ true }
-             onInput={ (e) => {
-                 if (props.onUpdate) props.onUpdate((e.target as HTMLDivElement).innerText);
-                 dispatchUpdateCacheEvent();
-             } }>
-        </div>
-    </div>
+export interface ScriptModalProps {
+    originalValue: string;
+    placeholder: string;
+    onUpdate?: (value: string) => void;
+    onFinish?: (value: string, context: { [p: string]: any }) => void;
 }
 
-// let context = { ...props.context };
-// let response = { "status": 200, "statusText": "OK", "body": "[{\"date\":\"2024-01-15\",\"temperatureC\":25,\"summary\":\"Freezing\",\"temperatureF\":76},{\"date\":\"2024-01-16\",\"temperatureC\":13,\"summary\":\"Hot\",\"temperatureF\":55},{\"date\":\"2024-01-17\",\"temperatureC\":33,\"summary\":\"Cool\",\"temperatureF\":91},{\"date\":\"2024-01-18\",\"temperatureC\":21,\"summary\":\"Sweltering\",\"temperatureF\":69},{\"date\":\"2024-01-19\",\"temperatureC\":-17,\"summary\":\"Balmy\",\"temperatureF\":2}]", "headers": [["content-type", "application/json; charset=utf-8"], ["date", "Sat, 13 Jan 2024 23:06:57 GMT"], ["server", "Kestrel"], ["transfer-encoding", "chunked"]] }
-// eval((e.target as HTMLDivElement).innerText);
-// props.onFinish((e.target as HTMLDivElement).innerText, context);
+export interface ScriptModalResult {
+    script: string;
+}
+
+interface ScriptModalState {
+    error?: string;
+}
+
+export class ScriptModal extends Modal<ScriptModalProps, ScriptModalState, ScriptModalResult> {
+    private scriptValue: string = '';
+
+    constructor(props: ScriptModalProps) {
+        super(props);
+
+        this.state = {};
+
+        this.scriptValue = this.props.originalValue;
+    }
+
+    public getResult(): ScriptModalResult {
+        return {
+            script: this.scriptValue
+        };
+    }
+
+    public error(): string | undefined {
+        try {
+            new Function(this.scriptValue);
+            return undefined;
+        } catch (error) {
+            return error.message;
+        }
+    }
+
+    public render() {
+        const { placeholder } = this.props;
+        const { error } = this.state;
+        setTimeout(() => {
+            this.wrapper.setCanProceed(!error);
+        }, 0);
+
+        return (
+            <div style={ {
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+                width: '100%',
+            } }>
+                <div placeholder={ placeholder }
+                     style={ {
+                         fontFamily: 'Menlo',
+                         whiteSpace: 'pre',
+                         flex: '1 0 auto',
+                         padding: '0.25em',
+                         color: 'var(--theme-font-color)',
+                         backgroundColor: 'var(--theme-bc-2)',
+                         border: 'none',
+                     } }
+                     dangerouslySetInnerHTML={ { __html: this.props.originalValue } }
+                     contentEditable={ true }
+                     onInput={ e => {
+                         const value = (e.nativeEvent.target as HTMLDivElement).innerText;
+
+                         this.scriptValue = value;
+
+                         const inputError = this.error();
+                         this.setState({ error: inputError });
+
+                         if (this.props.onUpdate) {
+                             this.props.onUpdate(value);
+                             dispatchUpdateCacheEvent();
+                         }
+                     } }>
+                </div>
+                <span style={ {
+                    flex: '0 0 auto',
+                    padding: '2rem',
+                    fontWeight: 'bold',
+                    color: !error ? 'var(--theme-font-color)' : 'var(--red-color)',
+                    transition: 'color 0.35s'
+                } }>
+                    {
+                        !error
+                            ? 'The script is okay'
+                            : `Error: ${ error }`
+                    }
+                </span>
+            </div>
+        );
+    }
+}
+
+export default ScriptModal;

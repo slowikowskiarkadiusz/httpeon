@@ -11,7 +11,8 @@ import { EndpointRequestEditor } from "./endpoint-request-editor";
 import { EnvTabContent } from "../env/env.tab-content";
 import { faJs } from "@fortawesome/free-brands-svg-icons";
 import { useModal } from "../../common/modal/modal.context";
-import { ScriptModal } from "../../common/modal/script/script.modal";
+import { ScriptModal, ScriptModalResult } from "../../common/modal/script/script.modal";
+import { HttpCallResponse } from "../../../index";
 
 let lastSetup = undefined;
 
@@ -31,8 +32,11 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
 
     dispatchUpdateCacheEvent();
 
+    const currentTab = tabs()[currentTabIndex];
+    const currentContent = currentTab.content as EndpointTabContent;
+
     const endpointCallParams = {
-        currentTab: tabs()[currentTabIndex],
+        currentTab,
         setIsRequestInProgress,
         baseUrl,
         setResponseStatus,
@@ -125,32 +129,41 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
             flex: '1 1 auto',
         } }>
             <EndpointRequestEditor ref={ requestRef }
-                                   data={ (tabs()[currentTabIndex].content as EndpointTabContent).input }/>
+                                   data={ currentContent.input }/>
             <EndpointResponse ref={ responseRef }
                               isLoading={ isRequestInProgress }
-                              data={ (tabs()[currentTabIndex].content as EndpointTabContent).output }/>
+                              data={ currentContent.output }/>
         </div>
         <div style={ { marginBottom: 'var(--app-gap)' } }>
-            <PButton content="Post-exec script"
-                     icon={ faJs }
-                     color="blue"
-                     onClick={ () => {
-                         invokeModal(<ScriptModal originalValue={ props.setup.content.postExecScript ??
-                                 `// context['response'] is of type 
+            <div style={ { display: 'flex', flexDirection: 'row', gap: '1rem', width: 'max-content' } }>
+                <PButton content="Post-exec script"
+                         icon={ faJs }
+                         color="blue"
+                         onClick={ () => {
+                             invokeModal(ScriptModal, {
+                                     originalValue: props.setup.content.postExecScript.split('\n').filter(x => !!x).length
+                                         ? props.setup.content.postExecScript
+                                         : `// variable 'response' is of type 
 // { 
 //   status: number;
 //   statusText: string;
 //   body: string;
 //   headers: [string,string][] 
 // }
-\nconsole.log(response)` }
-                                                  // context={ { response: {}, variables: {} } }
-                                                  placeholder={ 'JavaScript...' }
-                                 // onUpdate={ (e) => { console.log('on data update', e) } }
-                                                  onFinish={ (value, context) => { console.log('on finish', context) } }/>,
-                             'Post-exec script',
-                             (e) => {console.log('on close', e)})
-                     } }/>
+// to set an environment variable use the 'vars' variable.
+// e.g. setting 'Authentication' variable:
+// vars['{Authentication}'] = \`Bearer \${JSON.parse(response.body)}\``,
+                                     placeholder: 'JavaScript...',
+                                 },
+                                 'Post-exec script')
+                                 .then((result: ScriptModalResult) => {
+                                     currentContent.postExecScript = result.script;
+                                     dispatchUpdateCacheEvent();
+                                 })
+                                 .catch(_reason => {});
+                         } }/>
+                <span style={ { margin: 'auto' } }>{ props.setup.content.postExecScript.split('\n').filter(x => !!x).length } lines</span>
+            </div>
         </div>
     </>
 }
@@ -194,6 +207,7 @@ async function callEndpoint(
     let response = await callHttp(request);
 
     if (response.callResponse) {
+        evalPostExecScript(response, tabContent.postExecScript);
         tabContent.output.Request = request;
         tabContent.output.Response = {
             ...tabContent.output.Response,
@@ -214,4 +228,14 @@ async function callEndpoint(
     params.responseRef.current?.forceUpdate();
 
     params.setIsRequestInProgress(false);
+}
+
+function evalPostExecScript(callResponse: HttpCallResponse, postExecScript: string) {
+    let response = { ...callResponse };
+    let vars = {};
+    let params = {};
+
+    eval(postExecScript);
+
+    console.log('context', vars);
 }

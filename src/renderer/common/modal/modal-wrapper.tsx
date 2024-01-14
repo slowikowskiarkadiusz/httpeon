@@ -6,7 +6,7 @@ export function ModalWrapper(props: { inner: JSX.Element, header: string }) {
         flexDirection: 'column',
         margin: 'auto',
         fontSize: '2rem',
-        width: '75%',
+        width: '50%',
         height: '75%',
         backgroundColor: 'var(--theme-bc-3)',
         padding: '1em',
@@ -16,9 +16,8 @@ export function ModalWrapper(props: { inner: JSX.Element, header: string }) {
                 onClick={ e => {
                     e.stopPropagation();
                     e.nativeEvent.stopImmediatePropagation();
-                    console.log('pizda')
                 } }>
-        <span style={ { textAlign: 'center' } }><h3>{ props.header }</h3></span>
+        <span style={ { textAlign: 'center', color: 'var(--theme-font-color)' } }><h3>{ props.header }</h3></span>
         <div style={ { flex: '1 0 auto' } }>{ props.inner }</div>
         <div style={ { display: 'flex', flexDirection: 'row', justifyContent: 'space-around' } }>
             <PButton content="Cancel"

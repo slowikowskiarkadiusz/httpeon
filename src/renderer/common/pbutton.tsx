@@ -13,13 +13,18 @@ export function PButton(props: {
     icon?: IconProp,
     iconTransform?: string,
     isLoading?: boolean,
+    isDisabled?: boolean,
 }) {
+    if (props.isDisabled)
+        props.color = 'gray';
+
     let classes = ['pbutton'];
     let color = props.color ?? 'primary';
     classes.push(`pbutton-${ color }`);
 
     return <button className={ classes.join(' ') }
-                   onClick={ props.onClick }>
+                   onClick={ props.onClick }
+                   disabled={ props.isDisabled }>
         <span style={ { margin: "auto" } }>
             { props.content ? <span>{ props.content }{ props.icon ? <>&nbsp;&nbsp;</> : null }</span> : null }
             { props.icon

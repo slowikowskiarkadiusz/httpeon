@@ -135,9 +135,19 @@ export function Endpoint(props: { setup: TabSetup<EndpointTabContent>, updateSet
                      icon={ faJs }
                      color="blue"
                      onClick={ () => {
-                         invokeModal(<ScriptModal originalValue={ '' }
+                         invokeModal(<ScriptModal originalValue={ props.setup.content.postExecScript ??
+                                 `// context['response'] is of type 
+// { 
+//   status: number;
+//   statusText: string;
+//   body: string;
+//   headers: [string,string][] 
+// }
+\nconsole.log(response)` }
+                                                  // context={ { response: {}, variables: {} } }
                                                   placeholder={ 'JavaScript...' }
-                                                  onDataUpdate={ (e) => {console.log('on data update', e) } }/>,
+                                 // onUpdate={ (e) => { console.log('on data update', e) } }
+                                                  onFinish={ (value, context) => { console.log('on finish', context) } }/>,
                              'Post-exec script',
                              (e) => {console.log('on close', e)})
                      } }/>

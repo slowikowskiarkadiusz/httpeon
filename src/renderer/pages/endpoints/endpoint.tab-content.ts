@@ -6,4 +6,5 @@ export interface EndpointTabContent {
     method: string;
     input: EndpointRequestEditorData;
     output: EndpointResponseData;
+    postExecScript?: string;
 }
